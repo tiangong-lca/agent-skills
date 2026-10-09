@@ -1,5 +1,6 @@
 import { spawnSync } from 'node:child_process';
-import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+import { existsSync, lstatSync, readFileSync, readdirSync, readlinkSync, realpathSync, statSync } from 'node:fs';
 import path from 'node:path';
 import process from 'node:process';
 
@@ -42,6 +43,180 @@ export const expectedTidasSpecSource = Object.freeze({
   ].map(([name, sha256]) => Object.freeze({ name, sha256 }))),
 });
 const verifiedToolchainsBySpawn = new WeakMap();
+export const localCliCandidateSchema = 'tiangong-lca.skills-local-cli-candidate.v1';
+const candidateFileEnv = 'TIANGONG_LCA_CLI_CANDIDATE_FILE';
+const candidateHashEnv = 'TIANGONG_LCA_CLI_CANDIDATE_SHA256';
+
+function sha256(bytes) {
+  return createHash('sha256').update(bytes).digest('hex');
+}
+
+function candidateError(message) {
+  throw new Error(`Local TianGong CLI candidate qualification: ${message}`);
+}
+
+function fileDigest(filePath) {
+  let stat;
+  try { stat = lstatSync(filePath); } catch (error) {
+    if (error.code === 'ENOENT') candidateError(`required prepared file is missing: ${filePath}; prepare an isolated candidate and review fresh qualification evidence`);
+    throw error;
+  }
+  if (!stat.isFile()) {
+    candidateError(`expected a regular file at ${filePath}`);
+  }
+  return sha256(readFileSync(filePath));
+}
+
+function inside(root, target) {
+  const relative = path.relative(root, target);
+  return relative === '' || (!relative.startsWith(`..${path.sep}`) && relative !== '..' && !path.isAbsolute(relative));
+}
+
+function treeDigest(root, allowLinks = false) {
+  if (!lstatSync(root).isDirectory()) {
+    candidateError(`expected a prepared directory at ${root}`);
+  }
+  const canonicalRoot = realpathSync(root);
+  const entries = [];
+  function visit(directory, prefix) {
+    for (const name of readdirSync(directory).sort()) {
+      const entryPath = path.join(directory, name);
+      const relative = prefix ? `${prefix}/${name}` : name;
+      const stat = lstatSync(entryPath);
+      if (stat.isSymbolicLink()) {
+        if (!allowLinks || !inside(canonicalRoot, realpathSync(entryPath))) {
+          candidateError(`link escapes the qualified tree or is unsupported: ${entryPath}`);
+        }
+        entries.push(['symlink', relative, readlinkSync(entryPath)]);
+      } else if (stat.isDirectory()) {
+        entries.push(['directory', relative]);
+        visit(entryPath, relative);
+      } else if (stat.isFile()) {
+        entries.push(['file', relative, fileDigest(entryPath)]);
+      } else {
+        candidateError(`unsupported filesystem entry: ${entryPath}`);
+      }
+    }
+  }
+  visit(root, '');
+  return sha256(JSON.stringify(entries));
+}
+
+function candidateGit(cliDir, args, options) {
+  const env = Object.fromEntries(Object.entries(options.spawnOptions?.env ?? process.env)
+    .filter(([key]) => !/^GIT_/iu.test(key)));
+  const result = (options.sourceSpawnImpl ?? spawnSync)('git', ['-C', cliDir, ...args], {
+    env, encoding: 'utf8', shell: false, stdio: 'pipe', maxBuffer: 16 * 1024 * 1024,
+  });
+  if (result.error || result.status !== 0) {
+    candidateError(`cannot inspect selected source with git ${args[0]}: ${result.error?.message ?? result.stderr?.trim()}`);
+  }
+  return result.stdout;
+}
+
+function inspectCandidateSource(cliDir, options) {
+  if (realpathSync(candidateGit(cliDir, ['rev-parse', '--show-toplevel'], options).trim()) !== realpathSync(cliDir)) {
+    candidateError('--cli-dir must be the selected CLI checkout root');
+  }
+  const remote = candidateGit(cliDir, ['remote', 'get-url', 'origin'], options).trim();
+  if (!['https://github.com/tiangong-lca/cli.git', 'https://github.com/tiangong-lca/cli',
+    'git@github.com:tiangong-lca/cli.git', 'ssh://git@github.com/tiangong-lca/cli.git'].includes(remote)) {
+    candidateError('selected source origin must identify canonical tiangong-lca/cli');
+  }
+  const commit = candidateGit(cliDir, ['rev-parse', 'HEAD'], options).trim();
+  if (candidateGit(cliDir, ['status', '--porcelain=v1', '--untracked-files=all'], options).trim()) {
+    candidateError('selected source must be clean; preserve edits and qualify a separate committed checkout');
+  }
+  const files = candidateGit(cliDir, ['ls-files', '-z'], options).split('\0').filter(Boolean).sort();
+  const entries = files.map((relative) => {
+    const filePath = path.resolve(cliDir, relative);
+    if (!inside(cliDir, filePath)) candidateError('tracked source path escapes the checkout');
+    return ['file', relative, fileDigest(filePath)];
+  });
+  return { commit, sourceSha256: sha256(JSON.stringify(entries)) };
+}
+
+function readCandidateQualification(options) {
+  const file = options.cliCandidateFile;
+  const digest = options.cliCandidateSha256;
+  if (!file && !digest) return null;
+  if (!file || !/^[a-f0-9]{64}$/u.test(digest ?? '')) {
+    candidateError('provide both --cli-candidate-file and --cli-candidate-sha256 from the approved caller evidence');
+  }
+  const filePath = path.resolve(file);
+  const bytes = readFileSync(filePath);
+  if (sha256(bytes) !== digest) candidateError('qualification file SHA256 digest mismatch with the caller expectation');
+  let record;
+  try { record = JSON.parse(bytes.toString('utf8')); } catch {
+    candidateError('qualification file must contain JSON');
+  }
+  if (record?.schema !== localCliCandidateSchema || record.cli?.repository !== 'tiangong-lca/cli' ||
+    !/^[a-f0-9]{40}$/u.test(record.cli?.commit ?? '') ||
+    !/^\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?(?:\+[A-Za-z0-9.-]+)?$/u.test(record.cli?.packageVersion ?? '') ||
+    record.toolchain?.node !== expectedNodeVersion || record.toolchain?.pnpm !== expectedPnpmVersion) {
+    candidateError('unsupported qualification schema, repository, commit, package or toolchain');
+  }
+  for (const value of [record.cli.sourceSha256, record.cli.packageSha256, record.cli.lockSha256,
+    record.cli.tidasManifestSha256, record.build?.distSha256, record.build?.nodeModulesSha256]) {
+    if (!/^[a-f0-9]{64}$/u.test(value ?? '')) candidateError('qualification requires exact source, lock, asset, dependency and build digests');
+  }
+  return { filePath, sha256: digest, record };
+}
+
+// Observation only: callers must independently approve the expected commit/version
+// and bind the returned file digest. This helper grants no data or execution authority.
+export function inspectLocalCliCandidate(cliDir, options = {}) {
+  const directory = normalizeCliDir(cliDir);
+  if (!directory || !/^[a-f0-9]{40}$/u.test(options.expectedCommit ?? '') || !options.expectedVersion) {
+    candidateError('inspection requires --cli-dir and independently supplied expected commit and version');
+  }
+  assertSupportedToolchain(options);
+  const evidence = readLocalCliPackageEvidence(directory, options, options.expectedVersion);
+  const source = inspectCandidateSource(directory, options);
+  if (source.commit !== options.expectedCommit) candidateError('source HEAD differs from the expected commit');
+  const manifest = JSON.parse(readFileSync(path.join(directory, 'package.json'), 'utf8'));
+  if (manifest.repository?.url !== 'git+https://github.com/tiangong-lca/cli.git') {
+    candidateError('package repository must identify canonical tiangong-lca/cli');
+  }
+  for (const schema of expectedTidasSpecSource.schemas) {
+    if (fileDigest(path.join(directory, 'assets', 'tidas-schemas', schema.name)) !== schema.sha256) {
+      candidateError(`TIDAS schema SHA256 content mismatch with the pinned source: ${schema.name}`);
+    }
+  }
+  for (const relative of ['dist/src/main.js', 'node_modules/.modules.yaml', 'node_modules/.pnpm/lock.yaml']) {
+    fileDigest(path.join(directory, ...relative.split('/')));
+  }
+  if (fileDigest(path.join(directory, 'node_modules', '.pnpm', 'lock.yaml')) !== fileDigest(evidence.lockfilePath)) {
+    candidateError('installed pnpm lock digest differs from the source frozen lock');
+  }
+  const modulesState = readFileSync(path.join(directory, 'node_modules', '.modules.yaml'), 'utf8');
+  const installedManager = /["']?packageManager["']?\s*:\s*["']?([^"'\s,]+)["']?/u.exec(modulesState)?.[1];
+  if (installedManager !== expectedCliPackageManager) {
+    candidateError(`installed dependency state must identify ${expectedCliPackageManager}`);
+  }
+  return {
+    schema: localCliCandidateSchema,
+    cli: { repository: 'tiangong-lca/cli', ...source, packageVersion: evidence.packageVersion,
+      packageSha256: fileDigest(evidence.packageManifestPath), lockSha256: fileDigest(evidence.lockfilePath),
+      tidasManifestSha256: fileDigest(evidence.sourceManifestPath) },
+    toolchain: { node: expectedNodeVersion, pnpm: expectedPnpmVersion },
+    build: { distSha256: treeDigest(path.join(directory, 'dist')),
+      nodeModulesSha256: treeDigest(path.join(directory, 'node_modules'), true) },
+  };
+}
+
+function assertLocalCliCandidate(cliDir, qualification, options) {
+  const actual = inspectLocalCliCandidate(cliDir, { ...options,
+    expectedCommit: qualification.record.cli.commit,
+    expectedVersion: qualification.record.cli.packageVersion });
+  for (const section of ['cli', 'toolchain', 'build']) {
+    for (const [key, expected] of Object.entries(actual[section])) {
+      if (qualification.record[section][key] !== expected) {
+        candidateError(`${section}.${key} differs from approved evidence; restore the qualified candidate or review new evidence before selecting it`);
+      }
+    }
+  }
+}
 
 function normalizeCliDir(cliDir) {
   const trimmed = cliDir?.trim();
@@ -108,40 +283,91 @@ export function normalizeCliRuntimeArgs(rawArgs, options = {}) {
     env.TIANGONG_LCA_CLI_MODE === 'published'
       ? null
       : normalizeCliDir(env.TIANGONG_LCA_CLI_DIR);
+  const envCliDir = cliDir;
+  let cliCandidateFile = cliDir ? normalizeCliDir(env[candidateFileEnv]) : null;
+  let cliCandidateSha256 = cliDir ? env[candidateHashEnv]?.trim() || null : null;
+  let explicitCandidateFile = false;
+  let explicitCandidateHash = false;
+  let explicitPublished = env.TIANGONG_LCA_CLI_MODE === 'published';
   const args = [];
 
   for (let index = 0; index < rawArgs.length; index += 1) {
     const arg = rawArgs[index];
 
     if (arg === '--cli-dir') {
-      if (index + 1 >= rawArgs.length) {
+      if (index + 1 >= rawArgs.length || !rawArgs[index + 1]?.trim() || rawArgs[index + 1].startsWith('--')) {
         throw new Error('--cli-dir requires a value');
       }
       cliDir = normalizeCliDir(rawArgs[index + 1]);
+      explicitPublished = false;
       index += 1;
       continue;
     }
 
     if (arg.startsWith('--cli-dir=')) {
       cliDir = normalizeCliDir(arg.slice('--cli-dir='.length));
+      if (!cliDir) throw new Error('--cli-dir requires a value');
+      explicitPublished = false;
       continue;
     }
 
     if (arg === '--published-cli') {
       cliDir = null;
+      cliCandidateFile = null;
+      cliCandidateSha256 = null;
+      explicitCandidateFile = false;
+      explicitCandidateHash = false;
+      explicitPublished = true;
       continue;
     }
+
+    const candidateFlags = [
+      ['--cli-candidate-file', 'file'],
+      ['--cli-candidate-sha256', 'hash'],
+    ];
+    let handled = false;
+    for (const [flag, kind] of candidateFlags) {
+      if (arg !== flag && !arg.startsWith(`${flag}=`)) continue;
+      const value = arg === flag ? rawArgs[++index] : arg.slice(flag.length + 1);
+      if (!value?.trim() || value.startsWith('--')) throw new Error(`${flag} requires a value`);
+      if (kind === 'file') {
+        cliCandidateFile = normalizeCliDir(value);
+        explicitCandidateFile = true;
+      } else {
+        cliCandidateSha256 = value.trim();
+        explicitCandidateHash = true;
+      }
+      handled = true;
+      break;
+    }
+    if (handled) continue;
 
     args.push(arg);
   }
 
+  if (cliDir !== envCliDir) {
+    if (!explicitCandidateFile) cliCandidateFile = null;
+    if (!explicitCandidateHash) cliCandidateSha256 = null;
+  }
+  if (!cliDir) {
+    if (!explicitPublished && (explicitCandidateFile || explicitCandidateHash)) {
+      candidateError('candidate qualification requires an explicit --cli-dir selection');
+    }
+    cliCandidateFile = null;
+    cliCandidateSha256 = null;
+  } else if ((cliCandidateFile || cliCandidateSha256) &&
+    (!cliCandidateFile || !/^[a-f0-9]{64}$/u.test(cliCandidateSha256 ?? ''))) {
+    candidateError('provide both --cli-candidate-file and --cli-candidate-sha256');
+  }
   return {
     cliDir,
     args,
+    cliCandidateFile,
+    cliCandidateSha256,
   };
 }
 
-function readLocalCliPackageEvidence(cliDir, options) {
+function readLocalCliPackageEvidence(cliDir, options, expectedVersion = expectedCliPackageVersion) {
   const pathExists = options.pathExists ?? existsSync;
   const readText = options.readText ?? ((filePath) => readFileSync(filePath, 'utf8'));
   const packageManifestPath = path.join(cliDir, 'package.json');
@@ -166,10 +392,10 @@ function readLocalCliPackageEvidence(cliDir, options) {
     !manifest ||
     typeof manifest !== 'object' ||
     manifest.name !== expectedCliPackageName ||
-    manifest.version !== expectedCliPackageVersion
+    manifest.version !== expectedVersion
   ) {
     throw new Error(
-      `Local TianGong CLI package mismatch: expected ${publishedCliPackageSpec}.`,
+      `Local TianGong CLI package mismatch: expected ${expectedCliPackageName}@${expectedVersion}. A different local candidate requires --cli-candidate-file and --cli-candidate-sha256 from approved caller evidence.`,
     );
   }
   if (manifest.packageManager !== expectedCliPackageManager) {
@@ -210,13 +436,16 @@ export function buildTiangongInvocation(tiangongArgs, options = {}) {
   const cliDir = normalizeCliDir(options.cliDir);
 
   if (cliDir) {
+    const candidateQualification = readCandidateQualification(options);
     const cliBin = path.join(cliDir, 'bin', 'tiangong-lca.js');
     if (!pathExists(cliBin)) {
       throw new Error(
         `Cannot find TianGong CLI at ${cliBin}. Set TIANGONG_LCA_CLI_DIR or pass --cli-dir.`,
       );
     }
-    const packageEvidence = readLocalCliPackageEvidence(cliDir, options);
+    const packageEvidence = readLocalCliPackageEvidence(cliDir, options,
+      candidateQualification?.record.cli.packageVersion);
+    if (candidateQualification) assertLocalCliCandidate(cliDir, candidateQualification, options);
 
     return {
       mode: 'local',
@@ -225,6 +454,7 @@ export function buildTiangongInvocation(tiangongArgs, options = {}) {
       cliDir,
       cliBin,
       ...packageEvidence,
+      candidateQualification,
     };
   }
 
@@ -375,6 +605,9 @@ export function executeTiangongCommand(tiangongArgs, options = {}) {
   const invocation = buildTiangongInvocation(tiangongArgs, options);
   assertSupportedToolchain(options);
   ensureLocalCliBuild(invocation, options);
+  if (invocation.candidateQualification) {
+    assertLocalCliCandidate(invocation.cliDir, invocation.candidateQualification, options);
+  }
 
   const spawnImpl = options.spawnImpl ?? spawnSync;
   const result = spawnImpl(invocation.command, invocation.args, {
@@ -417,13 +650,17 @@ export function runTiangongCommand(tiangongArgs, options = {}) {
   return 1;
 }
 
-export function withCliRuntimeEnv(baseEnv, cliDir) {
+export function withCliRuntimeEnv(baseEnv, cliDir, options = {}) {
   const env = { ...baseEnv };
   const normalizedCliDir = normalizeCliDir(cliDir);
+  delete env[candidateFileEnv];
+  delete env[candidateHashEnv];
 
   if (normalizedCliDir) {
     env.TIANGONG_LCA_CLI_DIR = normalizedCliDir;
     delete env.TIANGONG_LCA_CLI_MODE;
+    if (options.cliCandidateFile) env[candidateFileEnv] = path.resolve(options.cliCandidateFile);
+    if (options.cliCandidateSha256) env[candidateHashEnv] = options.cliCandidateSha256;
   } else {
     delete env.TIANGONG_LCA_CLI_DIR;
     env.TIANGONG_LCA_CLI_MODE = 'published';

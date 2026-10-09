@@ -165,6 +165,156 @@ test('published CLI selection propagates through nested wrapper environments', (
   assert.equal(localEnv.TIANGONG_LCA_CLI_MODE, undefined);
 });
 
+test('normalizeCliRuntimeArgs carries an explicit candidate file and external digest outside CLI argv', () => {
+  const cliDir = fixturePath('candidate cli');
+  const cliCandidateFile = fixturePath('qualification with spaces', 'candidate.json');
+  const cliCandidateSha256 = 'a'.repeat(64);
+  const runtime = normalizeCliRuntimeArgs([
+    '--cli-dir', cliDir,
+    '--cli-candidate-file', cliCandidateFile,
+    `--cli-candidate-sha256=${cliCandidateSha256}`,
+    'qa', 'process', '--input', 'case with spaces.json',
+  ], { env: {} });
+
+  assert.deepEqual(runtime, {
+    cliDir,
+    cliCandidateFile,
+    cliCandidateSha256,
+    args: ['qa', 'process', '--input', 'case with spaces.json'],
+  });
+
+  assert.deepEqual(normalizeCliRuntimeArgs([
+    `--cli-dir=${cliDir}`,
+    `--cli-candidate-file=${cliCandidateFile}`,
+    '--cli-candidate-sha256', cliCandidateSha256,
+    '--help',
+  ], { env: {} }), {
+    cliDir,
+    cliCandidateFile,
+    cliCandidateSha256,
+    args: ['--help'],
+  });
+});
+
+test('normalizeCliRuntimeArgs inherits candidate evidence only for the selected directory', () => {
+  const oldCliDir = fixturePath('old candidate cli');
+  const newCliDir = fixturePath('new candidate cli');
+  const cliCandidateFile = fixturePath('qualified', 'candidate.json');
+  const cliCandidateSha256 = 'b'.repeat(64);
+  const env = {
+    TIANGONG_LCA_CLI_DIR: oldCliDir,
+    TIANGONG_LCA_CLI_CANDIDATE_FILE: cliCandidateFile,
+    TIANGONG_LCA_CLI_CANDIDATE_SHA256: cliCandidateSha256,
+  };
+
+  assert.deepEqual(normalizeCliRuntimeArgs(['--help'], { env }), {
+    cliDir: oldCliDir,
+    cliCandidateFile,
+    cliCandidateSha256,
+    args: ['--help'],
+  });
+  assert.deepEqual(normalizeCliRuntimeArgs(['--cli-dir', newCliDir, '--help'], { env }), {
+    cliDir: newCliDir,
+    cliCandidateFile: null,
+    cliCandidateSha256: null,
+    args: ['--help'],
+  });
+
+  for (const rawArgs of [
+    ['--cli-dir', newCliDir, '--cli-candidate-file', cliCandidateFile,
+      '--cli-candidate-sha256', cliCandidateSha256, '--help'],
+    ['--cli-candidate-file', cliCandidateFile, '--cli-candidate-sha256', cliCandidateSha256,
+      '--cli-dir', newCliDir, '--help'],
+  ]) {
+    assert.deepEqual(normalizeCliRuntimeArgs(rawArgs, { env }), {
+      cliDir: newCliDir,
+      cliCandidateFile,
+      cliCandidateSha256,
+      args: ['--help'],
+    });
+  }
+});
+
+test('published selection clears inherited and explicit candidate evidence', () => {
+  const cliDir = fixturePath('candidate cli');
+  const cliCandidateFile = fixturePath('qualified', 'candidate.json');
+  const cliCandidateSha256 = 'c'.repeat(64);
+  const env = {
+    TIANGONG_LCA_CLI_DIR: cliDir,
+    TIANGONG_LCA_CLI_CANDIDATE_FILE: cliCandidateFile,
+    TIANGONG_LCA_CLI_CANDIDATE_SHA256: cliCandidateSha256,
+  };
+  assert.deepEqual(normalizeCliRuntimeArgs(['--published-cli', '--help'], { env }), {
+    cliDir: null,
+    cliCandidateFile: null,
+    cliCandidateSha256: null,
+    args: ['--help'],
+  });
+  assert.deepEqual(normalizeCliRuntimeArgs([
+    '--cli-candidate-file', cliCandidateFile,
+    '--cli-candidate-sha256', cliCandidateSha256,
+    '--published-cli', '--help',
+  ], { env }), {
+    cliDir: null,
+    cliCandidateFile: null,
+    cliCandidateSha256: null,
+    args: ['--help'],
+  });
+  assert.deepEqual(normalizeCliRuntimeArgs(['--help'], {
+    env: { ...env, TIANGONG_LCA_CLI_MODE: 'published' },
+  }), {
+    cliDir: null,
+    cliCandidateFile: null,
+    cliCandidateSha256: null,
+    args: ['--help'],
+  });
+});
+
+test('candidate runtime flags require a nonempty value', () => {
+  for (const name of ['--cli-candidate-file', '--cli-candidate-sha256']) {
+    assert.throws(() => normalizeCliRuntimeArgs([name], { env: {} }), /requires a value/u);
+    assert.throws(() => normalizeCliRuntimeArgs([`${name}=`], { env: {} }), /requires a value/u);
+    assert.throws(() => normalizeCliRuntimeArgs([name, '--help'], { env: {} }), /requires a value/u);
+  }
+});
+
+test('candidate qualification propagates through a copied environment and is removed by published mode', () => {
+  const cliDir = fixturePath('candidate cli');
+  const cliCandidateFile = fixturePath('qualified', 'candidate.json');
+  const cliCandidateSha256 = 'd'.repeat(64);
+  const baseEnv = {
+    PATH: fixturePath('toolchain'),
+    TIANGONG_LCA_CLI_DIR: fixturePath('old cli'),
+    TIANGONG_LCA_CLI_CANDIDATE_FILE: fixturePath('old candidate.json'),
+    TIANGONG_LCA_CLI_CANDIDATE_SHA256: 'e'.repeat(64),
+  };
+  const original = { ...baseEnv };
+  const localEnv = withCliRuntimeEnv(baseEnv, cliDir, {
+    cliCandidateFile,
+    cliCandidateSha256,
+  });
+  assert.deepEqual(baseEnv, original);
+  assert.equal(localEnv.PATH, baseEnv.PATH);
+  assert.equal(localEnv.TIANGONG_LCA_CLI_DIR, cliDir);
+  assert.equal(localEnv.TIANGONG_LCA_CLI_CANDIDATE_FILE, cliCandidateFile);
+  assert.equal(localEnv.TIANGONG_LCA_CLI_CANDIDATE_SHA256, cliCandidateSha256);
+  assert.equal(localEnv.TIANGONG_LCA_CLI_MODE, undefined);
+  const publishedEnv = withCliRuntimeEnv(localEnv, null, {
+    cliCandidateFile,
+    cliCandidateSha256,
+  });
+  assert.equal(publishedEnv.TIANGONG_LCA_CLI_DIR, undefined);
+  assert.equal(publishedEnv.TIANGONG_LCA_CLI_CANDIDATE_FILE, undefined);
+  assert.equal(publishedEnv.TIANGONG_LCA_CLI_CANDIDATE_SHA256, undefined);
+  assert.equal(publishedEnv.TIANGONG_LCA_CLI_MODE, 'published');
+  const unqualifiedEnv = withCliRuntimeEnv(localEnv, fixturePath('different cli'));
+  assert.equal(unqualifiedEnv.TIANGONG_LCA_CLI_CANDIDATE_FILE, undefined);
+  assert.equal(unqualifiedEnv.TIANGONG_LCA_CLI_CANDIDATE_SHA256, undefined);
+  const sameDirWithoutQualification = withCliRuntimeEnv(localEnv, cliDir);
+  assert.equal(sameDirWithoutQualification.TIANGONG_LCA_CLI_CANDIDATE_FILE, undefined);
+  assert.equal(sameDirWithoutQualification.TIANGONG_LCA_CLI_CANDIDATE_SHA256, undefined);
+});
+
 test('buildTiangongInvocation uses exact pnpm dlx argv for the published CLI contract', () => {
   const invocation = buildTiangongInvocation(['qa', 'process', '--help'], {
     repoRoot: fixturePath('tiangong-lca-skills'),

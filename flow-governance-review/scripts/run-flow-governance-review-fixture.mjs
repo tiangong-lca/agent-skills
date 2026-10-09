@@ -35,7 +35,7 @@ Runtime:
 }
 
 function normalizeArgs(rawArgs) {
-  const { cliDir, args } = normalizeCliRuntimeArgs(rawArgs);
+  const { args, ...runtime } = normalizeCliRuntimeArgs(rawArgs);
 
   for (let index = 0; index < args.length; index += 1) {
     const arg = args[index];
@@ -45,9 +45,7 @@ function normalizeArgs(rawArgs) {
     }
   }
 
-  return {
-    cliDir,
-  };
+  return runtime;
 }
 
 function writeJson(filePath, value) {
@@ -222,7 +220,7 @@ async function withFixtureServer(rowsByKey, runFixture) {
 }
 
 async function main() {
-  const { cliDir } = normalizeArgs(process.argv.slice(2));
+  const runtime = normalizeArgs(process.argv.slice(2));
 
   const rowsByKey = {
     "flow-a@01.00.000": {
@@ -308,7 +306,7 @@ async function main() {
         TIANGONG_LCA_ACCESS_TOKEN: "fixture-short-lived-access-token",
         TIANGONG_LCA_SUPABASE_PUBLISHABLE_KEY: "fixture-publishable-key",
         TIANGONG_LCA_DISABLE_SESSION_CACHE: "1",
-      }, cliDir);
+      }, runtime.cliDir, runtime);
 
       await run(process.execPath, [
         wrapperScript,

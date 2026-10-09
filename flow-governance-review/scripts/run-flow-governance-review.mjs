@@ -81,18 +81,16 @@ Examples:
 `.trim();
 }
 
-function runCliBackedCommand(command, cliDir, forwardedArgs) {
+function runCliBackedCommand(command, runtime, forwardedArgs) {
   const cliSubcommand = resolveFlowGovernanceCliArgv(command);
   if (!cliSubcommand) {
     fail(`Unsupported CLI-backed command: ${command}`);
   }
-  return runTiangongCommand([...cliSubcommand, ...forwardedArgs], {
-    cliDir,
-  });
+  return runTiangongCommand([...cliSubcommand, ...forwardedArgs], runtime);
 }
 
 function main() {
-  const { cliDir, args } = normalizeCliRuntimeArgs(process.argv.slice(2));
+  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
   const command = args[0];
   const forwardedArgs = args.slice(1);
 
@@ -107,7 +105,7 @@ function main() {
   }
 
   if (resolveFlowGovernanceCliArgv(command)) {
-    process.exit(runCliBackedCommand(command, cliDir, forwardedArgs));
+    process.exit(runCliBackedCommand(command, runtime, forwardedArgs));
   }
 
   if (removedCommands.has(command)) {

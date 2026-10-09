@@ -56,8 +56,8 @@ Runtime:
   local override           --cli-dir /path/to/tiangong-lca-cli or TIANGONG_LCA_CLI_DIR`);
 }
 
-function runCli(cliDir, cliArgs) {
-  process.exit(runTiangongCommand(cliArgs, { cliDir }));
+function runCli(runtime, cliArgs) {
+  process.exit(runTiangongCommand(cliArgs, runtime));
 }
 
 function writeModelRequest(modelFile, projectionRole) {
@@ -86,7 +86,7 @@ function writeModelRequest(modelFile, projectionRole) {
   return requestFile;
 }
 
-function runBuild(cliDir, args) {
+function runBuild(runtime, args) {
   let projectionRole = 'primary';
   let inputPath = '';
   let modelFile = '';
@@ -144,7 +144,7 @@ function runBuild(cliDir, args) {
   }
 
   if (showHelp) {
-    runCli(cliDir, ['lifecyclemodel', 'build-resulting-process', '--help']);
+    runCli(runtime, ['lifecyclemodel', 'build-resulting-process', '--help']);
   }
 
   if (inputPath && modelFile) {
@@ -157,7 +157,7 @@ function runBuild(cliDir, args) {
     inputPath = defaultInputFile;
   }
 
-  runCli(cliDir, [
+  runCli(runtime, [
     'lifecyclemodel',
     'build-resulting-process',
     '--input',
@@ -166,7 +166,7 @@ function runBuild(cliDir, args) {
   ]);
 }
 
-function runPublish(cliDir, args) {
+function runPublish(runtime, args) {
   let showHelp = false;
   const forwardArgs = [];
 
@@ -179,13 +179,13 @@ function runPublish(cliDir, args) {
   });
 
   if (showHelp) {
-    runCli(cliDir, ['lifecyclemodel', 'publish-resulting-process', '--help']);
+    runCli(runtime, ['lifecyclemodel', 'publish-resulting-process', '--help']);
   }
 
-  runCli(cliDir, ['lifecyclemodel', 'publish-resulting-process', ...forwardArgs]);
+  runCli(runtime, ['lifecyclemodel', 'publish-resulting-process', ...forwardArgs]);
 }
 
-const { cliDir, args: filteredArgs } = normalizeCliRuntimeArgs(process.argv.slice(2));
+const { args: filteredArgs, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
 
 const subcommand = filteredArgs[0];
 if (!subcommand || subcommand === 'help' || subcommand === '-h' || subcommand === '--help') {
@@ -197,10 +197,10 @@ switch (subcommand) {
   case 'build':
   case 'prepare':
   case 'project':
-    runBuild(cliDir, filteredArgs.slice(1));
+    runBuild(runtime, filteredArgs.slice(1));
     break;
   case 'publish':
-    runPublish(cliDir, filteredArgs.slice(1));
+    runPublish(runtime, filteredArgs.slice(1));
     break;
   default:
     fail(`Unknown subcommand: ${subcommand}`);

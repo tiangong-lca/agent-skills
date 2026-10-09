@@ -37,7 +37,7 @@ Examples:
 }
 
 function normalizeArgs(rawArgs) {
-  const { cliDir, args } = normalizeCliRuntimeArgs(rawArgs);
+  const { args, ...runtime } = normalizeCliRuntimeArgs(rawArgs);
   let profile = 'process';
   const forwardedArgs = [];
 
@@ -61,14 +61,14 @@ function normalizeArgs(rawArgs) {
   }
 
   return {
-    cliDir,
+    runtime,
     profile,
     args: forwardedArgs,
   };
 }
 
 function main() {
-  const { cliDir, profile, args } = normalizeArgs(process.argv.slice(2));
+  const { runtime, profile, args } = normalizeArgs(process.argv.slice(2));
 
   if (args.length === 0) {
     console.log(renderHelp());
@@ -77,11 +77,11 @@ function main() {
 
   if (args.includes('-h') || args.includes('--help')) {
     if (profile === 'process') {
-      process.exit(runTiangongCommand(['qa', 'process', ...args], { cliDir }));
+      process.exit(runTiangongCommand(['qa', 'process', ...args], runtime));
     }
 
     if (profile === 'lifecyclemodel') {
-      process.exit(runTiangongCommand(['qa', 'lifecyclemodel', ...args], { cliDir }));
+      process.exit(runTiangongCommand(['qa', 'lifecyclemodel', ...args], runtime));
     }
 
     console.log(renderHelp());
@@ -89,11 +89,11 @@ function main() {
   }
 
   if (profile === 'process') {
-    process.exit(runTiangongCommand(['qa', 'process', ...args], { cliDir }));
+    process.exit(runTiangongCommand(['qa', 'process', ...args], runtime));
   }
 
   if (profile === 'lifecyclemodel') {
-    process.exit(runTiangongCommand(['qa', 'lifecyclemodel', ...args], { cliDir }));
+    process.exit(runTiangongCommand(['qa', 'lifecyclemodel', ...args], runtime));
   }
 
   fail(`Unknown profile: ${profile}`);

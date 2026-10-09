@@ -61,7 +61,7 @@ Notes:
 }
 
 function main() {
-  const { cliDir, args } = normalizeCliRuntimeArgs(process.argv.slice(2), { repoRoot });
+  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2), { repoRoot });
 
   if (args.length === 0 || args[0] === '-h' || args[0] === '--help') {
     console.log(renderHelp());
@@ -75,7 +75,7 @@ function main() {
   }
 
   const exitCode = runTiangongCommand([...command, ...args.slice(1)], {
-    cliDir,
+    ...runtime,
     repoRoot,
   });
   process.exit(exitCode);

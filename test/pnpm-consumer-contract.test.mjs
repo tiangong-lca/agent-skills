@@ -222,6 +222,37 @@ test('local push gate defaults published and validates explicit local evidence b
   assert.doesNotMatch(hook, /package-lock\.json|\bnpm (?:ci|exec|run)\b/u);
 });
 
+test('qualified candidates reach the shared toolchain validator and avoid a second hook-owned rebuild', () => {
+  const checker = read('scripts/check-toolchain.mjs');
+  assert.match(checker, /normalizeCliRuntimeArgs\(process\.argv\.slice\(2\)\)/u);
+  assert.match(checker, /buildTiangongInvocation\(\[\], runtime\)/u);
+  assert.doesNotMatch(checker, /buildTiangongInvocation\(\[\], \{ cliDir \}\)/u);
+  const hook = read('.githooks/pre-push');
+  assert.match(hook, /TIANGONG_LCA_CLI_CANDIDATE_FILE/u);
+  assert.match(hook, /TIANGONG_LCA_CLI_CANDIDATE_SHA256/u);
+  const qualifiedBranch = hook.indexOf('if [ -n "${TIANGONG_LCA_CLI_CANDIDATE_FILE:-}" ]');
+  const qualificationValidator = hook.indexOf('node "$repo_root/scripts/check-toolchain.mjs" --cli-dir "$cli_dir"');
+  const ordinaryRebuild = hook.indexOf('cd "$cli_dir" && pnpm install --frozen-lockfile');
+  assert.ok(qualificationValidator >= 0 && qualificationValidator < qualifiedBranch);
+  assert.ok(qualifiedBranch >= 0 && qualifiedBranch < ordinaryRebuild);
+  assert.match(hook.slice(qualifiedBranch, ordinaryRebuild), /\belse\b/u);
+  assert.match(hook, /unset TIANGONG_LCA_CLI_CANDIDATE_FILE/u);
+  assert.match(hook, /unset TIANGONG_LCA_CLI_CANDIDATE_SHA256/u);
+});
+
+test('nested validation, QA and fixture wrappers propagate the complete normalized candidate runtime', () => {
+  for (const relativePath of [
+    'scripts/validate-skills.mjs',
+    'lifecycleinventory-review/scripts/run-remote-process-review.mjs',
+    'flow-governance-review/scripts/run-flow-governance-review-fixture.mjs',
+  ]) {
+    const wrapper = read(relativePath);
+    assert.match(wrapper, /\{ args, \.\.\.runtime \}.*normalizeCliRuntimeArgs/su, relativePath);
+    assert.match(wrapper, /withCliRuntimeEnv\((?:process\.env|\{[\s\S]*?\}), runtime\.cliDir, runtime\)/u, relativePath);
+    assert.doesNotMatch(wrapper, /withCliRuntimeEnv\(process\.env, (?:runtime\.)?cliDir\)/u, relativePath);
+  }
+});
+
 test('checked-in docs pin the TianGong CLI while preserving external skills npx governance', () => {
   for (const filePath of collectMarkdown(repoRoot)) {
     const text = readFileSync(filePath, 'utf8');

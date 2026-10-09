@@ -182,7 +182,7 @@ function normalizeCliInputArgs(args) {
   };
 }
 
-function runCanonicalAutoBuild(cliDir, args) {
+function runCanonicalAutoBuild(runtime, args) {
   let inputPath = null;
   let flowFile = null;
   let flowJson = null;
@@ -277,9 +277,7 @@ function runCanonicalAutoBuild(cliDir, args) {
     }
 
     if (showHelp) {
-      return runTiangongCommand(["process", "auto-build", "--help"], {
-        cliDir,
-      });
+      return runTiangongCommand(["process", "auto-build", "--help"], runtime);
     }
 
     const inputSourceCount = [
@@ -345,9 +343,7 @@ function runCanonicalAutoBuild(cliDir, args) {
 
     return runTiangongCommand(
       ["process", "auto-build", "--input", inputPath, ...forwardArgs],
-      {
-        cliDir,
-      },
+      runtime,
     );
   } finally {
     for (const tempDir of tempDirs) {
@@ -356,30 +352,28 @@ function runCanonicalAutoBuild(cliDir, args) {
   }
 }
 
-function runCanonicalInputCommand(cliDir, subcommand, args) {
+function runCanonicalInputCommand(runtime, subcommand, args) {
   const { forwardArgs } = normalizeCliInputArgs(args);
   requireFlag(
     "--out-dir",
     forwardArgs,
     `${subcommand} requires --out-dir <dir>. Choose an explicit output path, for example /abs/path/artifacts/<case_slug>/.`,
   );
-  return runTiangongCommand(["process", subcommand, ...forwardArgs], {
-    cliDir,
-  });
+  return runTiangongCommand(["process", subcommand, ...forwardArgs], runtime);
 }
 
-function runProcessGateCommand(cliDir, subcommand, args) {
+function runProcessGateCommand(runtime, subcommand, args) {
   if (args.includes("-h") || args.includes("--help")) {
-    return runTiangongCommand(["process", subcommand, "--help"], { cliDir });
+    return runTiangongCommand(["process", subcommand, "--help"], runtime);
   }
   requireFlag("--input", args, `${subcommand} requires --input <file>.`);
   requireFlag("--out-dir", args, `${subcommand} requires --out-dir <dir>.`);
-  return runTiangongCommand(["process", subcommand, ...args], { cliDir });
+  return runTiangongCommand(["process", subcommand, ...args], runtime);
 }
 
-function runProcessBuildPlan(cliDir, args) {
+function runProcessBuildPlan(runtime, args) {
   if (args.includes("-h") || args.includes("--help")) {
-    return runTiangongCommand(["process", "build-plan", "--help"], { cliDir });
+    return runTiangongCommand(["process", "build-plan", "--help"], runtime);
   }
   const action = args[0];
   if (action !== "validate" && action !== "materialize") {
@@ -398,15 +392,13 @@ function runProcessBuildPlan(cliDir, args) {
   );
   return runTiangongCommand(
     ["process", "build-plan", action, ...forwardedArgs],
-    { cliDir },
+    runtime,
   );
 }
 
-function runDatasetEvidenceSearch(cliDir, args) {
+function runDatasetEvidenceSearch(runtime, args) {
   if (args.includes("-h") || args.includes("--help")) {
-    return runTiangongCommand(["dataset", "evidence-search", "--help"], {
-      cliDir,
-    });
+    return runTiangongCommand(["dataset", "evidence-search", "--help"], runtime);
   }
   const action = args[0];
   if (action !== "plan" && action !== "run") {
@@ -432,12 +424,12 @@ function runDatasetEvidenceSearch(cliDir, args) {
   }
   return runTiangongCommand(
     ["dataset", "evidence-search", action, ...forwardedArgs],
-    { cliDir },
+    runtime,
   );
 }
 
 function main() {
-  const { cliDir, args } = normalizeCliRuntimeArgs(process.argv.slice(2));
+  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
 
   if (args.length === 0) {
     console.error(renderHelp());
@@ -460,36 +452,32 @@ function main() {
 
   switch (subcommand) {
     case "identity-preflight":
-      return runProcessGateCommand(cliDir, "identity-preflight", commandArgs);
+      return runProcessGateCommand(runtime, "identity-preflight", commandArgs);
     case "build-plan":
-      return runProcessBuildPlan(cliDir, commandArgs);
+      return runProcessBuildPlan(runtime, commandArgs);
     case "auto-build":
-      return runCanonicalAutoBuild(cliDir, commandArgs);
+      return runCanonicalAutoBuild(runtime, commandArgs);
     case "resume-build":
       requireFlag(
         "--run-dir",
         commandArgs,
         "resume-build requires --run-dir <dir>. Use an explicit run directory under /abs/path/artifacts/<case_slug>/... and pass --run-id only as an optional consistency check.",
       );
-      return runTiangongCommand(["process", "resume-build", ...commandArgs], {
-        cliDir,
-      });
+      return runTiangongCommand(["process", "resume-build", ...commandArgs], runtime);
     case "publish-build":
       requireFlag(
         "--run-dir",
         commandArgs,
         "publish-build requires --run-dir <dir>. Use an explicit run directory under /abs/path/artifacts/<case_slug>/... and pass --run-id only as an optional consistency check.",
       );
-      return runTiangongCommand(["process", "publish-build", ...commandArgs], {
-        cliDir,
-      });
+      return runTiangongCommand(["process", "publish-build", ...commandArgs], runtime);
     case "batch-build":
-      return runCanonicalInputCommand(cliDir, "batch-build", commandArgs);
+      return runCanonicalInputCommand(runtime, "batch-build", commandArgs);
     case "complete-required-fields":
       if (commandArgs.includes("-h") || commandArgs.includes("--help")) {
         return runTiangongCommand(
           ["process", "complete-required-fields", "--help"],
-          { cliDir },
+          runtime,
         );
       }
       requireFlag(
@@ -504,13 +492,11 @@ function main() {
       );
       return runTiangongCommand(
         ["process", "complete-required-fields", ...commandArgs],
-        { cliDir },
+        runtime,
       );
     case "verify-rows":
       if (commandArgs.includes("-h") || commandArgs.includes("--help")) {
-        return runTiangongCommand(["process", "verify-rows", "--help"], {
-          cliDir,
-        });
+        return runTiangongCommand(["process", "verify-rows", "--help"], runtime);
       }
       requireFlag(
         "--rows-file",
@@ -522,11 +508,9 @@ function main() {
         commandArgs,
         "verify-rows requires --out-dir <dir>.",
       );
-      return runTiangongCommand(["process", "verify-rows", ...commandArgs], {
-        cliDir,
-      });
+      return runTiangongCommand(["process", "verify-rows", ...commandArgs], runtime);
     case "evidence-search":
-      return runDatasetEvidenceSearch(cliDir, commandArgs);
+      return runDatasetEvidenceSearch(runtime, commandArgs);
     default:
       fail(`Unknown subcommand: ${subcommand}`);
   }

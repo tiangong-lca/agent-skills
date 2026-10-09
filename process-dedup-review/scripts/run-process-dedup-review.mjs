@@ -44,7 +44,7 @@ Examples:
 }
 
 function main() {
-  const { cliDir, args } = normalizeCliRuntimeArgs(process.argv.slice(2), { repoRoot });
+  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2), { repoRoot });
 
   if (args.includes('-h') || args.includes('--help')) {
     console.log(renderHelp());
@@ -56,7 +56,7 @@ function main() {
   }
 
   const exitCode = runTiangongCommand(['process', 'dedup-review', ...args], {
-    cliDir,
+    ...runtime,
     repoRoot,
   });
   process.exit(exitCode);
