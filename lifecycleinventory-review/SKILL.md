@@ -31,6 +31,7 @@ Process 的两条已裁决公共命名规则不再由本技能手工定义。需
 ## process profile
 使用 `tiangong-lca qa process` 执行 process 维度 QA：
 - 统一规则与输出合同见 `profiles/process/references/process-review-rules.md`。
+- 读取当前 Process 的来源绑定 schema/methodology context，按 rubric 的用途文本检查区分 `intendedApplications`、`useAdviceForDataSet` 和 `technologicalApplicability`。语义审查需记录准确路径、问题原文、具体修复和保留的科学限制；CLI/schema 通过不代表此项已检查。
 - 当前默认 process rubric 已移除 ILCD taxonomy 分类映射语义检查，但会检查 schema-required 结构完整性；重点放在 schema-required 字段存在性、命名、dataset type / flow 引用结构完整性、定量参考、单位与平衡、代表性、前景系统语境和工具生成语言清理。
 - 命名检查默认按 `name.baseName`、`name.treatmentStandardsRoutes`、`name.mixAndLocationTypes`、`name.functionalUnitFlowProperties` 四字段拆分执行；其中 `baseName` / `treatmentStandardsRoutes` / `mixAndLocationTypes` 作为 schema-required 字段必须保留，禁止把整串 reference flow short description 直接塞进 `baseName`，也不要把 required 键省略掉。
 - 当任务是复审当前认证可访问的远端 process（例如 `state_code=0/100`）时：

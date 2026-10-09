@@ -2,9 +2,9 @@ version: 1
 layout: repo
 # Current release proof, 2026-09-10: Skills #94 aligns wrappers and all three identical bundles to verified CLI 0.1.13 / cli-v0.1.13 / b5e209259d3bb06205b9af131b1c0edc3fba6da2, including its original permission-preserving POSIX bootstrap. The adjacent final Foundry 0.1.7 lock is byte-identical to the independently verified public release; the copied-entry native matrix proves the installed package.
 # Release proof, 2026-09-02: Skills #91 pins verified CLI 0.1.8 / b4701984b4a86fe4680fa5995d0a0b6753dbdfd6; all three bundled launchers must remain byte-identical to their root authority.
-lastReviewedAt: 2026-10-03
-lastReviewedCommit: e13d3d80ff16a9ee125c7ccf8856f65361db47c0
-lastReviewedNote: 'Reviewed Skills #123 combined adoption of independently verified public CLI 0.1.24 and final Foundry 0.1.15 source 0ab6b545: original C1 scripts/license, Node 24.19.0, TIDAS 0.3.3 and auth/task/write/no-replay boundaries are unchanged.'
+lastReviewedAt: 2026-10-09
+lastReviewedCommit: 8cea578a18534dc413fcde48d24ab955d4d4abfb
+lastReviewedNote: 'Reviewed scoped Process purpose/use-text authoring and semantic review guidance against 8cea578a; package-local delivery, supplied-context provenance, scientific limits and existing runtime/write boundaries are preserved. No wrapper, pin, public-rule asset or validation behavior changed.'
 
 catalog:
   repos:

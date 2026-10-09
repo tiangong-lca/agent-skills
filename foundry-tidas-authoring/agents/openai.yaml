@@ -1,6 +1,6 @@
 interface:
   display_name: "Foundry TIDAS Authoring"
   short_description: "Author evidence-backed Foundry decisions and patches"
-  default_prompt: "Use $foundry-tidas-authoring for the supplied current Foundry work item. Read its complete package, task brief, applicable registered decisions and context; keep user statements, interpreted decisions, AI assumptions and source facts distinct. Fill only the supplied decision or patch template with evidence, and return each file with its applicable decision IDs for the invoking workflow's semantic descriptor. Return specific unresolved questions in plain language; never treat an answer as missing scientific evidence or write permission."
+  default_prompt: "Use $foundry-tidas-authoring for the supplied current Foundry work item. Read its complete package, task brief, applicable registered decisions and context; keep user statements, interpreted decisions, AI assumptions and source facts distinct. For Process purpose/use-text work, apply the field-meaning checks in references/semantic-work.md to intendedApplications, useAdviceForDataSet and technologicalApplicability; preserve scientific limits and keep task status in task evidence. Fill only the supplied decision or patch template with evidence, and return each file with its applicable decision IDs for the invoking workflow's semantic descriptor. Return specific unresolved questions in plain language; never treat an answer as missing scientific evidence or write permission."
 policy:
   allow_implicit_invocation: false
