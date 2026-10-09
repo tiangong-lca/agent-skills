@@ -115,7 +115,9 @@ function candidateGit(cliDir, args, options) {
 }
 
 function inspectCandidateSource(cliDir, options) {
-  if (realpathSync(candidateGit(cliDir, ['rev-parse', '--show-toplevel'], options).trim()) !== realpathSync(cliDir)) {
+  // Git resolves filesystem aliases natively; the JS realpath can retain case
+  // aliases on case-insensitive filesystems and falsely reject the same root.
+  if (realpathSync.native(candidateGit(cliDir, ['rev-parse', '--show-toplevel'], options).trim()) !== realpathSync.native(cliDir)) {
     candidateError('--cli-dir must be the selected CLI checkout root');
   }
   const remote = candidateGit(cliDir, ['remote', 'get-url', 'origin'], options).trim();

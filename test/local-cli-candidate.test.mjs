@@ -9,6 +9,7 @@ import {
   mkdtempSync,
   readFileSync,
   readdirSync,
+  realpathSync,
   rmSync,
   statSync,
   symlinkSync,
@@ -285,6 +286,70 @@ test('a qualified explicit candidate is accepted without changing the published 
   assert.equal(status, 0);
   assert.equal(prepared, false, 'a built, qualified fixture must not reinstall');
 }));
+
+test('the checkout root guard accepts an accessible case alias of the same filesystem directory', (t) => withFixture((fixture) => {
+  const alias = path.join(path.dirname(fixture.cliDir), path.basename(fixture.cliDir).toUpperCase());
+  if (!existsSync(alias)) {
+    t.skip('This host filesystem does not expose the same directory through a case alias');
+    return;
+  }
+  const selectedStat = statSync(fixture.cliDir, { bigint: true });
+  const aliasStat = statSync(alias, { bigint: true });
+  if (selectedStat.dev !== aliasStat.dev || selectedStat.ino !== aliasStat.ino) {
+    t.skip('The differently cased path is a separate directory on this host filesystem');
+    return;
+  }
+  assert.notEqual(alias, fixture.cliDir);
+  assert.equal(realpathSync.native(alias), realpathSync.native(fixture.cliDir));
+  const observed = inspectLocalCliCandidate(alias, {
+    expectedCommit: fixture.commit,
+    expectedVersion: candidateVersion,
+    ...supportedToolchain(),
+  });
+  assert.deepEqual(observed, fixture.candidate, 'a same-directory spelling must preserve every qualified content digest');
+  assert.equal(invocation(fixture, { cliDir: alias }).mode, 'local');
+}));
+
+test('the checkout root guard rejects a real selected subdirectory after package evidence passes', () => withFixture((fixture) => {
+  const selectedSubdirectory = path.join(fixture.cliDir, 'dist', 'selected subdirectory');
+  mkdirSync(selectedSubdirectory);
+  for (const relativePath of ['package.json', 'pnpm-lock.yaml', 'assets']) {
+    cpSync(path.join(fixture.cliDir, relativePath), path.join(selectedSubdirectory, relativePath), { recursive: true });
+  }
+  assert.notEqual(realpathSync.native(selectedSubdirectory), realpathSync.native(fixture.cliDir));
+  const sourceCalls = [];
+  assert.throws(() => inspectLocalCliCandidate(selectedSubdirectory, {
+    expectedCommit: fixture.commit,
+    expectedVersion: candidateVersion,
+    ...supportedToolchain(),
+    sourceSpawnImpl: (command, args, options) => {
+      sourceCalls.push(args.slice(2));
+      return spawnSync(command, args, options);
+    },
+  }), /--cli-dir must be the selected CLI checkout root/u);
+  assert.deepEqual(sourceCalls, [['rev-parse', '--show-toplevel']], 'the root guard must reject before subsequent source inspection');
+}));
+
+test('the checkout root guard rejects another real checkout reported by the Git root probe', () => withFixture((fixture) => withFixture((otherFixture) => {
+  assert.notEqual(realpathSync.native(otherFixture.cliDir), realpathSync.native(fixture.cliDir));
+  const sourceCalls = [];
+  assert.throws(() => inspectLocalCliCandidate(fixture.cliDir, {
+    expectedCommit: fixture.commit,
+    expectedVersion: candidateVersion,
+    ...supportedToolchain(),
+    sourceSpawnImpl: (command, args, options) => {
+      sourceCalls.push(args.slice(2));
+      const actual = spawnSync(command, args, options);
+      assert.equal(actual.error, undefined);
+      assert.equal(actual.status, 0, actual.stderr);
+      if (args[2] === 'rev-parse' && args[3] === '--show-toplevel') {
+        return { ...actual, stdout: `${otherFixture.cliDir}\n` };
+      }
+      return actual;
+    },
+  }), /--cli-dir must be the selected CLI checkout root/u);
+  assert.deepEqual(sourceCalls, [['rev-parse', '--show-toplevel']], 'a distinct checkout must fail at the same guard as a distinct subdirectory');
+})));
 
 test('a candidate file must be paired with a separately supplied byte digest', () => withFixture((fixture) => {
   assertRejectedBeforeMutation(fixture, /candidate.*sha256|candidate.*digest|candidate.*together|requires.*candidate/iu, { cliCandidateSha256: null });
