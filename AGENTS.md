@@ -39,9 +39,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-10-03
-lastReviewedCommit: e13d3d80ff16a9ee125c7ccf8856f65361db47c0
-lastReviewedNote: 'Reviewed Skills #123 combined adoption of independently verified public CLI 0.1.24 and final Foundry 0.1.15 source 0ab6b545: original C1 scripts/license, Node 24.19.0, TIDAS 0.3.3 and auth/task/write/no-replay boundaries are unchanged.'
+lastReviewedAt: 2026-10-09
+lastReviewedCommit: 8cea578a18534dc413fcde48d24ab955d4d4abfb
+lastReviewedNote: 'Reviewed scoped Process purpose/use-text authoring and semantic review guidance against 8cea578a; package-local delivery, supplied-context provenance, scientific limits and existing runtime/write boundaries are preserved. No wrapper, pin, public-rule asset or validation behavior changed.'
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

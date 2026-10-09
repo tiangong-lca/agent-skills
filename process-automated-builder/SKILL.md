@@ -110,6 +110,16 @@ Blockers: `block_duplicate` means do not create a new process; `manual_review` m
 
 4. Materialize or complete only through CLI-owned gates:
 
+Before materialization, supply `administrative_information.intended_applications` from the evidenced study goal or current task brief, and bind that basis in `evidence_manifest.field_bindings` at the canonical `field_path: administrative_information.intended_applications`. The value may use the supported `administrativeInformation.intendedApplications` alias; the evidence binding keeps the canonical path. Read the supplied Process schema and methodology context for these distinct fields (paths are relative to `processDataSet`):
+
+- `administrativeInformation.common:commissionerAndGoal.common:intendedApplications`: why the data were collected or developed, the study or decision they support, and the declared detail, specificity or quality objectives.
+- `modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.useAdviceForDataSet`: scientifically relevant instructions and limits on using the data.
+- `processInformation.technology.technologicalApplicability`: the real-world applicability of the represented technology, product or service.
+
+Read applicable examples from the actual source-bound context pack; do not claim that an example added to upstream Spec is already present in the installed runtime. If the purpose is unknown, record the gap in the task and resolve it before calling this semantic check complete. A draft/review/save status is not a purpose, including a generator default such as `Automated LCA data production draft for expert review.` Inspect the materialized field as well as the plan; return an unsuitable generated value through the supported repair path.
+
+Keep source-backed proxy assumptions, boundary restrictions, scientific identifiers and any applicable EF supporting-dataset notice. This is a field-meaning check, not a ban on identifiers or the words draft/review; real review and publication metadata remain in their designated fields. Keep execution and approval history in task evidence.
+
 ```bash
 node scripts/run-process-automated-builder.mjs build-plan validate \
   --input /abs/path/process-build-plan.json \

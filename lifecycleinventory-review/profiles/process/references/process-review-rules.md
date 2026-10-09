@@ -219,23 +219,21 @@ node scripts/read-public-rule.mjs --rule-id tidas.process.name.qualifiers.struct
 修改动作：
 - 把描述改写成“这个过程在该产品系统中做什么”，而不是只描述抽象工艺路线。
 
-### 9. Tool-authored Language Cleanup
-这是本批 process QA 的高频补充规则。
+### 9. Purpose, Use Advice and Tool-authored Language
 
-检查点：
-- 文案里是否残留：
-  - `Evidence basis`
-  - `applied here as a proxy`
-  - `interpreted as`
-  - `users should ...`
-  - `未提供...因此...`
-  - `证据基础`
-  - `作为...代理`
-- 是否保留明显 prompt/cluster/代理路线口吻。
+以当前来源绑定的 Process schema/methodology context 为字段语义依据，并阅读该 context 实际包含的适用示例。以下是技能层审查步骤，不新增公共规则或确定性关键词拦截。记录实际 context 版本/来源；缺少指导材料或尚未检查时如实列为限制，不能声称上游新示例已经随安装版本生效。
 
-处理原则：
-- 这些内容可保留在 case evidence 或 source note 中，不应直接以这种口吻留在 process dataset 的正式说明里。
-- 正式数据集文本应简短、确定、可复核。
+检查三个字段（路径相对 `processDataSet`）：
+
+- `administrativeInformation.common:commissionerAndGoal.common:intendedApplications`：为什么采集或建立数据、支持什么研究或决策，以及已声明的详细程度、针对性和质量目标。应有来源或当前任务目标支持；待审核、待保存、返回某任务/基线不能代替科学用途。
+- `modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.useAdviceForDataSet`：使用数据的方法性建议、适用条件和科学限制，包括有依据的代理、边界和可比性限制。
+- `processInformation.technology.technologicalApplicability`：所代表技术、产品或服务在现实中的适用场景。
+
+同时识别正式说明中与上述职责无关的内部任务编号、排队/恢复指令、审批计数和执行状态。按上下文判断内容是否错位，不因出现 UUID、draft、review、proxy 或“未提供”就判错。科学标识符、适用的 EF supporting-dataset 限定说明、数据缺口及代理假设应保留；真实审查/发布状态留在其专用元数据字段，不能为清理文案而删除科学限制。
+
+每条 finding 在现有 findings/patch-plan 输出中记录准确字段路径、问题原文、职责不符的原因、所用来源/目标证据、具体替换或移动建议，以及修复后保留的限制。用途未知时记录证据缺口，不编造用途，也不把“供专家审核的自动生成草稿”当作充分用途。修复后检查最终 payload，而不只看 build plan 或修复说明。
+
+Schema 和确定性 CLI QA 通过不等于本语义轴通过。审查者必须明确本轴已检查、需修复或证据不足；不得给未检查的内容补造通过记录。修复和后续写入继续走原有 Foundry/CLI 授权与验证流程。
 
 ## Output Contract
 
