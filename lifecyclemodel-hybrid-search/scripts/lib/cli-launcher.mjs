@@ -76,7 +76,7 @@ function treeDigest(root, allowLinks = false) {
   if (!lstatSync(root).isDirectory()) {
     candidateError(`expected a prepared directory at ${root}`);
   }
-  const canonicalRoot = realpathSync(root);
+  const canonicalRoot = realpathSync.native(root);
   const entries = [];
   function visit(directory, prefix) {
     for (const name of readdirSync(directory).sort()) {
@@ -84,7 +84,7 @@ function treeDigest(root, allowLinks = false) {
       const relative = prefix ? `${prefix}/${name}` : name;
       const stat = lstatSync(entryPath);
       if (stat.isSymbolicLink()) {
-        if (!allowLinks || !inside(canonicalRoot, realpathSync(entryPath))) {
+        if (!allowLinks || !inside(canonicalRoot, realpathSync.native(entryPath))) {
           candidateError(`link escapes the qualified tree or is unsupported: ${entryPath}`);
         }
         entries.push(['symlink', relative, readlinkSync(entryPath)]);

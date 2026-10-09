@@ -8,6 +8,7 @@ import {
   mkdirSync,
   mkdtempSync,
   readFileSync,
+  readlinkSync,
   readdirSync,
   realpathSync,
   rmSync,
@@ -182,6 +183,35 @@ function withFixture(callback) {
 
 function invocation(fixture, overrides = {}) {
   return buildTiangongInvocation(['--help'], candidateOptions(fixture, overrides));
+}
+
+function dependencyCaseAlias(t, fixture) {
+  const alias = path.join(path.dirname(fixture.cliDir), path.basename(fixture.cliDir).toUpperCase());
+  if (!existsSync(alias)) {
+    t.skip('This host filesystem does not expose the selected directory through a case alias');
+    return null;
+  }
+  const original = statSync(fixture.cliDir, { bigint: true });
+  const alternate = statSync(alias, { bigint: true });
+  if (original.dev !== alternate.dev || original.ino !== alternate.ino) {
+    t.skip('The differently cased path is a separate directory on this host filesystem');
+    return null;
+  }
+  assert.equal(realpathSync.native(alias), realpathSync.native(fixture.cliDir));
+  return alias;
+}
+
+function createDependencyCaseLink(t, target, linkPath, type) {
+  try {
+    symlinkSync(target, linkPath, type);
+    return true;
+  } catch (error) {
+    if (process.platform === 'win32' && ['EPERM', 'EACCES'].includes(error.code)) {
+      t.skip('Windows host does not permit the dependency link required by this alias combination');
+      return false;
+    }
+    throw error;
+  }
 }
 
 function subprocessEnv(fixture) {
@@ -465,6 +495,57 @@ test('dependency links are content-bound inside node_modules and cannot escape i
   write(external, 'index.js', 'export const external = true;\n');
   symlinkSync(external, linkPath, 'junction');
   assertRejectedBeforeMutation(fixture, /link escapes|unsupported/u);
+}));
+
+for (const kind of ['relative', 'absolute']) {
+  test(`case alias preserves qualification for ${kind} internal dependency links`, (t) => withFixture((fixture) => {
+    const alias = dependencyCaseAlias(t, fixture);
+    if (!alias) return;
+    const linkPath = path.join(fixture.cliDir, 'node_modules', 'fixture-case-link');
+    const target = kind === 'relative'
+      ? 'fixture-dependency'
+      : path.join(fixture.cliDir, 'node_modules', 'fixture-dependency');
+    if (!createDependencyCaseLink(t, target, linkPath, kind === 'relative' ? 'dir' : 'junction')) return;
+    const originalLinkValue = readlinkSync(linkPath);
+    assert.equal(path.isAbsolute(originalLinkValue), kind === 'absolute');
+    const observed = inspectLocalCliCandidate(fixture.cliDir, {
+      expectedCommit: fixture.commit,
+      expectedVersion: candidateVersion,
+      ...supportedToolchain(),
+    });
+    rewriteCandidate(fixture, observed);
+    assert.equal(invocation(fixture).mode, 'local', 'the ordinary checkout path must accept the same internal link');
+    const aliasObserved = inspectLocalCliCandidate(alias, {
+      expectedCommit: fixture.commit,
+      expectedVersion: candidateVersion,
+      ...supportedToolchain(),
+    });
+    assert.deepEqual(aliasObserved, observed, 'source, package, lock, dist and dependency tuples must be identical for the same directory');
+    assert.equal(invocation(fixture, { cliDir: alias }).mode, 'local');
+    assert.equal(readlinkSync(linkPath), originalLinkValue, 'inspection must preserve the link value bound into the dependency digest');
+  }));
+}
+
+test('case alias rejects an absolute dependency link outside the qualified dependency tree', (t) => withFixture((fixture) => {
+  const alias = dependencyCaseAlias(t, fixture);
+  if (!alias) return;
+  const linkPath = path.join(fixture.cliDir, 'node_modules', 'fixture-case-link');
+  const internalTarget = path.join(fixture.cliDir, 'node_modules', 'fixture-dependency');
+  if (!createDependencyCaseLink(t, internalTarget, linkPath, 'junction')) return;
+  const observed = inspectLocalCliCandidate(fixture.cliDir, {
+    expectedCommit: fixture.commit,
+    expectedVersion: candidateVersion,
+    ...supportedToolchain(),
+  });
+  rewriteCandidate(fixture, observed);
+  assert.equal(invocation(fixture).mode, 'local');
+  rmSync(linkPath);
+  const externalTarget = path.join(fixture.sandboxRoot, 'unqualified external dependency');
+  mkdirSync(externalTarget);
+  write(externalTarget, 'index.js', 'export const outside = true;\n');
+  if (!createDependencyCaseLink(t, externalTarget, linkPath, 'junction')) return;
+  assertRejectedBeforeMutation(fixture, /link escapes the qualified tree/u);
+  assertRejectedBeforeMutation(fixture, /link escapes the qualified tree/u, { cliDir: alias });
 }));
 
 test('inspection rejects an installed virtual-store lock from a different source lock', () => withFixture((fixture) => {
