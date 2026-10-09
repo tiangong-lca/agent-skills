@@ -74,9 +74,9 @@ function writeJsonl(filePath, rows) {
 }
 
 function parseArgs(rawArgs) {
-  const { cliDir, args } = normalizeCliRuntimeArgs(rawArgs, { repoRoot });
+  const { args, ...runtime } = normalizeCliRuntimeArgs(rawArgs, { repoRoot });
   const options = {
-    cliDir,
+    runtime,
     outDir: null,
     qaOutDir: null,
     reportFile: null,
@@ -167,13 +167,13 @@ function parseArgs(rawArgs) {
   };
 }
 
-function runProcessList(cliDir, listArgs) {
+function runProcessList(runtime, listArgs) {
   const result = executeTiangongCommand(['process', 'list', ...listArgs, '--json'], {
     repoRoot,
-    cliDir,
+    ...runtime,
     spawnOptions: {
       cwd: repoRoot,
-      env: withCliRuntimeEnv(process.env, cliDir),
+      env: withCliRuntimeEnv(process.env, runtime.cliDir, runtime),
     },
   });
 
@@ -194,7 +194,7 @@ function runProcessList(cliDir, listArgs) {
   };
 }
 
-function runQa(cliDir, rowsFile, qaOutDir, qaArgs) {
+function runQa(runtime, rowsFile, qaOutDir, qaArgs) {
   const command = [
     runQaScript,
     '--profile',
@@ -207,7 +207,7 @@ function runQa(cliDir, rowsFile, qaOutDir, qaArgs) {
   ];
   const result = spawnSync(process.execPath, command, {
     cwd: repoRoot,
-    env: withCliRuntimeEnv(process.env, cliDir),
+    env: withCliRuntimeEnv(process.env, runtime.cliDir, runtime),
     stdio: 'pipe',
     encoding: 'utf8',
     shell: false,
@@ -268,7 +268,7 @@ function main() {
       frozen_report: snapshotReportFile,
     };
   } else {
-    const listRun = runProcessList(args.cliDir, args.listArgs);
+    const listRun = runProcessList(args.runtime, args.listArgs);
     snapshotText = listRun.stdout;
     writeText(snapshotReportFile, snapshotText.endsWith('\n') ? snapshotText : `${snapshotText}\n`);
     writeText(path.join(logsDir, 'process-list.stderr.log'), listRun.stderr);
@@ -282,7 +282,7 @@ function main() {
   const rows = parseRows(snapshotText, snapshotReportFile);
   writeJsonl(snapshotRowsFile, rows);
 
-  const qaRun = runQa(args.cliDir, snapshotReportFile, args.qaOutDir, args.qaArgs);
+  const qaRun = runQa(args.runtime, snapshotReportFile, args.qaOutDir, args.qaArgs);
   writeText(path.join(logsDir, 'qa-process.stdout.log'), qaRun.stdout);
   writeText(path.join(logsDir, 'qa-process.stderr.log'), qaRun.stderr);
 

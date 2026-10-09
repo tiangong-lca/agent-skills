@@ -413,7 +413,7 @@ function fail(message) {
 }
 
 function parseArgs(rawArgs) {
-  const { cliDir, args } = normalizeCliRuntimeArgs(rawArgs, { repoRoot });
+  const { args, ...runtime } = normalizeCliRuntimeArgs(rawArgs, { repoRoot });
 
   if (args.includes("-h") || args.includes("--help")) {
     printHelp();
@@ -421,7 +421,7 @@ function parseArgs(rawArgs) {
   }
 
   return {
-    cliDir,
+    runtime,
     targets: args,
   };
 }
@@ -554,16 +554,16 @@ function runNodeChecks(scriptFiles) {
   });
 }
 
-function runHelpSmoke(scriptFiles, cliDir) {
+function runHelpSmoke(scriptFiles, runtime) {
   scriptFiles.forEach((scriptFile) => {
     run(process.execPath, [scriptFile, "--help"], {
       cwd: repoRoot,
-      env: withCliRuntimeEnv(process.env, cliDir),
+      env: withCliRuntimeEnv(process.env, runtime.cliDir, runtime),
     });
   });
 }
 
-function runTargetedSmokeChecks(skillDirs, cliDir) {
+function runTargetedSmokeChecks(skillDirs, runtime) {
   let count = 0;
   const selectedSkills = new Set(
     skillDirs.map((skillDir) => path.basename(skillDir)),
@@ -583,7 +583,7 @@ function runTargetedSmokeChecks(skillDirs, cliDir) {
 
     run(process.execPath, [scriptFile, ...check.args], {
       cwd: repoRoot,
-      env: withCliRuntimeEnv(process.env, cliDir),
+      env: withCliRuntimeEnv(process.env, runtime.cliDir, runtime),
     });
     count += 1;
   });
@@ -658,7 +658,7 @@ function runRepoWideDocGuards() {
 }
 
 function main() {
-  const { cliDir, targets } = parseArgs(process.argv.slice(2));
+  const { runtime, targets } = parseArgs(process.argv.slice(2));
   runDocGuards();
   runRepoWideDocGuards();
   runRequiredDocPatterns();
@@ -676,9 +676,9 @@ function main() {
     assertAgentMetadata(skillDir);
     scriptCount += scriptFiles.length;
     runNodeChecks(scriptFiles);
-    runHelpSmoke(scriptFiles, cliDir);
+    runHelpSmoke(scriptFiles, runtime);
   });
-  const targetedSmokeCount = runTargetedSmokeChecks(skillDirs, cliDir);
+  const targetedSmokeCount = runTargetedSmokeChecks(skillDirs, runtime);
 
   console.log(
     `Validated ${skillDirs.length} skill directories, ${scriptCount} wrapper scripts, ${targetedSmokeCount} targeted smokes, ${docGuards.length} negative doc guards, ${repoWideDocGuards.length} repo-wide doc guards, and ${requiredDocPatterns.length} required doc patterns.`,

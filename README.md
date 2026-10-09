@@ -16,6 +16,7 @@ checkPaths:
   - README.md
   - README.zh-CN.md
   - scripts/lib/cli-launcher.mjs
+  - scripts/inspect-local-cli.mjs
   - scripts/validate-skills.mjs
   - "*/SKILL.md"
   - "*/scripts/**"
@@ -149,7 +150,7 @@ The three hybrid-search skill folders are independently installable: each includ
   ```bash
   pnpm validate
   ```
-- Validate against an unpublished local CLI working tree:
+- Validate against a local checkout matching the pinned CLI 0.1.24 release:
   ```bash
   TIANGONG_LCA_CLI_DIR=/path/to/tiangong-lca-cli \
   pnpm validate
@@ -159,6 +160,7 @@ The three hybrid-search skill folders are independently installable: each includ
   pnpm validate lifecycleinventory-qa process-hybrid-search
   ```
 - CI runs the same validation in `.github/workflows/validate-skills.yml` after checking out immutable active CLI commit `89c71772ca1afcfc09705f8c27a9703c6bf8ccf6` (published package 0.1.24), installing both repositories with frozen pnpm lockfiles, and building the CLI. The Foundry entry's bootstrap is tested against its own qualified 0.1.15 release lock and its bundled CLI 0.1.24.
+- A different local candidate requires the reviewed inventory and independent digest described below. Local candidate acceptance also requires real qualification failures, isolated bundled and nested-wrapper propagation, and validation by the original consumer; a generated inventory or fixture-only result does not complete that acceptance.
 
 ## Execution note
 
@@ -168,15 +170,55 @@ Current rules:
 
 - wrappers default to the exact published CLI through `pnpm dlx --package=@tiangong-lca/cli@0.1.24 tiangong-lca`; sibling directories are never auto-discovered
 - local execution is opt-in only through `--cli-dir` or `TIANGONG_LCA_CLI_DIR`
-- use `--published-cli` to override a local CLI environment for an explicit published-package case; nested wrappers propagate that selection
-- local CLI overrides must identify `@tiangong-lca/cli@0.1.24` with its exact Node/pnpm engines and a v9 `pnpm-lock.yaml` and the published TIDAS source manifest (spec 0.2.3); stale local builds are installed with `pnpm install --frozen-lockfile` before `pnpm run build`
-- the local pre-push hook validates CLI package and lock evidence before it installs or builds an explicitly selected local checkout
+- use `--published-cli` to override local directory and candidate settings for an explicit published-package case; nested wrappers propagate that selection
+- a matching-release local checkout still uses `--cli-dir` alone and must identify `@tiangong-lca/cli@0.1.24` with its exact Node/pnpm engines, v9 `pnpm-lock.yaml` and published TIDAS source manifest (spec 0.2.3)
+- other local package versions require the reviewed candidate file and externally supplied digest below; an explicit local failure never silently falls back to the published package
+- the local pre-push hook validates local release or candidate evidence first; wrapper preparation installs with `pnpm install --frozen-lockfile` before `pnpm run build` when source mtimes require it and rechecks candidate identity before dispatch
 - launcher execution uses argv arrays with `shell: false`, so paths containing spaces remain one argument and child exit/stdout/stderr are preserved
 - for remote process QA snapshots, prefer `tiangong-lca process list --json` followed by `qa process --rows-file ...` instead of ad hoc bridge scripts
 - use native cross-platform Node `.mjs` wrappers as the canonical entrypoint
 - skill wrappers should not bundle business-specific Python runtimes, shell shims, MCP transports, or private env parsers
 - remote skill instructions must use CLI OAuth status/login/doctor handoff and must not add API-key flags or bearer examples
 - if a capability is missing, add a native `tiangong-lca <noun> <verb>` command first, then update the skill to call it
+
+### Reviewed local CLI candidates
+
+Prepare a writable, isolated canonical `tiangong-lca/cli` checkout at the commit and literal package version approved for the assignment. Preserve its verified Node `24.19.0` / pnpm `11.24.0` frozen-install and build evidence. The checkout must be clean and already contain `dist/src/main.js`, `node_modules/.modules.yaml` and `node_modules/.pnpm/lock.yaml`.
+
+The repository inspection tool observes that prepared checkout against caller-supplied expectations. Write a new file outside the CLI checkout:
+
+```bash
+node scripts/inspect-local-cli.mjs \
+  --cli-dir /path/to/prepared-cli \
+  --expected-commit "$APPROVED_CLI_COMMIT" \
+  --expected-version "$APPROVED_CLI_VERSION" \
+  --out /path/to/new-cli-inventory.json
+```
+
+The tool checks canonical source/package repository identity, clean tracked source content, all 18 pinned TIDAS schemas, package/lock/manifest identity and the complete prepared `dist` and `node_modules` content trees. Its inventory and printed digest are observations. Review them against the approved assignment and verified install/build evidence, then independently bind the exact inventory-file bytes before selecting the candidate. Inspection does not approve itself or grant execution or data-write permission.
+
+Pass all three selections in one wrapper invocation:
+
+```bash
+node process-hybrid-search/scripts/run-process-hybrid-search.mjs \
+  --cli-dir /path/to/prepared-cli \
+  --cli-candidate-file /path/to/reviewed-cli-inventory.json \
+  --cli-candidate-sha256 "$REVIEWED_CANDIDATE_SHA256" \
+  --help
+```
+
+Both candidate flags also support `--flag=value`. Repository validation and nested wrappers propagate the same directory, file and digest through `TIANGONG_LCA_CLI_DIR`, `TIANGONG_LCA_CLI_CANDIDATE_FILE` and `TIANGONG_LCA_CLI_CANDIDATE_SHA256` in the same invocation:
+
+```bash
+TIANGONG_LCA_CLI_DIR=/path/to/prepared-cli \
+TIANGONG_LCA_CLI_CANDIDATE_FILE=/path/to/reviewed-cli-inventory.json \
+TIANGONG_LCA_CLI_CANDIDATE_SHA256="$REVIEWED_CANDIDATE_SHA256" \
+pnpm validate
+```
+
+Missing or changed qualified artifacts are rejected before any automatic preparation. Once candidate preflight passes, the existing mtime-based frozen-install/build path remains available when needed; every recorded identity is checked again before the CLI command starts. Any drift stops dispatch. There is no public no-install switch, and an internal preparation skip cannot bypass qualification.
+
+On failure, retain the original failed or UNKNOWN task and its recovery evidence. Prepare another isolated writable checkout, generate a new observation, review it and bind a new digest. Do not falsify the package version, edit the old qualification to fit changed files, or silently retry with the published CLI. This selection does not replace Foundry 0.1.15's bootstrap/lock, update installed skills/runtimes, or change task/attempt ownership and single-writer data authorization.
 
 ## Foundry semantic work
 

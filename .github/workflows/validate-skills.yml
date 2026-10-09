@@ -8,6 +8,7 @@ on:
       - "foundry-tidas-authoring/**"
       - "test/foundry-*.test.mjs"
       - "scripts/lib/**"
+      - "scripts/inspect-local-cli.mjs"
       - "flow-hybrid-search/**"
       - "process-hybrid-search/**"
       - "lifecyclemodel-resulting-process-builder/**"

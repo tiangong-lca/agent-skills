@@ -11,15 +11,24 @@ pnpm check:toolchain
 pnpm install --frozen-lockfile
 
 cli_dir="${TIANGONG_LCA_CLI_DIR:-}"
+if [ "${TIANGONG_LCA_CLI_MODE:-}" = "published" ]; then
+  cli_dir=""
+fi
 if [ -n "$cli_dir" ]; then
   echo "Validating explicit local TianGong CLI package evidence before dependency mutation."
   node "$repo_root/scripts/check-toolchain.mjs" --cli-dir "$cli_dir"
-  echo "Installing and building the local TianGong CLI from its frozen pnpm lockfile."
-  (cd "$cli_dir" && pnpm install --frozen-lockfile && pnpm run build)
+  if [ -n "${TIANGONG_LCA_CLI_CANDIDATE_FILE:-}" ] || [ -n "${TIANGONG_LCA_CLI_CANDIDATE_SHA256:-}" ]; then
+    echo "Using the qualified local TianGong CLI source and build artifacts."
+  else
+    echo "Installing and building the local TianGong CLI from its frozen pnpm lockfile."
+    (cd "$cli_dir" && pnpm install --frozen-lockfile && pnpm run build)
+  fi
   export TIANGONG_LCA_CLI_DIR="$cli_dir"
   unset TIANGONG_LCA_CLI_MODE
 else
   unset TIANGONG_LCA_CLI_DIR
+  unset TIANGONG_LCA_CLI_CANDIDATE_FILE
+  unset TIANGONG_LCA_CLI_CANDIDATE_SHA256
   export TIANGONG_LCA_CLI_MODE=published
   echo "Using the exact published TianGong CLI; local execution requires an explicit CLI directory."
 fi

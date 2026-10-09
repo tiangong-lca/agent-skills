@@ -35,4 +35,5 @@ test_data/
 friction/
 frictions/
 reports/
+.docpact/runs/
 node_modules/

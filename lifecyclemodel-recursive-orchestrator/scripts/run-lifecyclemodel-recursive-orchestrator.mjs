@@ -63,7 +63,7 @@ function normalizeForwardArgs(args) {
 }
 
 function main() {
-  const { cliDir, args } = normalizeCliRuntimeArgs(process.argv.slice(2));
+  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
   const action = args[0];
   const forwardedArgs = normalizeForwardArgs(args.slice(1));
 
@@ -82,7 +82,7 @@ function main() {
       'orchestrate',
       action,
       ...forwardedArgs,
-    ], { cliDir }),
+    ], runtime),
   );
 }
 

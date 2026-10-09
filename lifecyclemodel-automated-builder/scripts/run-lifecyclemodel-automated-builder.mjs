@@ -43,8 +43,8 @@ Notes:
   - build requires an explicit --out-dir; choose an output path such as /abs/path/artifacts/<case_slug>/...`);
 }
 
-function runCli(cliDir, cliArgs) {
-  process.exit(runTiangongCommand(cliArgs, { cliDir }));
+function runCli(runtime, cliArgs) {
+  process.exit(runTiangongCommand(cliArgs, runtime));
 }
 
 function normalizeBuildArgs(args) {
@@ -108,7 +108,7 @@ function normalizeBuildArgs(args) {
   };
 }
 
-function runBuild(cliDir, args) {
+function runBuild(runtime, args) {
   const normalized = normalizeBuildArgs(args);
 
   if (normalized.showHelp) {
@@ -134,23 +134,23 @@ function runBuild(cliDir, args) {
   cliArgs.push(...normalized.forwardArgs);
 
   if (normalized.dryRun) {
-    const invocation = buildTiangongInvocation(cliArgs, { cliDir });
+    const invocation = buildTiangongInvocation(cliArgs, runtime);
     console.log(renderShellCommand(invocation.command, invocation.args));
     process.exit(0);
   }
 
-  runCli(cliDir, cliArgs);
+  runCli(runtime, cliArgs);
 }
 
-function runDelegatedLifecyclemodelCommand(cliDir, subcommand, args) {
+function runDelegatedLifecyclemodelCommand(runtime, subcommand, args) {
   const showHelp = args.includes('-h') || args.includes('--help');
   if (showHelp) {
-    runCli(cliDir, ['lifecyclemodel', subcommand, '--help']);
+    runCli(runtime, ['lifecyclemodel', subcommand, '--help']);
   }
-  runCli(cliDir, ['lifecyclemodel', subcommand, ...args]);
+  runCli(runtime, ['lifecyclemodel', subcommand, ...args]);
 }
 
-const { cliDir, args: filteredArgs } = normalizeCliRuntimeArgs(process.argv.slice(2));
+const { args: filteredArgs, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
 
 const subcommand = filteredArgs[0];
 if (!subcommand || subcommand === 'help' || subcommand === '-h' || subcommand === '--help') {
@@ -160,13 +160,13 @@ if (!subcommand || subcommand === 'help' || subcommand === '-h' || subcommand ==
 
 switch (subcommand) {
   case 'build':
-    runBuild(cliDir, filteredArgs.slice(1));
+    runBuild(runtime, filteredArgs.slice(1));
     break;
   case 'validate':
-    runDelegatedLifecyclemodelCommand(cliDir, 'validate-build', filteredArgs.slice(1));
+    runDelegatedLifecyclemodelCommand(runtime, 'validate-build', filteredArgs.slice(1));
     break;
   case 'publish':
-    runDelegatedLifecyclemodelCommand(cliDir, 'publish-build', filteredArgs.slice(1));
+    runDelegatedLifecyclemodelCommand(runtime, 'publish-build', filteredArgs.slice(1));
     break;
   default:
     fail(`Unknown subcommand: ${subcommand}`);

@@ -19,11 +19,11 @@ function fail(message) {
 let hasInput = false;
 let showHelp = false;
 const forwardArgs = [];
-let cliDir = null;
+let runtime;
 let args = [];
 
 try {
-  ({ cliDir, args } = normalizeCliRuntimeArgs(process.argv.slice(2)));
+  ({ args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2)));
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error);
   fail(message);
@@ -62,7 +62,7 @@ if (!showHelp && !hasInput) {
 commandArgs.push(...forwardArgs);
 
 try {
-  process.exit(runTiangongCommand(commandArgs, { cliDir }));
+  process.exit(runTiangongCommand(commandArgs, runtime));
 } catch (error) {
   const message = error instanceof Error ? error.message : String(error);
   fail(message);

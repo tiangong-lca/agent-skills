@@ -26,6 +26,7 @@ ownership:
           - README.md
           - README.zh-CN.md
           - .docpact/config.yaml
+          - .gitignore
           - docs/agents/**
           - .github/workflows/ai-doc-lint.yml
       ownerRepo: skills
@@ -46,6 +47,7 @@ ownership:
           - package.json
           - pnpm-lock.yaml
           - scripts/check-toolchain.mjs
+          - scripts/inspect-local-cli.mjs
           - scripts/lib/cli-launcher.mjs
           - scripts/sync-tidas-public-rules.mjs
           - scripts/validate-skills.mjs
@@ -66,6 +68,7 @@ coverage:
   include:
     - .claude-plugin/marketplace.json
     - .gitattributes
+    - .gitignore
     - .githooks/**
     - scripts/docpact
     - scripts/docpact-gate.sh
@@ -73,6 +76,7 @@ coverage:
     - package.json
     - pnpm-lock.yaml
     - scripts/check-toolchain.mjs
+    - scripts/inspect-local-cli.mjs
     - scripts/lib/cli-launcher.mjs
     - scripts/sync-tidas-public-rules.mjs
     - AGENTS.md
@@ -127,6 +131,7 @@ routing:
         - package.json
         - pnpm-lock.yaml
         - scripts/check-toolchain.mjs
+        - scripts/inspect-local-cli.mjs
         - scripts/lib/cli-launcher.mjs
         - scripts/sync-tidas-public-rules.mjs
         - scripts/validate-skills.mjs
@@ -138,6 +143,7 @@ routing:
         - README.md
         - README.zh-CN.md
         - .docpact/config.yaml
+        - .gitignore
         - docs/agents/**
         - .github/workflows/ai-doc-lint.yml
     proof:
@@ -146,6 +152,7 @@ routing:
         - package.json
         - pnpm-lock.yaml
         - scripts/check-toolchain.mjs
+        - scripts/inspect-local-cli.mjs
         - scripts/lib/cli-launcher.mjs
         - scripts/sync-tidas-public-rules.mjs
         - scripts/validate-skills.mjs
@@ -177,6 +184,8 @@ rules:
         kind: doc-contract
       - path: .docpact/config.yaml
         kind: doc-ai-layer
+      - path: .gitignore
+        kind: generated-evidence-ignore
       - path: docs/agents/repo-validation.md
         kind: deep-doc
       - path: docs/agents/repo-architecture.md
@@ -253,6 +262,8 @@ rules:
         kind: frozen-lockfile
       - path: scripts/check-toolchain.mjs
         kind: toolchain-validation
+      - path: scripts/inspect-local-cli.mjs
+        kind: local-cli-candidate-inspection
       - path: scripts/lib/cli-launcher.mjs
         kind: cli-launcher
       - path: scripts/sync-tidas-public-rules.mjs
