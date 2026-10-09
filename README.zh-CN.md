@@ -16,6 +16,7 @@ checkPaths:
   - README.md
   - README.zh-CN.md
   - scripts/lib/cli-launcher.mjs
+  - scripts/inspect-local-cli.mjs
   - scripts/validate-skills.mjs
   - "*/SKILL.md"
   - "*/scripts/**"
@@ -149,7 +150,7 @@ pnpm dlx --package=@tiangong-lca/cli@0.1.24 tiangong-lca auth status --json
   ```bash
   pnpm validate
   ```
-- 若要联调未发布的本地 CLI working tree:
+- 若要联调与默认 CLI 0.1.24 发行版匹配的本地 checkout:
   ```bash
   TIANGONG_LCA_CLI_DIR=/path/to/tiangong-lca-cli \
   pnpm validate
@@ -159,6 +160,7 @@ pnpm dlx --package=@tiangong-lca/cli@0.1.24 tiangong-lca auth status --json
   pnpm validate lifecycleinventory-qa process-hybrid-search
   ```
 - CI 会在 `.github/workflows/validate-skills.yml` 中 checkout 活动 CLI commit `89c71772ca1afcfc09705f8c27a9703c6bf8ccf6`（发布包 0.1.24），用 frozen pnpm lockfile 安装两个仓库并构建 CLI，然后运行同一套校验；Foundry 入口的 bootstrap 按它自己已认证的 0.1.15 发行锁与自带 CLI 0.1.24 测试。
+- 其他本地候选版本必须使用下述已评阅清单与独立摘要。验收还需要真实资格失败测试、独立安装包与嵌套 wrapper 传播测试，以及原调用方验证；生成清单或仅通过 fixture 测试不能完成验收。
 
 ## 执行说明
 
@@ -168,15 +170,55 @@ pnpm dlx --package=@tiangong-lca/cli@0.1.24 tiangong-lca auth status --json
 
 - skill wrapper 默认使用精确版本的已发布 CLI：`pnpm dlx --package=@tiangong-lca/cli@0.1.24 tiangong-lca`；不会自动发现任何 sibling 目录
 - 本地执行只能通过 `--cli-dir` / `TIANGONG_LCA_CLI_DIR` 显式启用
-- 使用 `--published-cli` 可覆盖本地 CLI 环境并显式执行 published-package case；嵌套 wrapper 会继续传播该选择
-- 本地 CLI override 必须是带精确 Node/pnpm engines、v9 `pnpm-lock.yaml` 和已发布 TIDAS source manifest（spec 0.2.3）的 `@tiangong-lca/cli@0.1.24`；本地 build 过期时先执行 `pnpm install --frozen-lockfile`，再执行 `pnpm run build`
-- 本地 pre-push hook 会先验证显式 local checkout 的 package/lock evidence，再允许 install 或 build
+- 使用 `--published-cli` 可清除本地目录与候选设置并显式执行 published-package case；嵌套 wrapper 会继续传播该选择
+- 匹配发行版的本地 checkout 仍只需要 `--cli-dir`，且必须是带精确 Node/pnpm engines、v9 `pnpm-lock.yaml` 和已发布 TIDAS source manifest（spec 0.2.3）的 `@tiangong-lca/cli@0.1.24`
+- 其他本地包版本必须提供下述已评阅 candidate 文件与外部给定摘要；显式本地选择失败不会静默回退已发布包
+- 本地 pre-push hook 先验证匹配发行版或候选证据；wrapper 在源码 mtime 要求时仍先执行 `pnpm install --frozen-lockfile` 再 `pnpm run build`，并在 dispatch 前复核候选身份
 - launcher 只用 argv 数组并固定 `shell: false`，因此带空格路径保持为单个参数，并原样保留子进程 exit/stdout/stderr
 - 对远端 process QA snapshot，优先使用 `tiangong-lca process list --json` 再配合 `qa process --rows-file ...`，不再鼓励临时 bridge 脚本
 - 对新迁移和后续重构的 skill，wrapper 入口优先直接使用原生 Node `.mjs`，不再新增 shell 兼容壳
 - skill wrapper 不应再打包业务 Python、MCP transport、私有 env parsing 或 shell shim
 - 远程 skill 必须使用 CLI OAuth status/login/doctor handoff，不得新增 API-key flag 或 bearer 示例
 - 若能力缺失，先在 `tiangong-lca-cli` 中新增原生 `tiangong-lca <noun> <verb>` 命令，再让 skill 调用它
+
+### 已评阅的本地 CLI 候选
+
+按获准 assignment 的 commit 与字面包版本，在可写隔离目录准备 canonical `tiangong-lca/cli` checkout，保留 Node `24.19.0` / pnpm `11.24.0` 下已验证的 frozen-install 与 build 证据。checkout 必须干净，且已经包含 `dist/src/main.js`、`node_modules/.modules.yaml` 和 `node_modules/.pnpm/lock.yaml`。
+
+仓库检查工具用调用方提供的预期值观测此 checkout。将新清单写到 CLI checkout 外：
+
+```bash
+node scripts/inspect-local-cli.mjs \
+  --cli-dir /path/to/prepared-cli \
+  --expected-commit "$APPROVED_CLI_COMMIT" \
+  --expected-version "$APPROVED_CLI_VERSION" \
+  --out /path/to/new-cli-inventory.json
+```
+
+工具检查 canonical source/package repository 身份、完整干净 tracked source 内容、实际 18 个固定 TIDAS schema、package/lock/manifest，以及完整 `dist` 和 `node_modules` 内容树。输出清单与打印摘要都只是观测。调用方应按获准 assignment 和已验证 install/build 证据评阅，再独立绑定清单精确文件字节的 SHA-256。工具不能自行确认输出合格，也不授予执行或数据写入权限。
+
+在同一次 wrapper 调用中传递完整三项选择：
+
+```bash
+node process-hybrid-search/scripts/run-process-hybrid-search.mjs \
+  --cli-dir /path/to/prepared-cli \
+  --cli-candidate-file /path/to/reviewed-cli-inventory.json \
+  --cli-candidate-sha256 "$REVIEWED_CANDIDATE_SHA256" \
+  --help
+```
+
+两个 candidate flag 同时支持 `--flag=value`。仓库校验与嵌套 wrapper 通过 `TIANGONG_LCA_CLI_DIR`、`TIANGONG_LCA_CLI_CANDIDATE_FILE`、`TIANGONG_LCA_CLI_CANDIDATE_SHA256` 在同次调用中传播同一目录、文件与摘要：
+
+```bash
+TIANGONG_LCA_CLI_DIR=/path/to/prepared-cli \
+TIANGONG_LCA_CLI_CANDIDATE_FILE=/path/to/reviewed-cli-inventory.json \
+TIANGONG_LCA_CLI_CANDIDATE_SHA256="$REVIEWED_CANDIDATE_SHA256" \
+pnpm validate
+```
+
+资格产物缺失或漂移时，预检直接拒绝，不会自动 install/build 修补。预检通过后，原 mtime 准备路径仍在需要时运行 frozen-install/build；实际 CLI 命令启动前复核全部记录身份，任何漂移都停止 dispatch。没有公开 no-install 开关，内部跳过准备也不能绕过资格。
+
+失败时保留原 FAILED/UNKNOWN 任务和恢复证据。在新可写隔离 checkout 准备依赖与构建，生成新观测、评阅并绑定新摘要。不得伪造包版本、修改旧资格迎合已改变文件，或静默换用已发布 CLI 重试。此选择不替换 Foundry 0.1.15 的 bootstrap/lock，不更新已安装 skills/runtime，也不改变 task/attempt 所有权及数据单写权限。
 
 ## Foundry 语义工作
 

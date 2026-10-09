@@ -16,11 +16,13 @@ whenToUpdate:
 checkPaths:
   - .claude-plugin/marketplace.json
   - .gitattributes
+  - .gitignore
   - AGENTS.md
   - .docpact/config.yaml
   - .github/workflows/ai-doc-lint.yml
   - scripts/validate-skills.mjs
   - scripts/check-toolchain.mjs
+  - scripts/inspect-local-cli.mjs
   - scripts/lib/cli-launcher.mjs
   - scripts/sync-tidas-public-rules.mjs
   - package.json
@@ -50,7 +52,7 @@ pnpm install --frozen-lockfile
 pnpm prepush:gate
 ```
 
-The local `pre-push` hook runs docpact first, validates Node `24.19.0` / pnpm `11.24.0`, installs Skills from its frozen lockfile, and defaults to published CLI `0.1.24`. A local `tiangong-lca/cli` is installed/built only when explicitly selected and only after package/engine/lock/source-manifest evidence succeeds. The hook then runs the repository test/validation gate. The GitHub `validate-skills` workflow runs the four-platform contract matrix for runtime/launcher changes, Foundry package/test pull requests and manual dispatch.
+The local `pre-push` hook runs docpact first, validates Node `24.19.0` / pnpm `11.24.0`, installs Skills from its frozen lockfile, and defaults to published CLI `0.1.24`. A matching-release local `tiangong-lca/cli` is installed/built only when explicitly selected and only after package/engine/lock/source-manifest evidence succeeds. A different candidate must already be prepared and pass the reviewed file/digest qualification before execution; the hook does not eagerly reinstall it. The hook then runs the repository test/validation gate. The GitHub `validate-skills` workflow runs the four-platform contract matrix for runtime/launcher/inspection changes, Foundry package/test pull requests and manual dispatch; its exact release pin remains independent of local candidates.
 
 You may pass one or more skill directories to validate only the touched skill packages.
 
@@ -62,12 +64,29 @@ You may pass one or more skill directories to validate only the touched skill pa
 - Validation-script or test changes require running the full `pnpm prepush:gate` command when feasible.
 - New CLI-backed skills must be added to the default validation list when they are intended to ship as part of the standard checked-in skill set.
 - Wrapper-launcher changes require `pnpm test:launcher`, the pnpm consumer contract tests, an exact published `@tiangong-lca/cli@0.1.24` help case, source-manifest identity checks, and full skill validation against frozen, built CLI release merge `89c71772ca1afcfc09705f8c27a9703c6bf8ccf6` from canonical `tiangong-lca/cli`. The published Foundry bootstrap/provenance remains bound to its own qualified release source (0.1.15, bundled CLI 0.1.24).
+- Local-candidate changes additionally require the qualification and original-consumer acceptance below; passing published-release checks does not qualify a separate candidate.
 - Validate the installed CLI 0.1.24 + SDK 0.4.1 Process/Flow context packs with the retired mixed SDK JSON/schema absent, and reject altered public-rule source identity. The earlier SDK 0.2.2 static-import limitation is historical evidence, not an active requirement.
 - Launcher filesystem fixtures and expected paths must use the host `node:path` implementation. A test that passes a synthetic `platform` may validate executable dispatch, but must not combine that target platform with host-resolved fake paths.
 - Repo-wide Markdown guards inventory only root-repository Git-tracked `*.md` paths through argv-based `git -C <root> ls-files -z`. Fixture and validator Git children remove inherited repository-location `GIT_*` variables first, so hook context cannot redirect their index or worktree; untracked or nested CI checkouts are not part of the Skills documentation contract.
 - Documentation-governance changes require docpact validation.
 - Remote-auth instruction changes require `test/oauth-skill-contract.test.mjs`, the repository-wide password-equivalent doc guard, validation against the exact OAuth-capable local CLI, and the full `pnpm prepush:gate` once the published CLI pin is updated.
 - First-install bootstrap changes require `test/installed-hybrid-bootstrap.test.mjs`: copy each of the three hybrid-search skill directories into a fresh isolated directory, clear public auth/CLI overrides, run the real pinned published wrapper without login, inspect its Production dry-run, reject an incomplete custom URL, and prove no session file or outside repository launcher is used. Bundled launchers must match the root authority byte-for-byte. A separate human-controlled fresh browser login plus live redacted doctor/read-only search remains release acceptance, never a repository test credential.
+
+## Local Candidate Qualification and Acceptance
+
+The caller must obtain the expected canonical commit and literal package version from the authorized assignment, preserve a clean isolated checkout, and verify frozen installation and build with Node `24.19.0` / pnpm `11.24.0` before inspection. The inspection output is an observation, not a qualification result. Review source/package/lock/TIDAS/dependency/build identities against that evidence and independently bind the exact inventory-file bytes. Keep the inventory and private operational evidence out of public Issues/PRs.
+
+`test/local-cli-candidate.test.mjs` must exercise a real clean Git checkout and content inventories, rather than substituting a caller-created qualification object or mocked identity reader. Positive coverage must prove a different approved literal version can run with its reviewed file and external digest, and that matching-release `--cli-dir` without a candidate retains its original behavior. Required negative coverage includes:
+
+- no qualification, one missing candidate flag, wrong file-byte digest, changed schema/expected commit/version/toolchain, and changed canonical source/package repository;
+- dirty source, altered tracked source outside the entrypoint, package/lock/manifest or any actual pinned TIDAS schema mutation;
+- missing or changed `dist/src/main.js`, `node_modules/.modules.yaml`, `node_modules/.pnpm/lock.yaml`, and changes anywhere in the qualified `dist`/`node_modules` trees;
+- rejection before any automatic repair or CLI dispatch, rejection after preparation introduces identity drift, and qualification checks even with internal `prepareLocalCli: false`;
+- preserved frozen-install-before-build ordering after successful preflight when mtimes require preparation, plus rechecking every identity before command dispatch.
+
+Consumer tests must prove paired flag and `=value` forms, same-invocation environment selection, paths containing spaces, isolated copies of all three byte-identical hybrid-search bundles, nested wrapper propagation of the full directory/file/digest selection, and `--published-cli` clearing candidate state. A fixture-only pass cannot replace validation of the approved current-assignment CLI checkout and the original wrapper consumer that encountered the failure. Keep the rollout local until those checks and original-consumer validation have concrete evidence; report any FAILED/UNKNOWN original task unchanged and do not claim data/scientific acceptance or deployed behavior from repository tests.
+
+Recovery must use another writable isolated checkout, fixed-toolchain frozen dependencies/build, a new observation, independent review and a new bound file digest. Changing the package version to bypass qualification, rewriting an old qualification, auto-repairing a preflight failure, and silent published fallback are not recovery paths. Foundry bootstrap/runtime qualification and task/attempt single-writer authorization remain separate acceptance boundaries.
 
 ## Docpact Validation
 
@@ -77,6 +96,8 @@ Run these commands for governance changes:
 scripts/docpact validate-config --root . --strict
 scripts/docpact lint --root . --base origin/main --head HEAD --mode enforce
 ```
+
+During local implementation, use `--worktree` or an explicit `--files` list to include changes not yet committed. `.gitignore` excludes local generated reports under `.docpact/runs/`; that exclusion does not turn a saved report into public delivery evidence or authorize runtime work.
 
 The manual `ai-doc-lint` workflow delegates to the same local docpact gate when remote reproduction is needed.
 
@@ -88,7 +109,7 @@ Install the versioned local hook once per checkout:
 ./scripts/install-git-hooks.sh
 ```
 
-The `pre-push` hook runs `scripts/docpact-gate.sh`, which delegates CLI lookup to `scripts/docpact` and performs strict config validation plus enforced lint before the push leaves the machine. It then runs `pnpm check:toolchain`, installs Skills with `pnpm install --frozen-lockfile`, and defaults to the exact published CLI. If `TIANGONG_LCA_CLI_DIR` is explicitly set, `scripts/check-toolchain.mjs --cli-dir` verifies package/name/version/engine/lock evidence before the hook permits frozen install/build. It finishes with `pnpm prepush:gate`. The wrapper checks `DOCPACT_BIN`, Cargo install locations, Homebrew install locations, and then `PATH`, so local agent shells should not fail only because bare `docpact` is unavailable. The default comparison base is `origin/main`. Override it for unusual stacks with `DOCPACT_BASE_REF=<ref>` or `scripts/docpact-gate.sh --base <ref>`. The gate writes its detailed report to a temporary file so normal pushes do not create `.docpact/runs/` artifacts.
+The `pre-push` hook runs `scripts/docpact-gate.sh`, which delegates CLI lookup to `scripts/docpact` and performs strict config validation plus enforced lint before the push leaves the machine. It then runs `pnpm check:toolchain`, installs Skills with `pnpm install --frozen-lockfile`, and defaults to the exact published CLI. If `TIANGONG_LCA_CLI_DIR` is explicitly set, `scripts/check-toolchain.mjs --cli-dir` verifies the matching-release package/name/version/engine/lock evidence or, when both candidate variables are set, the complete reviewed candidate qualification. The hook eagerly prepares only matching-release checkouts; candidate wrappers retain the post-preflight preparation and identity recheck contract. It finishes with `pnpm prepush:gate`. The wrapper checks `DOCPACT_BIN`, Cargo install locations, Homebrew install locations, and then `PATH`, so local agent shells should not fail only because bare `docpact` is unavailable. The default comparison base is `origin/main`. Override it for unusual stacks with `DOCPACT_BASE_REF=<ref>` or `scripts/docpact-gate.sh --base <ref>`. The gate writes its detailed report to a temporary file so normal pushes do not create `.docpact/runs/` artifacts.
 
 The semantic-only Foundry authoring package is included in default validation. Validate a copied isolated package for its entry metadata and local reference closure; it intentionally has no wrapper script or bootstrap runtime. Runtime/F1 and ordinary entry bootstrap qualification remain separate requirements of the full migration.
 
