@@ -20,8 +20,8 @@ checkPaths:
   - scripts/validate-skills.mjs
   - "*/SKILL.md"
   - "*/scripts/**"
-lastReviewedAt: 2026-10-27
-lastReviewedCommit: fa367bddb429dd0e0aee99e1e47af52b62694daf
+lastReviewedAt: 2026-11-03
+lastReviewedCommit: 2b366f74d1330e50ce77b8bef73f492f1da9b81d
 lastReviewedNote: "Reviewed Skills #135: ordinary CLI calls require the configured installed entry; no published download/default remains. Source-development and owner-specific release/test pins remain isolated. Offline help and missing/retired selection regressions cover copied packages."
 ---
 
@@ -242,3 +242,7 @@ On failure, retain the original failed or UNKNOWN task and its recovery evidence
 ## Foundry semantic work
 
 `foundry-tidas-authoring` is an internal on-demand role for a concrete Foundry work item. It reads the supplied full context and returns evidence-backed decisions or patch files to the invoking workflow. It does not install a runtime, manage authentication, apply rows or perform database operations.
+
+## LCA Study
+
+Install `lca-study` for a frozen research, scenario comparison and fact-backed report workflow. It is independently copyable and uses the configured installed CLI above; both core Study and reporting capabilities must be admitted by the selected service. It preserves original mutation recovery and uses independently configured export trust anchors. P2 exports are unreviewed historical copies, not current approval or scientific certification. Dataset authoring and publication remain separate workflows.

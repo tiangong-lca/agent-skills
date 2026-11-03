@@ -61,6 +61,15 @@
                 "./source-evidence-dataset-development",
                 "./dataset-rls-maintenance"
             ]
+        },
+        {
+            "name": "lca-study",
+            "description": "Frozen LCA research, scenario comparison and verifiable offline reports through a configured installed CLI.",
+            "source": "./",
+            "strict": false,
+            "skills": [
+                "./lca-study"
+            ]
         }
     ]
 }

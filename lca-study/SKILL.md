@@ -1,0 +1,33 @@
+---
+name: lca-study
+description: Conduct a TianGong LCA Study with frozen models, baseline and alternative scenarios, contribution/comparison analysis, and verifiable offline reports through the installed CLI. Use for a research study; dataset authoring and publication remain separate workflows.
+---
+
+# LCA Study
+
+Use the configured installed TianGong CLI to create or continue the user's research. Keep the scientific question, functional unit, system boundary, method versions, assumptions and evidence gaps explicit. A successful calculation is engineering evidence, not a scientific review or certification.
+
+## Start or resume
+
+Run this package's `node scripts/run-cli.mjs --runtime-info`, then `auth status --json`. The shared launcher requires the installation and independently approved runtime expectation supplied by the environment owner; it does not install, choose a version, discover a sibling checkout or read credentials. If login is required, hand `auth login` to the user in a trusted terminal. Never collect passwords, codes, tokens or keys. Run `auth doctor-auth --json` before account-sensitive mutations and preserve the intended actor/project/client.
+
+Read `study --help` and both `study capabilities --json` and `study capabilities --api-version 3 --json`. Use only currently admitted operations and exact profiles. Missing commands require a compatible qualified CLI installation; missing runtime capabilities require the service owner. Do not enable a service or silently change environments to make an operation succeed.
+
+For an existing Study, use its exact ID and `study get/resources` to recover state. Preserve the original private state directory and pending intent files. A lost response is an unknown outcome: use `study request recover --intent-file <original-file>`, never recreate the mutation with a new key. Read [the operation recipes](references/operations.md) when preparing request files or continuing after a conflict.
+
+## Research workflow
+
+1. Establish the intended comparison and the evidence needed to interpret it. Ask only for material missing choices. Reuse an existing authorized exact LifecycleModel revision; source acquisition does not invent missing datasets or make licensing decisions.
+2. Create the personal/team Study, resolve the selected model source, and wait for its actual acquisition. Prepare a model with exact method references and declared cutoffs. Keep missing factors, excluded upstream inputs and source contradictions visible.
+3. Create a StudyRevision with the agreed definition and the issued model preparation/reference. Read its current revision/hash and freeze it only after validation. Do not calculate or fabricate owner hashes.
+4. Create baseline and alternative ScenarioRevisions from that frozen StudyRevision. The initial supported override changes an identified instance/exchange amount. Explain why the alternative is relevant and evidence-supported; an illustrative perturbation must remain labelled as such. Prepare each Scenario and freeze its exact current revision before submitting a Run.
+5. Poll the typed Study task and read the completed Run. A successful submit or `waiting: true` is not a completed computation. On failed/blocked/stale/cancelled tasks, preserve diagnostics and follow the owner recovery path; do not repair private queues or callback results.
+6. Request contribution analysis for one Run and comparison for two ordered Runs. Inspect comparability, coverage, scenario differences and quality findings before interpreting deltas. Never rank incomparable or partially characterized scores as complete product performance; unknown factors remain unknown.
+7. Author a report whose structured numerical claims select exact immutable analysis facts, canonical values and units. Separate sourced numerical claims from narrative interpretation. Include scope, assumptions, missing factors, cutoffs, limitations and provenance. Save/freeze using fresh CAS revision/hash evidence; frozen content requires a new revision for changes.
+8. Request the authorized export and download it with the independently configured issuer/renderer trust anchors and the exact export selection read from the service. Verify the detached package, then inspect the HTML offline. Preserve the HTML, projection, manifest and receipt together. Never accept a public key supplied by the report as its own trust anchor.
+
+## Report and handoff
+
+P2 exports remain unreviewed and not finalized. Offline verification proves signed historical bytes and renderer consistency; it does not check current permissions, withdrawals, review status or scientific validity. Downloaded copies cannot be recalled. New review, sharing, sensitivity, uncertainty or industry capabilities require their separately qualified public profiles; this skill does not infer them from a command name.
+
+Report the exact Study/Revision/Scenario/Run/Analysis/Report/Export identities, relevant source/method identities, numerical findings with units and fact references, comparability and limitations, saved recovery locations and any unfinished steps. Keep private state and authorization data out of public reports. Finish only the requested scope; dataset publication, report approval and external sharing need their own supported action and authorization.

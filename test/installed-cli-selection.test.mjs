@@ -163,3 +163,32 @@ test('copied skills and direct entry consume real installed CLI 0.1.28 from one 
     }
   } finally {rmSync(dir,{recursive:true,force:true});}
 });
+
+test('copied Study package preserves configured owner commands and UNKNOWN without source or fallback', () => {
+  const f = fixture();
+  try {
+    const copied = path.join(f.dir, 'lca-study');
+    cpSync(path.join(root, 'lca-study'), copied, { recursive: true });
+    const entry = path.join(copied, 'scripts', 'run-cli.mjs');
+    for (const relative of ['scripts/run-cli.mjs', 'scripts/lib/cli-launcher.mjs', 'scripts/lib/cli-installed.mjs', 'scripts/lib/cli-development.mjs']) {
+      assert.deepEqual(readFileSync(path.join(copied, relative)), readFileSync(path.join(root, relative)));
+    }
+    const args = ['study', 'request', 'recover', '--intent-file', path.join(f.dir, 'original-intent.json'), '--json'];
+    const result = run(entry, args, f.env, f.dir);
+    assert.equal(result.status, 17, result.stderr);
+    assert.deepEqual(JSON.parse(result.stdout), { args, status: 'UNKNOWN', originalAttempt: 'keep-me' });
+    assert.equal(readFileSync(f.env.CALL_LOG, 'utf8'), 'called\n');
+    assert.equal(existsSync(path.join(f.dir, 'scripts')), false);
+    writeFileSync(f.file, '{}');
+    const changed = run(entry, args, f.env, f.dir);
+    assert.notEqual(changed.status, 0);
+    assert.equal(readFileSync(f.env.CALL_LOG, 'utf8'), 'called\n');
+    const empty = {...cleanEnv(), PATH: ''};
+    const missing = run(entry, ['study', 'capabilities', '--json'], empty, f.dir);
+    assert.notEqual(missing.status, 0);
+    assert.match(missing.stderr, /No CLI installation configured/);
+    const help = run(entry, ['--help'], empty, f.dir);
+    assert.equal(help.status, 0, help.stderr);
+    assert.match(help.stdout, /TIANGONG_LCA_CLI_INSTALLATION/);
+  } finally { rmSync(f.dir, {recursive:true, force:true}); }
+});
