@@ -1,6 +1,6 @@
 # Operation recipes
 
-These recipes describe the P2 core v2 and reporting v3 interfaces. Run commands through this package's `scripts/run-cli.mjs`; the following table omits that common prefix. Operation/schema/request IDs are filled by the CLI when absent. Mutations use `--input <file> --state-dir <private-retained-directory> --json`; reads use `--input <file> --json`. Preserve returned envelopes and use their `data` resource, not an invented success value.
+These recipes retain the P2 core v2 and reporting v3 interfaces. For requested P3 review/finalization/named sharing, use [review and sharing](review-sharing.md); it explicitly selects v4 without changing these defaults. Run commands through this package's `scripts/run-cli.mjs`; the following table omits that common prefix. Operation/schema/request IDs are filled by the CLI when absent. Mutations use `--input <file> --state-dir <private-retained-directory> --json`; reads use `--input <file> --json`. Preserve returned envelopes and use their `data` resource, not an invented success value.
 
 | Command | Request fields and source |
 | --- | --- |

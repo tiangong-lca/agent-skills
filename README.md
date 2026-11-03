@@ -20,9 +20,9 @@ checkPaths:
   - scripts/validate-skills.mjs
   - "*/SKILL.md"
   - "*/scripts/**"
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: 2b366f74d1330e50ce77b8bef73f492f1da9b81d
-lastReviewedNote: "Reviewed Skills #135: ordinary CLI calls require the configured installed entry; no published download/default remains. Source-development and owner-specific release/test pins remain isolated. Offline help and missing/retired selection regressions cover copied packages."
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 8c2d96200aff353b8219ad3aa469d52ffb0b4e6d
+lastReviewedNote: "Reviewed Skills #139 P3 Study instructions: exact public v4 review/finalization/named sharing, original-key recovery and current versus historical state. P2 recipes and launcher bytes remain; no runtime reselection, direct transport, grant manufacture or actual qualification claim."
 ---
 
 # Tiangong LCA Skills
@@ -245,4 +245,4 @@ On failure, retain the original failed or UNKNOWN task and its recovery evidence
 
 ## LCA Study
 
-Install `lca-study` for a frozen research, scenario comparison and fact-backed report workflow. It is independently copyable and uses the configured installed CLI above; both core Study and reporting capabilities must be admitted by the selected service. It preserves original mutation recovery and uses independently configured export trust anchors. P2 exports are unreviewed historical copies, not current approval or scientific certification. Dataset authoring and publication remain separate workflows.
+Install `lca-study` for a frozen research, scenario comparison and fact-backed report workflow. It is independently copyable and uses the configured installed CLI above; both core Study and reporting capabilities must be admitted by the selected service. It preserves original mutation recovery and uses independently configured export trust anchors. P3 adds exact-revision review/finalization and named sharing through admitted v4 commands; member/export upgrades explicitly select v4. It preserves one-use delegation and UNKNOWN recovery boundaries. P2 exports remain unreviewed historical copies; neither a signature nor actor approval proves current access or independent scientific certification. Dataset authoring and publication remain separate workflows.

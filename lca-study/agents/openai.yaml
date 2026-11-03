@@ -1,4 +1,4 @@
 interface:
   display_name: "LCA Study"
-  short_description: "Compute, compare and report a traceable LCA Study"
-  default_prompt: "Use $lca-study to create or resume my research through the configured installed CLI, preserve exact source and recovery identities, and report findings with units, evidence and limitations."
+  short_description: "Research, review and share traceable LCA reports"
+  default_prompt: "Use $lca-study through the configured installed CLI to continue my research, preserve exact report and recovery identities, report findings with units, evidence and limitations, and perform only my authorized review, finalization or named-sharing actions while distinguishing current state from signed historical snapshots."

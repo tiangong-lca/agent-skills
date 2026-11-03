@@ -179,10 +179,33 @@ test('copied Study package preserves configured owner commands and UNKNOWN witho
     assert.deepEqual(JSON.parse(result.stdout), { args, status: 'UNKNOWN', originalAttempt: 'keep-me' });
     assert.equal(readFileSync(f.env.CALL_LOG, 'utf8'), 'called\n');
     assert.equal(existsSync(path.join(f.dir, 'scripts')), false);
+    const requestFile=path.join(f.dir,'exact-report-request.json');
+    const originalRequest=JSON.stringify({reportRevisionId:'issued-report',expectedContentHash:'a'.repeat(64),idempotencyKey:'original-key',delegationId:'issued-one-use-delegation'});
+    writeFileSync(requestFile,originalRequest);
+    const v4Commands=[
+      ['study','capabilities','--api-version','4','--json'],
+      ['study','actions','--input',requestFile,'--json'],
+      ['study','member','set','--api-version','4','--input',requestFile,'--json'],
+      ['study','review','record','--input',requestFile,'--state-dir',path.join(f.dir,'original-state'),'--json'],
+      ['study','report','current','--input',requestFile,'--json'],
+      ['study','report','finalize','--input',requestFile,'--json'],
+      ['study','export','download','--api-version','4','--input',requestFile,'--output-dir',path.join(f.dir,'new-export'),'--anchors','trusted-anchors.json','--expected','selected-export.json','--json'],
+      ['study','share','download','--input',requestFile,'--output-dir',path.join(f.dir,'new-share'),'--anchors','trusted-anchors.json','--expected','selected-export.json','--json'],
+      ['study','share','revoke','--input',requestFile,'--json'],
+    ];
+    for(const forwarded of v4Commands){
+      const observed=run(entry,forwarded,f.env,f.dir);
+      assert.equal(observed.status,17,observed.stderr);
+      assert.equal(observed.stderr,'owner diagnostic\n');
+      assert.deepEqual(JSON.parse(observed.stdout),{args:forwarded,status:'UNKNOWN',originalAttempt:'keep-me'});
+      assert.equal(readFileSync(requestFile,'utf8'),originalRequest);
+    }
+    const calls='called\n'.repeat(v4Commands.length+1);
+    assert.equal(readFileSync(f.env.CALL_LOG,'utf8'),calls);
     writeFileSync(f.file, '{}');
     const changed = run(entry, args, f.env, f.dir);
     assert.notEqual(changed.status, 0);
-    assert.equal(readFileSync(f.env.CALL_LOG, 'utf8'), 'called\n');
+    assert.equal(readFileSync(f.env.CALL_LOG, 'utf8'), calls);
     const empty = {...cleanEnv(), PATH: ''};
     const missing = run(entry, ['study', 'capabilities', '--json'], empty, f.dir);
     assert.notEqual(missing.status, 0);
@@ -191,4 +214,19 @@ test('copied Study package preserves configured owner commands and UNKNOWN witho
     assert.equal(help.status, 0, help.stderr);
     assert.match(help.stdout, /TIANGONG_LCA_CLI_INSTALLATION/);
   } finally { rmSync(f.dir, {recursive:true, force:true}); }
+});
+
+
+test('copied Study delegation denial is returned once without changing authority or original input', () => {
+ const f=fixture();
+ try {
+  const copied=path.join(f.dir,'copied-study');cpSync(path.join(root,'lca-study'),copied,{recursive:true});
+  const file=path.join(f.dir,'original-review.json');const original=JSON.stringify({schemaVersion:'lca.study-api.v4',requestId:'original-request',idempotencyKey:'original-key',delegationId:null});writeFileSync(file,original);
+  writeFileSync(path.join(f.installation,'business.mjs'),`import fs from 'node:fs';fs.appendFileSync(process.env.CALL_LOG,JSON.stringify(process.argv.slice(2))+'\\n');console.error(JSON.stringify({error:{code:'FORBIDDEN',message:'A bound delegation is unavailable.'}}));process.exitCode=1;`);
+  const args=['study','review','record','--input',file,'--json'];const result=run(path.join(copied,'scripts/run-cli.mjs'),args,f.env,f.dir);
+  assert.equal(result.status,1);assert.equal(result.stdout,'');assert.deepEqual(JSON.parse(result.stderr),{error:{code:'FORBIDDEN',message:'A bound delegation is unavailable.'}});
+  assert.deepEqual(readFileSync(f.env.CALL_LOG,'utf8').trim().split('\n').map(line=>JSON.parse(line)),[args]);
+  assert.equal(readFileSync(file,'utf8'),original);
+  assert.equal(existsSync(path.join(f.installation,'src')),false);assert.equal(existsSync(path.join(f.dir,'scripts')),false);
+ }finally{rmSync(f.dir,{recursive:true,force:true});}
 });
