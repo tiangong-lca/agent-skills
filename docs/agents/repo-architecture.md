@@ -36,7 +36,7 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: 2b366f74d1330e50ce77b8bef73f492f1da9b81d
+lastReviewedCommit: 49bfece63a1e3aa7c6c98721679e1e04b0ea2253
 lastReviewedNote: "Reviewed Skills #135: ordinary CLI calls require the configured installed entry; no published download/default remains. Source-development and owner-specific release/test pins remain isolated. Offline help and missing/retired selection regressions cover copied packages."
 related:
   - AGENTS.md
@@ -136,3 +136,5 @@ The retained `external-dataset-curated-import` and `source-evidence-dataset-deve
 ## LCA Study workflow
 
 `lca-study` orchestrates the public core v2 and reporting v3 Study commands through a copied byte-identical installed-runtime launcher. Its operation recipes describe owner-issued references, exact claim values and recovery; they contain no numerical algorithms, database adapters or local task engine. The package requires current server capabilities and independently configured export anchors. P2 reports remain unreviewed; review/share and advanced profiles need their own qualified public contracts.
+
+For Study qualification against an explicitly configured local service, the CLI-owned `tiangong.cli-loopback-auth-doctor.v1` output is a separate live diagnostic. The Skill checks its intended current tuple and actor; it does not promote that result into a canonical Production identity receipt or claim historical callback binding. Ordinary hosted doctor/identity behavior stays CLI-owned.

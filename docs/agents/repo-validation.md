@@ -36,7 +36,7 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-03
-lastReviewedCommit: 2b366f74d1330e50ce77b8bef73f492f1da9b81d
+lastReviewedCommit: 49bfece63a1e3aa7c6c98721679e1e04b0ea2253
 lastReviewedNote: "Reviewed Skills #135: ordinary CLI calls require the configured installed entry; no published download/default remains. Source-development and owner-specific release/test pins remain isolated. Offline help and missing/retired selection regressions cover copied packages."
 related:
   - AGENTS.md
