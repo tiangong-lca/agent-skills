@@ -28,6 +28,7 @@ const gitRepositoryLocationEnvNames = new Set([
 ]);
 
 const defaultSkillNames = [
+  "lca-study",
   "process-hybrid-search",
   "flow-hybrid-search",
   "lifecyclemodel-hybrid-search",

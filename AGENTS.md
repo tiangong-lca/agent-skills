@@ -42,8 +42,8 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-10-27
-lastReviewedCommit: fa367bddb429dd0e0aee99e1e47af52b62694daf
+lastReviewedAt: 2026-11-03
+lastReviewedCommit: 49bfece63a1e3aa7c6c98721679e1e04b0ea2253
 lastReviewedNote: "Reviewed Skills #135: ordinary CLI calls require the configured installed entry; no published download/default remains. Source-development and owner-specific release/test pins remain isolated. Offline help and missing/retired selection regressions cover copied packages."
 related:
   - .docpact/config.yaml
@@ -107,7 +107,7 @@ Route those tasks to:
 - Current-account dataset review skills may orchestrate frozen local inputs through public CLI commands, but must not own direct database access, credential parsing, or private account runtime logic.
 - Active remote skills must check `tiangong-lca auth status --json`, hand `auth login` to a human-controlled trusted terminal when required, and use `auth doctor-auth` before account-sensitive commits. They never collect or emit usernames, passwords, authorization codes, tokens, or legacy API keys.
 - Official Production public configuration belongs to the CLI and needs no Skills env setup. Only complete custom project URL/key/client/callback tuples override it; headless tokens require an explicit destination/key and must not implicitly select Production.
-- The three independently installable hybrid-search packages carry byte-identical `scripts/lib/cli-launcher.mjs` bundles inside their own directories. The root `scripts/lib/cli-{launcher,installed,development}.mjs` and `scripts/run-cli.mjs` remain the only source authorities; update all bundled files together and retain the isolated copied-package plus byte-equality regression. Do not add authentication or transport logic to those bundles.
+- The independently installable Study and three hybrid-search packages carry byte-identical `scripts/lib/cli-launcher.mjs` bundles inside their own directories. The root `scripts/lib/cli-{launcher,installed,development}.mjs` and `scripts/run-cli.mjs` remain the only source authorities; update all bundled files together and retain the isolated copied-package plus byte-equality regression. Do not add authentication or transport logic to those bundles.
 - Headless tokens are orchestrator-injected, short-lived, and absent from argv/prompts/logs/artifacts. Multi-account work uses a distinct private `TIANGONG_LCA_SESSION_FILE` per account/project/client and preserves expected identity evidence.
 - Source-evidence import skills may instruct agents to resolve external research skills with `npx skills`, but this repository should not mirror or pin those external skill packages.
 - `external-dataset-curated-import`, `source-evidence-dataset-development`, and `dataset-rls-maintenance` are top-level workflow skills only; executable conversion, queue state, validation, QA, write/delete/redo, and verify behavior stays in CLI/Foundry-owned commands.

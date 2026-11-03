@@ -35,8 +35,8 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-10-27
-lastReviewedCommit: fa367bddb429dd0e0aee99e1e47af52b62694daf
+lastReviewedAt: 2026-11-03
+lastReviewedCommit: 49bfece63a1e3aa7c6c98721679e1e04b0ea2253
 lastReviewedNote: "Reviewed Skills #135: ordinary CLI calls require the configured installed entry; no published download/default remains. Source-development and owner-specific release/test pins remain isolated. Offline help and missing/retired selection regressions cover copied packages."
 related:
   - AGENTS.md
@@ -120,7 +120,7 @@ The `pre-push` hook runs `scripts/docpact-gate.sh`, which delegates CLI lookup t
 
 The semantic-only Foundry authoring package is included in default validation. Validate a copied isolated package for its entry metadata and local reference closure; it intentionally has no wrapper script or bootstrap runtime. Runtime/F1 and ordinary entry bootstrap qualification remain separate requirements of the full migration.
 
-Default validation now includes all 23 source skill directories: the original 21 plus the ordinary Foundry entry and internal authoring package. Validate the entry after an isolated copy and check its task/semantic field contracts against the selected Foundry source. Source validation is supplemented by original-script equality, the independently verified final Foundry 0.1.15 lock and the four-platform copied public cold/warm/bootstrap test.
+Default validation now includes all 24 source skill directories: the original 21, the ordinary Foundry entry, internal authoring package and LCA Study workflow. Validate the entry after an isolated copy and check its task/semantic field contracts against the selected Foundry source. Source validation is supplemented by original-script equality, the independently verified final Foundry 0.1.15 lock and the four-platform copied public cold/warm/bootstrap test.
 
 `test/foundry-bootstrap-package.test.mjs` checks both script SHA-256 values against the immutable C1 source and executes an isolated host bootstrap without its lock to prove refusal before installation or application launch. POSIX syntax is checked with `sh -n`; Run the PowerShell execution case on Windows without execution-policy bypass. These negative/source checks do not count as final public bootstrap qualification.
 
@@ -135,3 +135,5 @@ For Skills #118, the copied entry's type-wide Process interaction and dual-Proce
 The relevant pull-request/manual matrix runs the same test on all four supported native platforms and retains one `tiangong-skills.foundry-public-install.v1` report per platform. `FOUNDRY_INSTALL_PROOF_DIR` optionally selects an absolute output directory for these test reports; it is not forwarded to the installed runtime and cannot select its manifest or credentials. The report binds the independently qualified release expectation, shipped lock digest, observed runtime identity and individual check outcomes.
 
 The copied entry must execute an exact returned command action in a new process and retain ready runtime qualification. Its independent manifest digest must also reject a changed action-cache snapshot. These checks protect the managed-context correction from Foundry #151; running every continuation through the bootstrap alone cannot prove the returned-action contract. The relevant PR matrix also covers `.gitattributes` changes, because newline conversion must not alter the original final lock bytes.
+
+The copied `lca-study` package is covered by installed-selection tests for byte-identical launcher closure, offline help/missing configuration, original argv/UNKNOWN preservation and refusal after expectation drift. Repository tests use an explicitly synthetic owner and do not establish Study API or numerical execution. Actual configured installed CLI/auth/DB/native Worker/report/offline verification belongs to the P2 workspace qualification and must run outside a source checkout before phase acceptance.

@@ -10,6 +10,7 @@ on:
       - "scripts/lib/**"
       - "scripts/run-cli.mjs"
       - "scripts/inspect-local-cli.mjs"
+      - "lca-study/**"
       - "flow-hybrid-search/**"
       - "process-hybrid-search/**"
       - "lifecyclemodel-resulting-process-builder/**"

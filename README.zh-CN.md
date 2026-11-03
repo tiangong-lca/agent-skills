@@ -20,8 +20,8 @@ checkPaths:
   - scripts/validate-skills.mjs
   - "*/SKILL.md"
   - "*/scripts/**"
-lastReviewedAt: 2026-10-27
-lastReviewedCommit: fa367bddb429dd0e0aee99e1e47af52b62694daf
+lastReviewedAt: 2026-11-03
+lastReviewedCommit: 2b366f74d1330e50ce77b8bef73f492f1da9b81d
 lastReviewedNote: "Reviewed Skills #135: ordinary CLI calls require the configured installed entry; no published download/default remains. Source-development and owner-specific release/test pins remain isolated. Offline help and missing/retired selection regressions cover copied packages."
 ---
 
@@ -242,3 +242,7 @@ pnpm validate
 ## Foundry 语义工作
 
 `foundry-tidas-authoring` 是面向具体 Foundry 工作项的内部按需角色。它读取已提供的完整上下文，将有证据的决定或 patch 文件交回调用流程；不安装运行时、不管理认证、不直接应用行数据或操作数据库。
+
+## LCA 研究
+
+`lca-study` 提供冻结研究、情景比较及事实引用报告工作流，可独立复制安装，并复用上述配置好的已安装 CLI。所选服务须开放对应核心研究和报告能力。Skill 保留原始变更恢复身份，导出使用独立配置的信任锚。P2 离线报告是未审阅的历史副本，不代表当前批准或科学认证；数据编制与发布仍属于各自工作流。

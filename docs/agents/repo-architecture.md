@@ -35,8 +35,8 @@ checkPaths:
   - scripts/sync-tidas-public-rules.mjs
   - package.json
   - pnpm-lock.yaml
-lastReviewedAt: 2026-10-27
-lastReviewedCommit: fa367bddb429dd0e0aee99e1e47af52b62694daf
+lastReviewedAt: 2026-11-03
+lastReviewedCommit: 49bfece63a1e3aa7c6c98721679e1e04b0ea2253
 lastReviewedNote: "Reviewed Skills #135: ordinary CLI calls require the configured installed entry; no published download/default remains. Source-development and owner-specific release/test pins remain isolated. Offline help and missing/retired selection regressions cover copied packages."
 related:
   - AGENTS.md
@@ -93,7 +93,7 @@ The thin installed adapter passes the approved existing CLI expectation bytes th
 
 `--runtime-info` on the direct entry returns the native descriptor plus selection source and expectation digest without executing a business operation. It creates no report files or registry. Existing task continuations retain their original owner's runtime; the independent environment default cannot change original managed commands or authorize UNKNOWN replay.
 
-The three copied hybrid packages bundle all three library modules plus `scripts/run-cli.mjs` byte-for-byte. Other repository-backed skills expose a three-line `scripts/run-cli.mjs` delegator to the same repository entry, matching their existing wrapper packaging boundary.
+The copied Study and three hybrid packages bundle all three library modules plus `scripts/run-cli.mjs` byte-for-byte. Other repository-backed skills expose a three-line `scripts/run-cli.mjs` delegator to the same repository entry, matching their existing wrapper packaging boundary.
 
 ### Explicit local candidate boundary
 
@@ -132,3 +132,9 @@ The independently copied Foundry entry retains the original C1 copyright/license
 The ordinary entry may use a copied source record to demonstrate a current runtime's interaction behavior without changing that record. The type-wide and object-scoped fixtures delivered by Skills #118 under Foundry 0.1.13 must continue to prove both the earlier type-wide interaction and two Processes in one task: a P1-only question leaves P2 independent, each answer reaches only its own work item, row adoption is indexed, and a correction reopens only the affected object. The earlier Foundry #197 read-only mine-water replay exercised 0.1.12 against a real ambiguity and missing Flow references. The actual mine-water XML repair is owned by `tiangong-lca/data#33`, with its own scientific evidence, review and workspace integration; this skill package cannot make that data delivery complete. User answers such as “暂不确定，先调查” stay unresolved investigation requests until a supported source or an explicit decision closes the gap.
 
 The retained `external-dataset-curated-import` and `source-evidence-dataset-development` skills support independent CLI workflows. Within a registered public Foundry task they act as domain helpers over current work items and supplied actions; they return selected input files and cannot manually advance queues, checkpoints, registered artifacts or attempts. Their paired agent prompts preserve this boundary.
+
+## LCA Study workflow
+
+`lca-study` orchestrates the public core v2 and reporting v3 Study commands through a copied byte-identical installed-runtime launcher. Its operation recipes describe owner-issued references, exact claim values and recovery; they contain no numerical algorithms, database adapters or local task engine. The package requires current server capabilities and independently configured export anchors. P2 reports remain unreviewed; review/share and advanced profiles need their own qualified public contracts.
+
+For Study qualification against an explicitly configured local service, the CLI-owned `tiangong.cli-loopback-auth-doctor.v1` output is a separate live diagnostic. The Skill checks its intended current tuple and actor; it does not promote that result into a canonical Production identity receipt or claim historical callback binding. Ordinary hosted doctor/identity behavior stays CLI-owned.
