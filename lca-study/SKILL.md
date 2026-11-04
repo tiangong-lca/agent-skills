@@ -1,6 +1,6 @@
 ---
 name: lca-study
-description: Conduct or continue a TianGong LCA Study, compare scenarios, and prepare, review or share revision-bound reports through the qualified installed CLI. Use for research workflows; dataset authoring and publication remain separate.
+description: Conduct or continue a TianGong LCA Study, compare scenarios, evaluate admitted sensitivity or uncertainty profiles, and prepare, review or share revision-bound reports through the qualified installed CLI. Use for research workflows; dataset authoring and publication remain separate.
 ---
 
 # LCA Study
@@ -13,6 +13,8 @@ Run this package's `node scripts/run-cli.mjs --runtime-info`, then `auth status 
 
 Read `study --help` and both `study capabilities --json` and `study capabilities --api-version 3 --json`. Use only currently admitted operations and exact profiles. For review, finalization or named sharing, also read `study capabilities --api-version 4 --json` and `study actions --input <typed-resource.json> --json`. Display current server actions and role choices; do not infer permissions from another role, an old receipt or a successful calculation. Missing commands require a compatible qualified CLI installation; missing runtime capabilities require the service owner. Do not enable a service or silently change environments to make an operation succeed.
 
+For requested sensitivity or uncertainty, read [advanced analysis](references/advanced-analysis.md), then use the selected installation’s V5 help and `study capabilities --api-version 5 --json`. Existing core/P2/P3 defaults remain unchanged; do not infer V5 admission from a command name or upgrade a saved request.
+
 For an existing Study, use its exact ID and `study get/resources` to recover state. Preserve the original private state directory and pending intent files. A lost response is an unknown outcome: use `study request recover --intent-file <original-file>`, never recreate the mutation with a new key. Read [the operation recipes](references/operations.md) when preparing request files or continuing after a conflict.
 
 ## Research workflow
@@ -23,6 +25,7 @@ For an existing Study, use its exact ID and `study get/resources` to recover sta
 4. Create baseline and alternative ScenarioRevisions from that frozen StudyRevision. The initial supported override changes an identified instance/exchange amount. Explain why the alternative is relevant and evidence-supported; an illustrative perturbation must remain labelled as such. Prepare each Scenario and freeze its exact current revision before submitting a Run.
 5. Poll the typed Study task and read the completed Run. A successful submit or `waiting: true` is not a completed computation. On failed/blocked/stale/cancelled tasks, preserve diagnostics and follow the owner recovery path; do not repair private queues or callback results.
 6. Request contribution analysis for one Run and comparison for two ordered Runs. Inspect comparability, coverage, scenario differences and quality findings before interpreting deltas. Never rank incomparable or partially characterized scores as complete product performance; unknown factors remain unknown.
+   For requested OAT sensitivity or bounded uncertainty, continue from one completed frozen baseline through the separate V5 recipe. Keep user-declared ranges, dependence assumptions, sampling settings and actual limits explicit; derived evaluations are analysis evidence, not extra Runs.
 7. Author a report whose structured numerical claims select exact immutable analysis facts, canonical values and units. Separate sourced numerical claims from narrative interpretation. Include scope, assumptions, missing factors, cutoffs, limitations and provenance. Save/freeze using fresh CAS revision/hash evidence; frozen content requires a new revision for changes.
 8. For a P2 unreviewed copy, follow the original v3 export recipe. For requested review, finalization or named sharing, read [review and sharing](references/review-sharing.md) first; existing member/export commands require explicit `--api-version 4` for P3. Download the authorized export with independently configured issuer/renderer trust anchors and the exact selected export identity. Verify the detached package, then inspect the HTML offline. Preserve the HTML, projection, manifest and receipt together. Never accept a public key supplied by the report as its own trust anchor.
 
@@ -36,6 +39,6 @@ Named sharing exposes only the authorized report projection. It does not grant S
 
 ## Report and handoff
 
-P2 exports remain unreviewed and not finalized; P3 exports retain their exact historical review/finalization snapshot. Offline verification proves signed historical bytes and renderer consistency; it does not check current permissions, withdrawals, review status or scientific validity. Downloaded copies cannot be recalled. Current online acceptance is separate from either signed snapshot. Sensitivity, uncertainty and industry capabilities still require separately qualified public profiles; this skill does not infer them from a command name.
+P2 exports remain unreviewed and not finalized; P3 exports retain their exact historical review/finalization snapshot. Offline verification proves signed historical bytes and renderer consistency; it does not check current permissions, withdrawals, review status or scientific validity. Downloaded copies cannot be recalled. Current online acceptance is separate from either signed snapshot. Sensitivity and uncertainty use only separately admitted V5 profiles and retain their full settings, coverage and producer reason codes. Industry/methodology profiles still require their own qualification; this skill does not infer them from an advanced-analysis command or report approval.
 
 Report the exact Study/Revision/Scenario/Run/Analysis/Report/Export identities, relevant source/method identities, numerical findings with units and fact references, comparability and limitations, saved recovery locations and any unfinished steps. Keep private state and authorization data out of public reports. Finish only the requested scope; dataset publication, report approval and external sharing need their own supported action and authorization.

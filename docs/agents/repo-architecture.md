@@ -36,8 +36,8 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 8c2d96200aff353b8219ad3aa469d52ffb0b4e6d
-lastReviewedNote: "Reviewed Skills #139 P3 Study instructions: exact public v4 review/finalization/named sharing, original-key recovery and current versus historical state. P2 recipes and launcher bytes remain; no runtime reselection, direct transport, grant manufacture or actual qualification claim."
+lastReviewedCommit: c9b742a7a83c8342edca916cd523f47694416ba2
+lastReviewedNote: "Reviewed Skills #142 V5 instructions: separate frozen-baseline OAT/uncertainty, exact configuration and fact provenance, view2/export3 and current versus historical authority; installed launcher bytes and P2/P3 defaults stay unchanged. Synthetic copied-package tests do not establish actual P4 qualification."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -140,3 +140,5 @@ The retained `external-dataset-curated-import` and `source-evidence-dataset-deve
 For Study qualification against an explicitly configured local service, the CLI-owned `tiangong.cli-loopback-auth-doctor.v1` output is a separate live diagnostic. The Skill checks its intended current tuple and actor; it does not promote that result into a canonical Production identity receipt or claim historical callback binding. Ordinary hosted doctor/identity behavior stays CLI-owned.
 
 The copied `lca-study` entry conditionally routes P3 work to `references/review-sharing.md` while retaining its P2 recipes. Its wrapper bytes and runtime selection remain unchanged. Current actions/roles, exact review/delegation/finalization and named-recipient policy stay with public CLI/server owners; a Skill never derives those policies or changes credentials to bypass a denial.
+
+`lca-study/references/advanced-analysis.md` holds conditional V5 OAT/uncertainty and view2/export3 recipes. It consumes only installed public CLI commands; canonical values, configuration hashes, scientific execution, role policy, journals and artifact verification remain with their existing owners. The copied launcher graph is unchanged.
