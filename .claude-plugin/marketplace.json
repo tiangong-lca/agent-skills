@@ -64,7 +64,7 @@
         },
         {
             "name": "lca-study",
-            "description": "Frozen LCA research, scenario comparison and verifiable offline reports through a configured installed CLI.",
+            "description": "LCA research, revision-bound report review and scoped sharing through a configured installed CLI.",
             "source": "./",
             "strict": false,
             "skills": [

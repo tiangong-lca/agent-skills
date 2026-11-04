@@ -20,9 +20,9 @@ checkPaths:
   - scripts/validate-skills.mjs
   - "*/SKILL.md"
   - "*/scripts/**"
-lastReviewedAt: 2026-11-03
-lastReviewedCommit: 2b366f74d1330e50ce77b8bef73f492f1da9b81d
-lastReviewedNote: "Reviewed Skills #135: ordinary CLI calls require the configured installed entry; no published download/default remains. Source-development and owner-specific release/test pins remain isolated. Offline help and missing/retired selection regressions cover copied packages."
+lastReviewedAt: 2026-11-04
+lastReviewedCommit: 8c2d96200aff353b8219ad3aa469d52ffb0b4e6d
+lastReviewedNote: "Reviewed Skills #139 P3 Study instructions: exact public v4 review/finalization/named sharing, original-key recovery and current versus historical state. P2 recipes and launcher bytes remain; no runtime reselection, direct transport, grant manufacture or actual qualification claim."
 ---
 
 # 天工 LCA Skills
@@ -245,4 +245,4 @@ pnpm validate
 
 ## LCA 研究
 
-`lca-study` 提供冻结研究、情景比较及事实引用报告工作流，可独立复制安装，并复用上述配置好的已安装 CLI。所选服务须开放对应核心研究和报告能力。Skill 保留原始变更恢复身份，导出使用独立配置的信任锚。P2 离线报告是未审阅的历史副本，不代表当前批准或科学认证；数据编制与发布仍属于各自工作流。
+`lca-study` 提供冻结研究、情景比较及事实引用报告工作流，可独立复制安装，并复用上述配置好的已安装 CLI。所选服务须开放对应核心研究和报告能力。Skill 保留原始变更恢复身份，导出使用独立配置的信任锚。P3 通过已开放的 v4 命令支持精确修订评审、定稿和指定接收者分享；member/export 升级须显式选择 v4，并保留一次授权及 UNKNOWN 原键恢复边界。P2 报告仍是未审阅历史副本；签名或 actor 批准不代表当前访问权或独立科学认证。数据编制与发布仍属于各自工作流。
