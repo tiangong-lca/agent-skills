@@ -43,8 +43,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: cf6ce2b55211a9987c78063b319f9156803177bb
-lastReviewedNote: "Reviewed local Skills #142/#144 development composition: preserve V5 OAT/uncertainty, exact provenance, view2/export3, P2/P3 defaults and launcher identity; retain exact Windows serialization/diagnostics with original assertions, isolation, deadlines and immutable assets. Historical startup/EPERM causal limits remain. Fresh composed-head matrix and #144 Main eligibility are pending."
+lastReviewedCommit: 17d3e399c5bc3c689cca8b384d96ea55bed4ff77
+lastReviewedNote: "Reviewed Skills #146 conditional V6 method guidance, exact installed-owner schemas and copied UNKNOWN/no-replay boundary while retaining full #142/#144 source composition. No launcher, scientific, permission, runtime-admission or Main-inclusion authority is added; actual paired-runtime and professional acceptance remain separate."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

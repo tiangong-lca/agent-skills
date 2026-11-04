@@ -1,6 +1,6 @@
 ---
 name: lca-study
-description: Conduct or continue a TianGong LCA Study, compare scenarios, evaluate admitted sensitivity or uncertainty profiles, and prepare, review or share revision-bound reports through the qualified installed CLI. Use for research workflows; dataset authoring and publication remain separate.
+description: Conduct or continue a TianGong LCA Study, compare scenarios, evaluate admitted sensitivity, uncertainty or method profiles, and prepare, review or share revision-bound reports through the qualified installed CLI. Use for research workflows; dataset authoring and publication remain separate.
 ---
 
 # LCA Study
@@ -14,6 +14,8 @@ Run this package's `node scripts/run-cli.mjs --runtime-info`, then `auth status 
 Read `study --help` and both `study capabilities --json` and `study capabilities --api-version 3 --json`. Use only currently admitted operations and exact profiles. For review, finalization or named sharing, also read `study capabilities --api-version 4 --json` and `study actions --input <typed-resource.json> --json`. Display current server actions and role choices; do not infer permissions from another role, an old receipt or a successful calculation. Missing commands require a compatible qualified CLI installation; missing runtime capabilities require the service owner. Do not enable a service or silently change environments to make an operation succeed.
 
 For requested sensitivity or uncertainty, read [advanced analysis](references/advanced-analysis.md), then use the selected installation’s V5 help and `study capabilities --api-version 5 --json`. Existing core/P2/P3 defaults remain unchanged; do not infer V5 admission from a command name or upgrade a saved request.
+
+For requested method evidence, assessment or a method-bound report, read [method assessment](references/method-assessment.md). Select explicit V6 through a qualified installation and current capabilities; preserve recorded-unverified evidence, complete assessment gaps and unavailable N/W without inferring scientific approval.
 
 For an existing Study, use its exact ID and `study get/resources` to recover state. Preserve the original private state directory and pending intent files. A lost response is an unknown outcome: use `study request recover --intent-file <original-file>`, never recreate the mutation with a new key. Read [the operation recipes](references/operations.md) when preparing request files or continuing after a conflict.
 
@@ -39,6 +41,6 @@ Named sharing exposes only the authorized report projection. It does not grant S
 
 ## Report and handoff
 
-P2 exports remain unreviewed and not finalized; P3 exports retain their exact historical review/finalization snapshot. Offline verification proves signed historical bytes and renderer consistency; it does not check current permissions, withdrawals, review status or scientific validity. Downloaded copies cannot be recalled. Current online acceptance is separate from either signed snapshot. Sensitivity and uncertainty use only separately admitted V5 profiles and retain their full settings, coverage and producer reason codes. Industry/methodology profiles still require their own qualification; this skill does not infer them from an advanced-analysis command or report approval.
+P2 exports remain unreviewed and not finalized; P3 exports retain their exact historical review/finalization snapshot. Offline verification proves signed historical bytes and renderer consistency; it does not check current permissions, withdrawals, review status or scientific validity. Downloaded copies cannot be recalled. Current online acceptance is separate from either signed snapshot. Sensitivity and uncertainty use only separately admitted V5 profiles and retain their full settings, coverage and producer reason codes. Method assessment uses the separately admitted V6 workflow; profile applicability, professional evidence and industry qualification remain explicit and are never inferred from a command or report approval.
 
 Report the exact Study/Revision/Scenario/Run/Analysis/Report/Export identities, relevant source/method identities, numerical findings with units and fact references, comparability and limitations, saved recovery locations and any unfinished steps. Keep private state and authorization data out of public reports. Finish only the requested scope; dataset publication, report approval and external sharing need their own supported action and authorization.

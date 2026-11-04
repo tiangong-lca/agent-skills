@@ -36,8 +36,8 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-05
-lastReviewedCommit: cf6ce2b55211a9987c78063b319f9156803177bb
-lastReviewedNote: "Reviewed local Skills #142/#144 development composition: preserve V5 OAT/uncertainty, exact provenance, view2/export3, P2/P3 defaults and launcher identity; retain exact Windows serialization/diagnostics with original assertions, isolation, deadlines and immutable assets. Historical startup/EPERM causal limits remain. Fresh composed-head matrix and #144 Main eligibility are pending."
+lastReviewedCommit: 17d3e399c5bc3c689cca8b384d96ea55bed4ff77
+lastReviewedNote: "Reviewed Skills #146 conditional V6 method guidance, exact installed-owner schemas and copied UNKNOWN/no-replay boundary while retaining full #142/#144 source composition. No launcher, scientific, permission, runtime-admission or Main-inclusion authority is added; actual paired-runtime and professional acceptance remain separate."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -142,3 +142,5 @@ For Study qualification against an explicitly configured local service, the CLI-
 The copied `lca-study` entry conditionally routes P3 work to `references/review-sharing.md` while retaining its P2 recipes. Its wrapper bytes and runtime selection remain unchanged. Current actions/roles, exact review/delegation/finalization and named-recipient policy stay with public CLI/server owners; a Skill never derives those policies or changes credentials to bypass a denial.
 
 `lca-study/references/advanced-analysis.md` holds conditional V5 OAT/uncertainty and view2/export3 recipes. It consumes only installed public CLI commands; canonical values, configuration hashes, scientific execution, role policy, journals and artifact verification remain with their existing owners. The copied launcher graph is unchanged.
+
+`lca-study/references/method-assessment.md` holds conditional V6 recorded-evidence, same-Study method assessment and method-report/view3/export4 guidance. The installed owner schemas supply exact configuration and source bindings. Twenty requirements, twenty-five categories and fifty-eight facts remain explicit, including unavailable N/W and false qualification flags. The Skill owns neither method arithmetic nor professional approval; runtime selection, CLI protocol/recovery and current source/review/disclosure authority remain unchanged.
