@@ -197,6 +197,13 @@ test('validation CI installs the exact CLI checkout through frozen pnpm only', (
     )?.length,
     2,
   );
+  assert.equal(diagnostics.match(/uses: actions\/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1/gu)?.length, 1);
+  assert.match(qualification, /if: \$\{\{ !inputs\.windows_diagnostics \}\}/u);
+  assert.match(qualification, /run: pnpm test \$\{\{ matrix\.os == 'windows-latest' && '--test-concurrency=1' \|\| '' \}\}/u);
+  assert.doesNotMatch(qualification, /--test-(?:skip-pattern|name-pattern|timeout|isolation)/u);
+  assert.match(diagnostics, /github\.event_name == 'workflow_dispatch' && inputs\.windows_diagnostics/u);
+  assert.match(diagnostics, /run: node scripts\/lib\/windows-foundry-diagnostics\.mjs/u);
+  assert.doesNotMatch(diagnostics, /repository: tiangong-lca\/cli|pnpm run build|pnpm validate/u);
   assert.doesNotMatch(
     workflow,
     /actions\/checkout@v|pnpm\/action-setup|actions\/setup-node|package-lock\.json|\bnpm (?:ci|exec|run)\b/u,

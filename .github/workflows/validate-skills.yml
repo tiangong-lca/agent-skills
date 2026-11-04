@@ -85,7 +85,9 @@ jobs:
       - name: Test Skills repository contracts
         env:
           FOUNDRY_INSTALL_PROOF_DIR: ${{ runner.temp }}/foundry-skill-install
-        run: pnpm test
+        # Private PowerShell and copied native consumers keep their existing
+        # deadlines; Windows test files receive exclusive runner scheduling.
+        run: pnpm test ${{ matrix.os == 'windows-latest' && '--test-concurrency=1' || '' }}
 
       - name: Preserve copied public Foundry install evidence
         if: always()
