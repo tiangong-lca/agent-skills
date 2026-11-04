@@ -43,8 +43,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 8c2d96200aff353b8219ad3aa469d52ffb0b4e6d
-lastReviewedNote: "Reviewed Skills #139 P3 Study instructions: exact public v4 review/finalization/named sharing, original-key recovery and current versus historical state. P2 recipes and launcher bytes remain; no runtime reselection, direct transport, grant manufacture or actual qualification claim."
+lastReviewedCommit: 03bab7930f54f7c713f078a52d12e4afda641bb8
+lastReviewedNote: "Reviewed Skills #144 Windows CI test-file serialization after source-bound controls: all original assertions, private isolation, deadlines and immutable assets remain. Environment groups and sequential public consumer passed; historical startup failures and unlocated EPERM retain explicit causal limits."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

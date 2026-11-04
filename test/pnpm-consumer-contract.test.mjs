@@ -177,6 +177,10 @@ test('repository package contract pins the workspace Node and pnpm versions', ()
 
 test('validation CI installs the exact CLI checkout through frozen pnpm only', () => {
   const workflow = read('.github/workflows/validate-skills.yml');
+  const diagnosticsStart = workflow.indexOf('\n  windows-diagnostics:');
+  assert.ok(diagnosticsStart > workflow.indexOf('\n  validate:'));
+  const qualification = workflow.slice(0, diagnosticsStart);
+  const diagnostics = workflow.slice(diagnosticsStart);
 
   assert.match(workflow, /repository: tiangong-lca\/cli/u);
   assert.match(workflow, /ref: 89c71772ca1afcfc09705f8c27a9703c6bf8ccf6/u);
@@ -192,11 +196,18 @@ test('validation CI installs the exact CLI checkout through frozen pnpm only', (
   assert.match(workflow, /pnpm run build/u);
   assert.doesNotMatch(workflow, /--published-cli/u);
   assert.equal(
-    workflow.match(
+    qualification.match(
       /uses: actions\/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1/gu,
     )?.length,
     2,
   );
+  assert.equal(diagnostics.match(/uses: actions\/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1/gu)?.length, 1);
+  assert.match(qualification, /if: \$\{\{ !inputs\.windows_diagnostics \}\}/u);
+  assert.match(qualification, /run: pnpm test \$\{\{ matrix\.os == 'windows-latest' && '--test-concurrency=1' \|\| '' \}\}/u);
+  assert.doesNotMatch(qualification, /--test-(?:skip-pattern|name-pattern|timeout|isolation)/u);
+  assert.match(diagnostics, /github\.event_name == 'workflow_dispatch' && inputs\.windows_diagnostics/u);
+  assert.match(diagnostics, /run: node scripts\/lib\/windows-foundry-diagnostics\.mjs/u);
+  assert.doesNotMatch(diagnostics, /repository: tiangong-lca\/cli|pnpm run build|pnpm validate/u);
   assert.doesNotMatch(
     workflow,
     /actions\/checkout@v|pnpm\/action-setup|actions\/setup-node|package-lock\.json|\bnpm (?:ci|exec|run)\b/u,
