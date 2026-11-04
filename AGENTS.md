@@ -43,8 +43,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: c9b742a7a83c8342edca916cd523f47694416ba2
-lastReviewedNote: "Reviewed Skills #144 diagnostic-only Windows controls: default four-platform qualification, immutable public assets, original assertions/deadlines and owner boundaries remain unchanged; manual controls retain bounded environment/sequential evidence."
+lastReviewedCommit: 03bab7930f54f7c713f078a52d12e4afda641bb8
+lastReviewedNote: "Reviewed Skills #144 Windows CI test-file serialization after source-bound controls: all original assertions, private isolation, deadlines and immutable assets remain. Environment groups and sequential public consumer passed; historical startup failures and unlocated EPERM retain explicit causal limits."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
