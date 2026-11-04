@@ -127,7 +127,7 @@ jobs:
       - name: Run bounded Windows controls
         env:
           FOUNDRY_INSTALL_PROOF_DIR: ${{ runner.temp }}/skills144-windows-diagnostics
-        run: node test/diagnostics/windows-foundry.mjs
+        run: node scripts/lib/windows-foundry-diagnostics.mjs
       - name: Preserve diagnostic receipts
         if: always()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
