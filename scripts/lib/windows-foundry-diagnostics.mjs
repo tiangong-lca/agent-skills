@@ -68,8 +68,15 @@ for (const mode of ["original", "private-profile", "os", "modules", "complete", 
         && JSON.stringify(fs.readdirSync(copy)) === JSON.stringify([path.basename(script)]);
     }
   } finally {
-    fs.rmSync(root, { recursive: true, force: true });
-    report.cleanup.push({ owned_root: root, absent: !fs.existsSync(root) });
+    const cleanup = { owned_root: root };
+    try {
+      fs.rmSync(root, { recursive: true, force: true });
+    } catch (error) {
+      cleanup.error = { code: error?.code ?? null, syscall: error?.syscall ?? null };
+      process.exitCode = 1;
+    }
+    cleanup.absent = !fs.existsSync(root);
+    report.cleanup.push(cleanup);
     save();
   }
 }
@@ -84,6 +91,8 @@ try {
     cwd: repository, env: { ...process.env, FOUNDRY_WINDOWS_DIAGNOSTIC: "1" },
     shell: false, stdio: ["ignore", descriptor, descriptor],
   });
+  report.public_install = { owned_pid: child.pid, started_at: new Date(started).toISOString() };
+  save();
   const result = await new Promise((resolve) => {
     const deadline = setTimeout(() => {
       // This is the exact child still owned by this invocation, not a process
@@ -91,11 +100,12 @@ try {
       const killed = spawnSync(path.join(systemRoot, "System32", "taskkill.exe"),
         ["/PID", String(child.pid), "/T", "/F"], { encoding: "utf8", shell: false, timeout: 30_000 });
       report.termination = { owned_pid: child.pid, ...summarize(killed, Date.now()) };
+      save();
     }, 1_920_000);
     child.once("error", (error) => { clearTimeout(deadline); resolve({ error, status: null, signal: null }); });
     child.once("close", (status, signal) => { clearTimeout(deadline); resolve({ status, signal }); });
   });
-  report.public_install = summarize(result, started);
+  Object.assign(report.public_install, summarize(result, started));
   report.public_install.cleanup = result.status === 0 ? "original-test-after-hook-completed" : "inspect-original-test-log";
   report.public_install.original_test_sha256 = createHash("sha256").update(fs.readFileSync(path.join(repository,
     "test", "foundry-public-install.test.mjs"))).digest("hex");

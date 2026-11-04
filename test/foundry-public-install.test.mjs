@@ -199,48 +199,48 @@ test("copied Foundry skill runs the public locked runtime and rejects changed in
       try {
       // Failure-only manual observation of the published owner's actual
       // copy -> execute -> immediate-remove lifecycle. Never retry the task.
-      const componentRoot = path.join(cache, "components", matches[0], "root");
-      const helperPath = path.join(foundryRoot, "package-dist", "scripts", "lib", "foundry-runtime-environment.js");
-      const helperRelative = path.relative(componentRoot, helperPath).split(path.sep).join("/");
-      const helperFact = application.files.find((file) => file.path === helperRelative);
-      const nativeFact = tidasComponent.files.find((file) => file.path === "bin/tidas.exe");
-      assert.ok(helperFact && nativeFact);
-      assert.equal(hash(fs.readFileSync(helperPath)), helperFact.sha256);
-      assert.equal(hash(fs.readFileSync(tidasBin)), nativeFact.sha256);
-      const { copyFoundryIsolatedExecutable } = await import(pathToFileURL(helperPath).href);
-      const lifecycleRoot = fs.mkdtempSync(path.join(workspace, ".foundry", "workspaces", taskId,
-        "tmp", "assessment-lifecycle-diagnostic-"));
-      const copiedBinary = path.join(lifecycleRoot, path.basename(tidasBin));
-      const lifecycle = { source, helper_sha256: helperFact.sha256, native_sha256: nativeFact.sha256,
-        owned_root: lifecycleRoot, observations: [] };
-      diagnostic.isolated_executable_lifecycle = lifecycle;
-      const observe = (phase, action) => {
-        try { return action(); } catch (error) {
-          const ownedPath = (value) => typeof value === "string"
-            ? (value === lifecycleRoot || value.startsWith(lifecycleRoot + path.sep) ? value : "outside-owned-root-redacted") : null;
-          lifecycle.observations.push({ phase, code: error?.code ?? null,
-            syscall: error?.syscall ?? null, path: ownedPath(error?.path), dest: ownedPath(error?.dest) });
-          return null;
+        const componentRoot = path.join(cache, "components", matches[0], "root");
+        const helperPath = path.join(foundryRoot, "package-dist", "scripts", "lib", "foundry-runtime-environment.js");
+        const helperRelative = path.relative(componentRoot, helperPath).split(path.sep).join("/");
+        const helperFact = application.files.find((file) => file.path === helperRelative);
+        const nativeFact = tidasComponent.files.find((file) => file.path === "bin/tidas.exe");
+        assert.ok(helperFact && nativeFact);
+        assert.equal(hash(fs.readFileSync(helperPath)), helperFact.sha256);
+        assert.equal(hash(fs.readFileSync(tidasBin)), nativeFact.sha256);
+        const { copyFoundryIsolatedExecutable } = await import(pathToFileURL(helperPath).href);
+        const lifecycleRoot = fs.mkdtempSync(path.join(workspace, ".foundry", "workspaces", taskId,
+          "tmp", "assessment-lifecycle-diagnostic-"));
+        const copiedBinary = path.join(lifecycleRoot, path.basename(tidasBin));
+        const lifecycle = { source, helper_sha256: helperFact.sha256, native_sha256: nativeFact.sha256,
+          owned_root: lifecycleRoot, observations: [] };
+        diagnostic.isolated_executable_lifecycle = lifecycle;
+        const observe = (phase, action) => {
+          try { return action(); } catch (error) {
+            const ownedPath = (value) => typeof value === "string"
+              ? (value === lifecycleRoot || value.startsWith(lifecycleRoot + path.sep) ? value : "outside-owned-root-redacted") : null;
+            lifecycle.observations.push({ phase, code: error?.code ?? null,
+              syscall: error?.syscall ?? null, path: ownedPath(error?.path), dest: ownedPath(error?.dest) });
+            return null;
+          }
+        };
+        try {
+          const prepared = observe("copy", () => {
+            copyFoundryIsolatedExecutable(tidasBin, copiedBinary);
+            assert.equal(hash(fs.readFileSync(copiedBinary)), nativeFact.sha256);
+            return true;
+          });
+          if (prepared) {
+            const environment = createFoundryIsolatedChildEnvironment({ tempRoot: lifecycleRoot, sourceEnv: env });
+            const nativeResult = observe("execute", () => runTidasRowsValidation({ repoRoot: foundryRoot,
+              options: { tidasBin: copiedBinary, rowsFile: rows.path, type: "process",
+                outDir: path.join(lifecycleRoot, "schema") }, environment }));
+            lifecycle.native_exit = nativeResult?.exit_code ?? null;
+            lifecycle.native_status = nativeResult?.report?.status ?? null;
+          }
+        } finally {
+          observe("immediate-remove", () => fs.rmSync(lifecycleRoot, { recursive: true, force: true }));
+          lifecycle.cleanup_absent = !fs.existsSync(lifecycleRoot);
         }
-      };
-      try {
-        const prepared = observe("copy", () => {
-          copyFoundryIsolatedExecutable(tidasBin, copiedBinary);
-          assert.equal(hash(fs.readFileSync(copiedBinary)), nativeFact.sha256);
-          return true;
-        });
-        if (prepared) {
-          const environment = createFoundryIsolatedChildEnvironment({ tempRoot: lifecycleRoot, sourceEnv: env });
-          const nativeResult = observe("execute", () => runTidasRowsValidation({ repoRoot: foundryRoot,
-            options: { tidasBin: copiedBinary, rowsFile: rows.path, type: "process",
-              outDir: path.join(lifecycleRoot, "schema") }, environment }));
-          lifecycle.native_exit = nativeResult?.exit_code ?? null;
-          lifecycle.native_status = nativeResult?.report?.status ?? null;
-        }
-      } finally {
-        observe("immediate-remove", () => fs.rmSync(lifecycleRoot, { recursive: true, force: true }));
-        lifecycle.cleanup_absent = !fs.existsSync(lifecycleRoot);
-      }
       } catch (error) {
         // Instrumentation must not replace the original runtime failure.
         diagnostic.isolated_executable_lifecycle ??= {};
