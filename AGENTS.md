@@ -42,9 +42,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: c9b742a7a83c8342edca916cd523f47694416ba2
-lastReviewedNote: "Reviewed Skills #142 V5 instructions: separate frozen-baseline OAT/uncertainty, exact configuration and fact provenance, view2/export3 and current versus historical authority; installed launcher bytes and P2/P3 defaults stay unchanged. Synthetic copied-package tests do not establish actual P4 qualification."
+lastReviewedAt: 2026-11-05
+lastReviewedCommit: 17d3e399c5bc3c689cca8b384d96ea55bed4ff77
+lastReviewedNote: "Reviewed Skills #146 conditional V6 method guidance, exact installed-owner schemas and copied UNKNOWN/no-replay boundary while retaining full #142/#144 source composition. No launcher, scientific, permission, runtime-admission or Main-inclusion authority is added; actual paired-runtime and professional acceptance remain separate."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

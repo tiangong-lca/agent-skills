@@ -267,3 +267,40 @@ test('copied Study V5 denial preserves the exact request and never changes autho
   assert.equal(observed.status,1);assert.equal(observed.stdout,'');assert.deepEqual(JSON.parse(observed.stderr),{error:{code:'FORBIDDEN',message:'Current advanced review authority denied.'}});assert.deepEqual(readFileSync(f.env.CALL_LOG,'utf8').trim().split('\n').map(line=>JSON.parse(line)),[args]);assert.equal(readFileSync(file,'utf8'),original);
  }finally{rmSync(f.dir,{recursive:true,force:true});}
 });
+
+test('copied Study V6 preserves method command selection, exact evidence and UNKNOWN intent without replay', () => {
+  const f = fixture();
+  try {
+    const copied = path.join(f.dir, 'copied-method-study');
+    cpSync(path.join(root, 'lca-study'), copied, { recursive: true });
+    const file = path.join(f.dir, 'method-input.json');
+    const original = JSON.stringify({schemaVersion:'lca.study-api.v6',requestId:'original-method-request',idempotencyKey:'original-method-key',studyId:'same-study',content:{schemaVersion:'lca.study-method-evidence.v1',requirementId:'PEF-01',declaredKind:'sourceRecord',title:'Recorded evidence 🧪',statement:'Unverified original evidence',citations:[]}});
+    writeFileSync(file, original);
+    const state = path.join(f.dir, 'original-method-state');
+    const commands = [
+      ['study','capabilities','--api-version','6','--json'],
+      ...[['method','evidence','register'],['method','evidence','get'],['method','assessment','request'],['method','assessment','get'],['method','assessment','task','get'],['method','assessment','task','wait'],['method','assessment','task','cancel'],['artifact','download'],['report','create'],['report','save'],['report','freeze'],['report','view'],['report','current'],['review','record'],['report','finalize'],['share','create'],['share','revoke']].map(action => ['study',...action,'--api-version','6','--input',file,'--state-dir',state,'--json']),
+      ['study','export','download','--api-version','6','--input',file,'--output-dir','new-export','--anchors','independent-anchors.json','--expected','selected-export.json','--json'],
+      ['study','share','download','--api-version','6','--input',file,'--output-dir','new-share','--anchors','independent-anchors.json','--expected','selected-export.json','--json'],
+      ['study','export','verify','--api-version','6','--directory','new-export','--anchors','independent-anchors.json','--expected','selected-export.json','--json'],
+      ['study','request','recover','--intent-file',path.join(state,'original-intent.json'),'--json'],
+    ];
+    const entry = path.join(copied, 'scripts', 'run-cli.mjs');
+    for (const args of commands) {
+      const result = run(entry, args, f.env, f.dir);
+      assert.equal(result.status, 17, result.stderr);
+      assert.equal(result.stderr, 'owner diagnostic\n');
+      assert.deepEqual(JSON.parse(result.stdout), {args,status:'UNKNOWN',originalAttempt:'keep-me'});
+      assert.equal(readFileSync(file, 'utf8'), original);
+    }
+    assert.equal(readFileSync(f.env.CALL_LOG, 'utf8'), 'called\n'.repeat(commands.length));
+    // Refuse changed owner qualification before any additional method dispatch.
+    writeFileSync(f.file, '{}');
+    const refused = run(entry, commands[3], f.env, f.dir);
+    assert.equal(refused.status, 1);
+    assert.equal(readFileSync(f.env.CALL_LOG, 'utf8'), 'called\n'.repeat(commands.length));
+    for (const lib of ['cli-launcher.mjs','cli-installed.mjs','cli-development.mjs']) {
+      assert.deepEqual(readFileSync(path.join(copied,'scripts','lib',lib)),readFileSync(path.join(root,'scripts','lib',lib)));
+    }
+  } finally { rmSync(f.dir, {recursive:true,force:true}); }
+});
