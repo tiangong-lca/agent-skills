@@ -110,7 +110,7 @@ jobs:
   windows-diagnostics:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.windows_diagnostics }}
     runs-on: windows-latest
-    timeout-minutes: 50
+    timeout-minutes: 60
     steps:
       - name: Checkout exact diagnostic source
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
