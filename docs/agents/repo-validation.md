@@ -36,8 +36,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 8c2d96200aff353b8219ad3aa469d52ffb0b4e6d
-lastReviewedNote: "Reviewed Skills #139 P3 Study instructions: exact public v4 review/finalization/named sharing, original-key recovery and current versus historical state. P2 recipes and launcher bytes remain; no runtime reselection, direct transport, grant manufacture or actual qualification claim."
+lastReviewedCommit: c9b742a7a83c8342edca916cd523f47694416ba2
+lastReviewedNote: "Reviewed Skills #144 diagnostic-only Windows controls: default four-platform qualification, immutable public assets, original assertions/deadlines and owner boundaries remain unchanged; manual controls retain bounded environment/sequential evidence."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -133,6 +133,8 @@ For retained import/source-evidence helpers, review both invocation contexts: an
 For Skills #118, the copied entry's type-wide Process interaction and dual-Process object-scope fixtures were delivered under the qualified 0.1.13 lock and remain mandatory under the current adjacent qualified 0.1.15 lock. They must prove a brief, a clear question, `investigate` retaining the original words, a superseding decision, fresh-process persistence, current row and interaction hashes, P2 work while P1 waits, exact per-object decision IDs, indexed adoption, P1-only correction and an honest partial recap. The earlier Foundry #197 read-only mine-water replay used 0.1.12 to expose a real source ambiguity and missing references; it does not validate or deliver the separate `tiangong-lca/data#33` XML repair. No synthetic or read-only result supplies scientific measurements or write permission.
 
 The relevant pull-request/manual matrix runs the same test on all four supported native platforms and retains one `tiangong-skills.foundry-public-install.v1` report per platform. `FOUNDRY_INSTALL_PROOF_DIR` optionally selects an absolute output directory for these test reports; it is not forwarded to the installed runtime and cannot select its manifest or credentials. The report binds the independently qualified release expectation, shipped lock digest, observed runtime identity and individual check outcomes.
+
+For Skills #144 investigation, manual dispatch with `windows_diagnostics=true` selects a separate bounded Windows job. Its independent private-profile, OS and system-only module-path controls keep the original 90-second startup/refusal deadlines, immutable bootstrap hash and fresh private trees; a final original-environment probe checks ordering. It then runs the unchanged public-install test once without concurrent repository test files, retaining its 30-minute test timeout. The diagnostic job retains control, raw test and cleanup/owned-process termination evidence. This opt-in observation is separate from normal qualification: default dispatch and pull requests retain the complete four-platform matrix, and diagnostic success alone does not qualify a correction or waive a failed assertion.
 
 The copied entry must execute an exact returned command action in a new process and retain ready runtime qualification. Its independent manifest digest must also reject a changed action-cache snapshot. These checks protect the managed-context correction from Foundry #151; running every continuation through the bootstrap alone cannot prove the returned-action contract. The relevant PR matrix also covers `.gitattributes` changes, because newline conversion must not alter the original final lock bytes.
 
