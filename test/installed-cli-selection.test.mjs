@@ -230,3 +230,40 @@ test('copied Study delegation denial is returned once without changing authority
   assert.equal(existsSync(path.join(f.installation,'src')),false);assert.equal(existsSync(path.join(f.dir,'scripts')),false);
  }finally{rmSync(f.dir,{recursive:true,force:true});}
 });
+
+test('copied Study forwards V5 argv and preserves canonical input bytes and original UNKNOWN state', () => {
+ const f=fixture();
+ try {
+  const copied=path.join(f.dir,'copied-advanced-study');cpSync(path.join(root,'lca-study'),copied,{recursive:true});
+  const file=path.join(f.dir,'advanced-input.json');
+  const original=JSON.stringify({schemaVersion:'lca.study-api.v5',requestId:'original-request',idempotencyKey:'original-key',profileId:'lca.study-sensitivity-oat.v1',config:{schemaVersion:'lca.study-analysis-config.v2',kind:'sensitivityOat',baselineRunId:'issued-baseline',parameters:[{path:'/instances/a/exchanges/e/amount',unit:'kg',baselineAmount:'1.0000000000000001e18',low:'1e18',high:'1.1e18'}]}});
+  writeFileSync(file,original);const privateState=path.join(f.dir,'original-private-state');
+  const commands=[
+   ['study','capabilities','--api-version','5','--json'],
+   ['study','analysis','parameters','--api-version','5','--input',file,'--json'],
+   ['study','analysis','request','--api-version','5','--input',file,'--state-dir',privateState,'--json'],
+   ['study','analysis','task','wait','--api-version','5','--input',file,'--json'],
+   ['study','report','create','--api-version','5','--input',file,'--state-dir',privateState,'--json'],
+   ['study','review','record','--api-version','5','--input',file,'--state-dir',privateState,'--json'],
+   ['study','export','download','--api-version','5','--input',file,'--output-dir','new-export','--anchors','independent-anchors.json','--expected','selected-export.json','--json'],
+   ['study','share','download','--api-version','5','--input',file,'--output-dir','new-share','--anchors','independent-anchors.json','--expected','selected-export.json','--json'],
+   ['study','export','verify','--api-version','5','--directory','new-export','--anchors','independent-anchors.json','--expected','selected-export.json','--json'],
+   ['study','request','recover','--intent-file',path.join(privateState,'original-intent.json'),'--json'],
+  ];
+  for(const args of commands){const observed=run(path.join(copied,'scripts','run-cli.mjs'),args,f.env,f.dir);assert.equal(observed.status,17,observed.stderr);assert.equal(observed.stderr,'owner diagnostic\n');assert.deepEqual(JSON.parse(observed.stdout),{args,status:'UNKNOWN',originalAttempt:'keep-me'});assert.equal(readFileSync(file,'utf8'),original);}
+  assert.equal(readFileSync(f.env.CALL_LOG,'utf8'),'called\n'.repeat(commands.length));
+  for(const name of ['src','.git','dist','node_modules'])assert.equal(existsSync(path.join(f.installation,name)),false);
+  for(const lib of ['cli-launcher.mjs','cli-installed.mjs','cli-development.mjs'])assert.deepEqual(readFileSync(path.join(copied,'scripts','lib',lib)),readFileSync(path.join(root,'scripts','lib',lib)));
+ }finally{rmSync(f.dir,{recursive:true,force:true});}
+});
+
+test('copied Study V5 denial preserves the exact request and never changes authority or retries', () => {
+ const f=fixture();
+ try{
+  const copied=path.join(f.dir,'copied-advanced-study');cpSync(path.join(root,'lca-study'),copied,{recursive:true});
+  const file=path.join(f.dir,'advanced-review.json'),original=JSON.stringify({schemaVersion:'lca.study-api.v5',requestId:'original-request',idempotencyKey:'original-key',delegationId:null});writeFileSync(file,original);
+  writeFileSync(path.join(f.installation,'business.mjs'),`import fs from 'node:fs';fs.appendFileSync(process.env.CALL_LOG,JSON.stringify(process.argv.slice(2))+'\\n');console.error(JSON.stringify({error:{code:'FORBIDDEN',message:'Current advanced review authority denied.'}}));process.exitCode=1;`);
+  const args=['study','review','record','--api-version','5','--input',file,'--json'];const observed=run(path.join(copied,'scripts','run-cli.mjs'),args,f.env,f.dir);
+  assert.equal(observed.status,1);assert.equal(observed.stdout,'');assert.deepEqual(JSON.parse(observed.stderr),{error:{code:'FORBIDDEN',message:'Current advanced review authority denied.'}});assert.deepEqual(readFileSync(f.env.CALL_LOG,'utf8').trim().split('\n').map(line=>JSON.parse(line)),[args]);assert.equal(readFileSync(file,'utf8'),original);
+ }finally{rmSync(f.dir,{recursive:true,force:true});}
+});

@@ -36,8 +36,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-04
-lastReviewedCommit: 8c2d96200aff353b8219ad3aa469d52ffb0b4e6d
-lastReviewedNote: "Reviewed Skills #139 P3 Study instructions: exact public v4 review/finalization/named sharing, original-key recovery and current versus historical state. P2 recipes and launcher bytes remain; no runtime reselection, direct transport, grant manufacture or actual qualification claim."
+lastReviewedCommit: c9b742a7a83c8342edca916cd523f47694416ba2
+lastReviewedNote: "Reviewed Skills #142 V5 instructions: separate frozen-baseline OAT/uncertainty, exact configuration and fact provenance, view2/export3 and current versus historical authority; installed launcher bytes and P2/P3 defaults stay unchanged. Synthetic copied-package tests do not establish actual P4 qualification."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -139,3 +139,5 @@ The copied entry must execute an exact returned command action in a new process 
 The copied `lca-study` package is covered by installed-selection tests for byte-identical launcher closure, offline help/missing configuration, original argv/UNKNOWN preservation and refusal after expectation drift. Repository tests use an explicitly synthetic owner and do not establish Study API or numerical execution. Actual configured installed CLI/auth/DB/native Worker/report/offline verification belongs to the P2 workspace qualification and must run outside a source checkout before phase acceptance.
 
 For the P3 Study extension, copied-wrapper tests preserve explicit v4 argv and original inputs, UNKNOWN and delegation-denial results without replay or fallback. Independent forward evaluation must exercise new-report approval, an ambiguous pending decision, original finalization versus later current state, and revoked/withdrawn sharing. Synthetic fixtures and instruction review do not replace the installed Skill/CLI/Platform actual flow under workspace #2180.
+
+Skills #142 adds copied Study V5 regression cases for explicit versioned argv, unchanged canonical configuration/input bytes, UNKNOWN preservation and denial without replay or authority changes. These are synthetic installed-owner boundary tests. Validate the touched package and canonical gate against the environment-selected qualified installation; actual V5 CLI/service/native/report qualification remains separate under workspace #2181. Preserve P2/P3 package, journal and launcher tests.

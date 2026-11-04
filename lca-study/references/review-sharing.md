@@ -1,6 +1,6 @@
 # Review, finalization and named sharing
 
-Use this reference when the user requests P3 actions. All commands below use this copied package's `node scripts/run-cli.mjs` prefix. Keep its configured qualified installation and independent runtime expectation unchanged. No source checkout, package download, direct API/SQL, credential parsing or local review/numerical engine belongs here.
+Use this reference when the user requests P3 actions. Advanced P4 reports use the separate [V5 recipes](advanced-analysis.md); keep the explicit version, view2/renderer2 and manifest3 family rather than reusing these P3 wire fields. All commands below use this copied package's `node scripts/run-cli.mjs` prefix. Keep its configured qualified installation and independent runtime expectation unchanged. No source checkout, package download, direct API/SQL, credential parsing or local review/numerical engine belongs here.
 
 ## Select the exact object and available action
 
