@@ -35,9 +35,9 @@ checkPaths:
   - scripts/sync-tidas-public-rules.mjs
   - package.json
   - pnpm-lock.yaml
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 03bab7930f54f7c713f078a52d12e4afda641bb8
-lastReviewedNote: "Reviewed Skills #144 Windows CI test-file serialization after source-bound controls: all original assertions, private isolation, deadlines and immutable assets remain. Environment groups and sequential public consumer passed; historical startup failures and unlocated EPERM retain explicit causal limits."
+lastReviewedAt: 2026-11-05
+lastReviewedCommit: cf6ce2b55211a9987c78063b319f9156803177bb
+lastReviewedNote: "Reviewed local Skills #142/#144 development composition: preserve V5 OAT/uncertainty, exact provenance, view2/export3, P2/P3 defaults and launcher identity; retain exact Windows serialization/diagnostics with original assertions, isolation, deadlines and immutable assets. Historical startup/EPERM causal limits remain. Fresh composed-head matrix and #144 Main eligibility are pending."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -140,3 +140,5 @@ The retained `external-dataset-curated-import` and `source-evidence-dataset-deve
 For Study qualification against an explicitly configured local service, the CLI-owned `tiangong.cli-loopback-auth-doctor.v1` output is a separate live diagnostic. The Skill checks its intended current tuple and actor; it does not promote that result into a canonical Production identity receipt or claim historical callback binding. Ordinary hosted doctor/identity behavior stays CLI-owned.
 
 The copied `lca-study` entry conditionally routes P3 work to `references/review-sharing.md` while retaining its P2 recipes. Its wrapper bytes and runtime selection remain unchanged. Current actions/roles, exact review/delegation/finalization and named-recipient policy stay with public CLI/server owners; a Skill never derives those policies or changes credentials to bypass a denial.
+
+`lca-study/references/advanced-analysis.md` holds conditional V5 OAT/uncertainty and view2/export3 recipes. It consumes only installed public CLI commands; canonical values, configuration hashes, scientific execution, role policy, journals and artifact verification remain with their existing owners. The copied launcher graph is unchanged.

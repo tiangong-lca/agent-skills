@@ -35,9 +35,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 03bab7930f54f7c713f078a52d12e4afda641bb8
-lastReviewedNote: "Reviewed Skills #144 Windows CI test-file serialization after source-bound controls: all original assertions, private isolation, deadlines and immutable assets remain. Environment groups and sequential public consumer passed; historical startup failures and unlocated EPERM retain explicit causal limits."
+lastReviewedAt: 2026-11-05
+lastReviewedCommit: cf6ce2b55211a9987c78063b319f9156803177bb
+lastReviewedNote: "Reviewed local Skills #142/#144 development composition: preserve V5 OAT/uncertainty, exact provenance, view2/export3, P2/P3 defaults and launcher identity; retain exact Windows serialization/diagnostics with original assertions, isolation, deadlines and immutable assets. Historical startup/EPERM causal limits remain. Fresh composed-head matrix and #144 Main eligibility are pending."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -143,3 +143,5 @@ The copied entry must execute an exact returned command action in a new process 
 The copied `lca-study` package is covered by installed-selection tests for byte-identical launcher closure, offline help/missing configuration, original argv/UNKNOWN preservation and refusal after expectation drift. Repository tests use an explicitly synthetic owner and do not establish Study API or numerical execution. Actual configured installed CLI/auth/DB/native Worker/report/offline verification belongs to the P2 workspace qualification and must run outside a source checkout before phase acceptance.
 
 For the P3 Study extension, copied-wrapper tests preserve explicit v4 argv and original inputs, UNKNOWN and delegation-denial results without replay or fallback. Independent forward evaluation must exercise new-report approval, an ambiguous pending decision, original finalization versus later current state, and revoked/withdrawn sharing. Synthetic fixtures and instruction review do not replace the installed Skill/CLI/Platform actual flow under workspace #2180.
+
+Skills #142 adds copied Study V5 regression cases for explicit versioned argv, unchanged canonical configuration/input bytes, UNKNOWN preservation and denial without replay or authority changes. These are synthetic installed-owner boundary tests. Validate the touched package and canonical gate against the environment-selected qualified installation; actual V5 CLI/service/native/report qualification remains separate under workspace #2181. Preserve P2/P3 package, journal and launcher tests.

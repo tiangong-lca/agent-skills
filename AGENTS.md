@@ -42,9 +42,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 03bab7930f54f7c713f078a52d12e4afda641bb8
-lastReviewedNote: "Reviewed Skills #144 Windows CI test-file serialization after source-bound controls: all original assertions, private isolation, deadlines and immutable assets remain. Environment groups and sequential public consumer passed; historical startup failures and unlocated EPERM retain explicit causal limits."
+lastReviewedAt: 2026-11-05
+lastReviewedCommit: cf6ce2b55211a9987c78063b319f9156803177bb
+lastReviewedNote: "Reviewed local Skills #142/#144 development composition: preserve V5 OAT/uncertainty, exact provenance, view2/export3, P2/P3 defaults and launcher identity; retain exact Windows serialization/diagnostics with original assertions, isolation, deadlines and immutable assets. Historical startup/EPERM causal limits remain. Fresh composed-head matrix and #144 Main eligibility are pending."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
@@ -161,3 +161,5 @@ The `pre-push` hook runs `scripts/docpact-gate.sh`, which delegates CLI lookup t
 `foundry-tidas-import` is the ordinary TianGong Foundry entry. Its instructions consume the public task protocol and current structured actions; the internal authoring role stays on demand. Its bundled bootstrap scripts and adjacent final lock select independently qualified Foundry 0.1.15 (release source `0ab6b54513acccfe3253ea583b4f6b2e678c0485`), with its own bundled CLI 0.1.24 independently bound by Foundry provenance, separate from the environment-selected wrapper CLI. The four-platform copied-entry test must prove actual installation and task operation before delivery; source validation alone does not establish installability.
 
 The retained `external-dataset-curated-import` and `source-evidence-dataset-development` skills support independent CLI workflows. Within a registered public Foundry task they act as domain helpers over current work items and supplied actions; they return selected input files and cannot manually advance queues, checkpoints, registered artifacts or attempts. Their paired agent prompts preserve this boundary.
+
+The Study P4 reference uses explicit V5 installed commands for separately admitted OAT sensitivity and bounded uncertainty. Skills owns the workflow instructions only; it does not sample, calculate, choose scientific settings, rebuild signatures or expand role/source authority. Existing P2/P3 defaults and bundled launcher bytes remain unchanged.
