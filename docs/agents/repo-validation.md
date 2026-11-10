@@ -35,9 +35,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-05
-lastReviewedCommit: 17d3e399c5bc3c689cca8b384d96ea55bed4ff77
-lastReviewedNote: "Reviewed Skills #146 conditional V6 method guidance, exact installed-owner schemas and copied UNKNOWN/no-replay boundary while retaining full #142/#144 source composition. No launcher, scientific, permission, runtime-admission or Main-inclusion authority is added; actual paired-runtime and professional acceptance remain separate."
+lastReviewedAt: 2026-11-10
+lastReviewedCommit: 14f76a78d55789f3e569184780a12337e0ac4636
+lastReviewedNote: "Reviewed Skills #148 calculation-first V2 workflow, optional V3–V6 capability checks, result coverage and exact original-intent recovery. Skill IDs, CLI commands, wire contracts and launcher bytes remain unchanged. Runtime admission and professional qualification remain separate."
 related:
   - AGENTS.md
   - .docpact/config.yaml
