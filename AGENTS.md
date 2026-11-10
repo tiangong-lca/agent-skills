@@ -72,6 +72,8 @@ Load docs in this order:
 
 Do not start by inferring behavior from chat history or one skill directory alone.
 
+For the LCA Calculation skill, `lca-study` remains the installed skill ID and `study` remains the CLI command. A single admitted V2 calculation ends at the result and coverage. Route optional analyses, reports, review, sharing and industry method assessment through their own capability checks.
+
 ## Repo Ownership
 
 This repo owns:

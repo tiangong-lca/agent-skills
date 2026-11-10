@@ -93,7 +93,9 @@ The thin installed adapter passes the approved existing CLI expectation bytes th
 
 `--runtime-info` on the direct entry returns the native descriptor plus selection source and expectation digest without executing a business operation. It creates no report files or registry. Existing task continuations retain their original owner's runtime; the independent environment default cannot change original managed commands or authorize UNKNOWN replay.
 
-The copied Study and three hybrid packages bundle all three library modules plus `scripts/run-cli.mjs` byte-for-byte. Other repository-backed skills expose a three-line `scripts/run-cli.mjs` delegator to the same repository entry, matching their existing wrapper packaging boundary.
+The copied LCA Calculation package (`lca-study`) and three hybrid packages bundle all three library modules plus `scripts/run-cli.mjs` byte-for-byte. Other repository-backed skills expose a three-line `scripts/run-cli.mjs` delegator to the same repository entry, matching their existing wrapper packaging boundary.
+
+The calculation skill guides an admitted V2 run to its result and coverage. The existing `study` command and Study request fields identify the calculation project on the wire. Optional V3–V6 workflows depend on the user's request and their own capability checks; their report, review and professional qualification requirements do not control the V2 path.
 
 ### Explicit local candidate boundary
 

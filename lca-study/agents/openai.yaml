@@ -1,4 +1,4 @@
 interface:
-  display_name: "LCA Study"
-  short_description: "Study, analyze and share traceable LCA evidence"
-  default_prompt: "Use $lca-study through the configured installed CLI to continue my research, preserve exact report and recovery identities, use only admitted analysis or method assessment and authorized review or sharing actions, and report exact findings, analysis settings, method evidence gaps, uncertainty limits and recovery identities while distinguishing current state from signed historical snapshots."
+  display_name: "LCA Calculation"
+  short_description: "Calculate the impacts of a model and inspect result coverage"
+  default_prompt: "Use $lca-study through the configured installed CLI to run my LCA calculation. Return the result, units, method versions and coverage gaps. Preserve exact input and recovery identities. Add scenario comparison, analysis or reports only when requested, and distinguish current state from signed historical snapshots."
