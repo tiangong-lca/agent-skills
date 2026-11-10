@@ -43,8 +43,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-10
-lastReviewedCommit: 14f76a78d55789f3e569184780a12337e0ac4636
-lastReviewedNote: "Reviewed Skills #148 calculation-first V2 workflow, optional V3–V6 capability checks, result coverage and exact original-intent recovery. Skill IDs, CLI commands, wire contracts and launcher bytes remain unchanged. Runtime admission and professional qualification remain separate."
+lastReviewedCommit: db8c30fd07de3824ef5c5dc98636fd9566fe8078
+lastReviewedNote: "Reviewed Skills #148 V2 workflow and readback bindings. The prepared reference supplies the functional unit, the frozen Scenario preparation supplies the input hash, and the bound artifacts supply result axes and coverage. Optional capability and original-intent recovery rules still apply."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

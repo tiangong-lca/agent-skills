@@ -3,8 +3,8 @@ layout: repo
 # Current release proof, 2026-09-10: Skills #94 aligns wrappers and all three identical bundles to verified CLI 0.1.13 / cli-v0.1.13 / b5e209259d3bb06205b9af131b1c0edc3fba6da2, including its original permission-preserving POSIX bootstrap. The adjacent final Foundry 0.1.7 lock is byte-identical to the independently verified public release; the copied-entry native matrix proves the installed package.
 # Release proof, 2026-09-02: Skills #91 pins verified CLI 0.1.8 / b4701984b4a86fe4680fa5995d0a0b6753dbdfd6; all three bundled launchers must remain byte-identical to their root authority.
 lastReviewedAt: "2026-11-10"
-lastReviewedCommit: "14f76a78d55789f3e569184780a12337e0ac4636"
-lastReviewedNote: "Reviewed Skills #148 calculation-first V2 workflow, optional V3–V6 capability checks, result coverage and exact original-intent recovery. Skill IDs, CLI commands, wire contracts and launcher bytes remain unchanged. Runtime admission and professional qualification remain separate."
+lastReviewedCommit: "db8c30fd07de3824ef5c5dc98636fd9566fe8078"
+lastReviewedNote: "Reviewed Skills #148 V2 workflow and readback bindings. The prepared reference supplies the functional unit, the frozen Scenario preparation supplies the input hash, and the bound artifacts supply result axes and coverage. Optional capability and original-intent recovery rules still apply."
 
 catalog:
   repos:
