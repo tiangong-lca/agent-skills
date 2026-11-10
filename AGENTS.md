@@ -42,9 +42,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-05
-lastReviewedCommit: 17d3e399c5bc3c689cca8b384d96ea55bed4ff77
-lastReviewedNote: "Reviewed Skills #146 conditional V6 method guidance, exact installed-owner schemas and copied UNKNOWN/no-replay boundary while retaining full #142/#144 source composition. No launcher, scientific, permission, runtime-admission or Main-inclusion authority is added; actual paired-runtime and professional acceptance remain separate."
+lastReviewedAt: 2026-11-10
+lastReviewedCommit: dab11d7a209dd3400572a2011a40549cce4f43d1
+lastReviewedNote: "Reviewed Skills #148 V2 input and readback bindings, including per-method complete, partial and unavailable results based on distinct missing factor indices. The calculation-only path retains its one-run stop point and original-intent recovery."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
@@ -71,6 +71,8 @@ Load docs in this order:
 7. `scripts/validate-skills.mjs` only when validation behavior itself is part of the task
 
 Do not start by inferring behavior from chat history or one skill directory alone.
+
+For the LCA Calculation skill, `lca-study` remains the installed skill ID and `study` remains the CLI command. A single admitted V2 calculation ends at the result and coverage. Route optional analyses, reports, review, sharing and industry method assessment through their own capability checks.
 
 ## Repo Ownership
 

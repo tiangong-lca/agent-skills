@@ -35,9 +35,9 @@ checkPaths:
   - scripts/sync-tidas-public-rules.mjs
   - package.json
   - pnpm-lock.yaml
-lastReviewedAt: 2026-11-05
-lastReviewedCommit: 17d3e399c5bc3c689cca8b384d96ea55bed4ff77
-lastReviewedNote: "Reviewed Skills #146 conditional V6 method guidance, exact installed-owner schemas and copied UNKNOWN/no-replay boundary while retaining full #142/#144 source composition. No launcher, scientific, permission, runtime-admission or Main-inclusion authority is added; actual paired-runtime and professional acceptance remain separate."
+lastReviewedAt: 2026-11-10
+lastReviewedCommit: dab11d7a209dd3400572a2011a40549cce4f43d1
+lastReviewedNote: "Reviewed Skills #148 V2 input and readback bindings, including per-method complete, partial and unavailable results based on distinct missing factor indices. The calculation-only path retains its one-run stop point and original-intent recovery."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -93,7 +93,9 @@ The thin installed adapter passes the approved existing CLI expectation bytes th
 
 `--runtime-info` on the direct entry returns the native descriptor plus selection source and expectation digest without executing a business operation. It creates no report files or registry. Existing task continuations retain their original owner's runtime; the independent environment default cannot change original managed commands or authorize UNKNOWN replay.
 
-The copied Study and three hybrid packages bundle all three library modules plus `scripts/run-cli.mjs` byte-for-byte. Other repository-backed skills expose a three-line `scripts/run-cli.mjs` delegator to the same repository entry, matching their existing wrapper packaging boundary.
+The copied LCA Calculation package (`lca-study`) and three hybrid packages bundle all three library modules plus `scripts/run-cli.mjs` byte-for-byte. Other repository-backed skills expose a three-line `scripts/run-cli.mjs` delegator to the same repository entry, matching their existing wrapper packaging boundary.
+
+The calculation skill guides an admitted V2 run to its result and coverage. The existing `study` command and Study request fields identify the calculation project on the wire. Optional V3–V6 workflows depend on the user's request and their own capability checks; their report, review and professional qualification requirements do not control the V2 path.
 
 ### Explicit local candidate boundary
 

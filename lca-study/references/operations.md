@@ -1,6 +1,8 @@
 # Operation recipes
 
-These recipes retain the P2 core v2 and reporting v3 interfaces. For requested P3 review/finalization/named sharing, use [review and sharing](review-sharing.md); it explicitly selects v4 without changing these defaults. For requested OAT sensitivity or bounded uncertainty, use [advanced analysis](advanced-analysis.md) with explicit V5 selection; it does not change these recipes. Run commands through this package's `scripts/run-cli.mjs`; the following table omits that common prefix. Operation/schema/request IDs are filled by the CLI when absent. Mutations use `--input <file> --state-dir <private-retained-directory> --json`; reads use `--input <file> --json`. Preserve returned envelopes and use their `data` resource, not an invented success value.
+The core calculation uses V2. Use V3 for requested contribution analysis, comparison or ordinary reporting. Use [review and sharing](review-sharing.md) for V4, [advanced analysis](advanced-analysis.md) for V5 or [method assessment](method-assessment.md) for V6 when the user requests those capabilities. Run commands through this package's `scripts/run-cli.mjs`; the following table omits that common prefix. Operation/schema/request IDs are filled by the CLI when absent. Mutations use `--input <file> --state-dir <private-retained-directory> --json`; reads use `--input <file> --json`. Preserve returned envelopes and use their `data` resource, not an invented success value.
+
+For one calculation, check `study capabilities --json`, acquire and prepare the model, freeze the calculation definition and a single baseline scenario (`overrides: []`), then submit one run. Use its typed task and `study run get` to confirm completion, then [read the V2 result](#read-one-v2-result).
 
 | Command | Request fields and source |
 | --- | --- |
@@ -18,7 +20,7 @@ These recipes retain the P2 core v2 and reporting v3 interfaces. For requested P
 | `study scenario create` | `studyRevisionId`, `parentScenarioRevisionId` (null initially), `overrides` |
 | `study scenario get` | `scenarioRevisionId` |
 | `study scenario freeze` | `target: {type: "scenarioRevision", id, expectedRevision}`, current `expectedContentHash`, completed `modelPreparationId` |
-| `study run submit` | Frozen `studyRevisionId`, `scenarioRevisionId`, issued `expectedInputHash`, exact `calculationContractRef`, admitted `profileId` |
+| `study run submit` | Frozen `studyRevisionId` and `scenarioRevisionId`, the completed preparation’s `inputHash` from that frozen Scenario as `expectedInputHash`, exact `calculationContractRef` and admitted `profileId` |
 | `study run get` | `runId` |
 | `study task get/wait/cancel` | `studyId`, `resource: {type, id}` selecting `modelSourceAcquisition`, `modelPreparation` or `run`; cancellation also needs `reason` |
 | `study analysis request` | `studyId`, `profileId: "lca.study-analysis-explicit-v1"`, `config: {schemaVersion: "lca.study-analysis-config.v1", kind, runIds}`; kind is contribution (one Run) or comparison (two ordered distinct Runs); CLI derives the config hash |
@@ -34,11 +36,25 @@ These recipes retain the P2 core v2 and reporting v3 interfaces. For requested P
 
 Snapshot preparation source is `{type: "modelSourceSnapshot", snapshotId, contentHash, digestScope: "artifact_bytes_sha256"}` from the issued snapshot artifact. Scenario preparation source is `{type: "scenarioRevision", scenarioRevisionId, expectedRevision, contentHash}` from the current Scenario draft; omit both `methodRefs` and `cutoffs` because the frozen base supplies them. Wait for completion before adopting its references.
 
-The Study definition is `{goal, functionalUnit: {amount, unit, referenceFlowId}, systemBoundary, methodRefs, assumptions}`. Functional-unit amount is a positive decimal string. Each method is an exact `{type: "datasetRevision", datasetType: "lciamethod", id, version}`. Assumptions carry `{id, statement, evidenceRef}`. Cutoffs carry `{port: {instanceId, exchangeId}, reason}`. These are scientific choices supported by evidence, not arbitrary values to satisfy a schema.
+The calculation definition is `{goal, functionalUnit: {amount, unit, referenceFlowId}, systemBoundary, methodRefs, assumptions}`. Set `goal` to the calculation purpose and `systemBoundary` to the actual model scope. Download the completed base preparation’s `inputArtifactRef` before drafting the definition. Copy its `numeric.reference.flow.id` to `functionalUnit.referenceFlowId` and `numeric.reference.unit` to `functionalUnit.unit`. Express the requested amount in that exact unit as a positive decimal string within the prepared input’s `limits.maxFunctionalUnitAmount`. Each method is an exact `{type: "datasetRevision", datasetType: "lciamethod", id, version}`. Assumptions carry `{id, statement, evidenceRef}`. Cutoffs carry `{port: {instanceId, exchangeId}, reason}`. Base these choices on the model and available evidence.
 
 The initial Scenario override is `{path: "/instances/<instance>/exchanges/<exchange>/amount", value: <finite-number>}`; an empty array is a baseline. Overrides replace the complete current layer relative to the StudyRevision, rather than merging a parent Scenario layer. A draft can be saved using its fresh typed target; branching uses a frozen parent. Do not submit unsupported provider or parameter mutations.
 
-## Claims and export
+## Read one V2 result
+
+1. Read the run with `study run get` and confirm `execution.status` is `completed`. Record `run.validity` separately from execution status. Use `study model get` with the run’s `modelPreparationId` to obtain the preparation bound to this run.
+2. Download both exact issued descriptors through the default V2 `study artifact download`: the run’s `resultRef` (`runResult`) and that preparation’s `inputArtifactRef` (`modelInput`). Interpret `lca.study-result.v1` only after matching `result.inputHash` to the run and prepared input’s `inputHash`, and `result.preparedArtifactSha256` to `preparation.inputArtifactRef.contentHash`. If either artifact is unavailable or the bindings disagree, explain why the values cannot be reported.
+3. Pair each `result.h[i]` with the exact method ID, version and unit in `prepared.numeric.methodAxes[i]`. Verify that `result.coverage` matches the prepared input’s `coverage` before interpreting the scores. For each gap, pair its exact `method` with `prepared.numeric.inventoryAxes[inventoryIndex]` using the zero-based index to identify the Flow version, direction and inventory unit.
+4. For each method ID and version, count the distinct gap indices and compare that count with `prepared.numeric.inventoryAxes.length`. Use these counts to classify coverage regardless of the numerical `C` or `h` values.
+   - With zero gaps, report `h[i]` as complete, including a genuine zero. An empty inventory follows this case.
+   - When every axis of a nonempty inventory has a gap, report coverage as unknown and the score as unavailable (`null` in structured output), even if the raw value is zero.
+   - When only some axes have gaps, report `h[i]` as a partial characterized subtotal and list those gaps.
+
+Keep `completeLciaScores`, `qualityFindings` and the prepared model’s declared cutoffs visible. Preserve the original artifact bytes.
+
+Stop here for a calculation-only request.
+
+## Claims and export (when requested)
 
 `content` has schemaVersion `lca.study-report-draft.v1`, `title`, nonempty `claims`, `sections`, `tables`, `charts` and `additionalLimitations`. Each claim is `{claimId, bundleRef, factId, canonicalValue, unit, display: {style: "exact"}}`: copy the complete analysis facts reference, exact fact ID, canonical decimal string or null, and unit from the producer. Do not recalculate or round the claim. Sections use `{sectionId, title, paragraphs, claimIds}`; tables and charts use their respective `tableId`/`chartId`, `title`, `claimIds`. Empty presentation arrays are allowed. Narrative text is not automatically evidence-validated.
 

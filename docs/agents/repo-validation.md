@@ -35,9 +35,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-05
-lastReviewedCommit: 17d3e399c5bc3c689cca8b384d96ea55bed4ff77
-lastReviewedNote: "Reviewed Skills #146 conditional V6 method guidance, exact installed-owner schemas and copied UNKNOWN/no-replay boundary while retaining full #142/#144 source composition. No launcher, scientific, permission, runtime-admission or Main-inclusion authority is added; actual paired-runtime and professional acceptance remain separate."
+lastReviewedAt: 2026-11-10
+lastReviewedCommit: dab11d7a209dd3400572a2011a40549cce4f43d1
+lastReviewedNote: "Reviewed Skills #148 V2 input and readback bindings, including per-method complete, partial and unavailable results based on distinct missing factor indices. The calculation-only path retains its one-run stop point and original-intent recovery."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -140,7 +140,7 @@ For Skills #144 investigation, manual dispatch with `windows_diagnostics=true` s
 
 The copied entry must execute an exact returned command action in a new process and retain ready runtime qualification. Its independent manifest digest must also reject a changed action-cache snapshot. These checks protect the managed-context correction from Foundry #151; running every continuation through the bootstrap alone cannot prove the returned-action contract. The relevant PR matrix also covers `.gitattributes` changes, because newline conversion must not alter the original final lock bytes.
 
-The copied `lca-study` package is covered by installed-selection tests for byte-identical launcher closure, offline help/missing configuration, original argv/UNKNOWN preservation and refusal after expectation drift. Repository tests use an explicitly synthetic owner and do not establish Study API or numerical execution. Actual configured installed CLI/auth/DB/native Worker/report/offline verification belongs to the P2 workspace qualification and must run outside a source checkout before phase acceptance.
+The copied `lca-study` package is covered by installed-selection tests for byte-identical launcher closure, offline help/missing configuration, original argv/UNKNOWN preservation and refusal after expectation drift. For calculation workflow guidance, trace the calculation-only request through the documented steps and installed CLI help: one baseline, current V2 capabilities, one completed run and its coverage. Use the base preparation’s reference Flow and unit, the frozen Scenario preparation’s input hash, and the run’s exact result and preparation artifacts to verify the documented bindings, impact axes and coverage. Check that an unmatched artifact cannot label results and that missing characterization remains distinct from zero. Review the case where V3–V6 are unavailable and confirm no optional capability is needed to reach the stop point. Separately trace a requested analysis or report to its explicit capability check and check that the original-intent recovery path is available in both cases. Repository tests use an explicitly synthetic owner and do not establish API or numerical execution. Actual installed CLI/auth/DB/native Worker numerical proof and optional report verification are separate runtime qualifications.
 
 For the P3 Study extension, copied-wrapper tests preserve explicit v4 argv and original inputs, UNKNOWN and delegation-denial results without replay or fallback. Independent forward evaluation must exercise new-report approval, an ambiguous pending decision, original finalization versus later current state, and revoked/withdrawn sharing. Synthetic fixtures and instruction review do not replace the installed Skill/CLI/Platform actual flow under workspace #2180.
 
