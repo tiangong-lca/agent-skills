@@ -36,8 +36,8 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-10
-lastReviewedCommit: db8c30fd07de3824ef5c5dc98636fd9566fe8078
-lastReviewedNote: "Reviewed Skills #148 V2 workflow and readback bindings. The prepared reference supplies the functional unit, the frozen Scenario preparation supplies the input hash, and the bound artifacts supply result axes and coverage. Optional capability and original-intent recovery rules still apply."
+lastReviewedCommit: dab11d7a209dd3400572a2011a40549cce4f43d1
+lastReviewedNote: "Reviewed Skills #148 V2 input and readback bindings, including per-method complete, partial and unavailable results based on distinct missing factor indices. The calculation-only path retains its one-run stop point and original-intent recovery."
 related:
   - AGENTS.md
   - .docpact/config.yaml
