@@ -44,7 +44,13 @@ The initial Scenario override is `{path: "/instances/<instance>/exchanges/<excha
 
 1. Read the run with `study run get` and confirm `execution.status` is `completed`. Record `run.validity` separately from execution status. Use `study model get` with the run’s `modelPreparationId` to obtain the preparation bound to this run.
 2. Download both exact issued descriptors through the default V2 `study artifact download`: the run’s `resultRef` (`runResult`) and that preparation’s `inputArtifactRef` (`modelInput`). Interpret `lca.study-result.v1` only after matching `result.inputHash` to the run and prepared input’s `inputHash`, and `result.preparedArtifactSha256` to `preparation.inputArtifactRef.contentHash`. If either artifact is unavailable or the bindings disagree, explain why the values cannot be reported.
-3. Pair each `result.h[i]` with the exact method ID, version and unit in `prepared.numeric.methodAxes[i]`. For each `result.coverage` row, pair its exact `method` with `prepared.numeric.inventoryAxes[inventoryIndex]` using the zero-based index to identify the Flow version, direction and inventory unit. Each row records a missing characterization factor. Keep `completeLciaScores`, `qualityFindings` and the prepared model’s declared cutoffs visible. Label a characterized subtotal as partial when the method has gaps. Keep unavailable values distinct from genuine zero.
+3. Pair each `result.h[i]` with the exact method ID, version and unit in `prepared.numeric.methodAxes[i]`. Verify that `result.coverage` matches the prepared input’s `coverage` before interpreting the scores. For each gap, pair its exact `method` with `prepared.numeric.inventoryAxes[inventoryIndex]` using the zero-based index to identify the Flow version, direction and inventory unit.
+4. For each method ID and version, count the distinct gap indices and compare that count with `prepared.numeric.inventoryAxes.length`. Use these counts to classify coverage regardless of the numerical `C` or `h` values.
+   - With zero gaps, report `h[i]` as complete, including a genuine zero. An empty inventory follows this case.
+   - When every axis of a nonempty inventory has a gap, report coverage as unknown and the score as unavailable (`null` in structured output), even if the raw value is zero.
+   - When only some axes have gaps, report `h[i]` as a partial characterized subtotal and list those gaps.
+
+Keep `completeLciaScores`, `qualityFindings` and the prepared model’s declared cutoffs visible. Preserve the original artifact bytes.
 
 Stop here for a calculation-only request.
 
