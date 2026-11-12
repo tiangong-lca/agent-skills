@@ -44,8 +44,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: "29207734be2a02673dc5461b1ef3597cc2a8960f"
-lastReviewedNote: "Skills #150: reviewed report language selection: one language at a time, default Chinese, translation remains caller-owned; existing runtime/hosted protocols unchanged."
+lastReviewedCommit: 3a275bb1610b4056cbeebb6c2768bf3002a2e795
+lastReviewedNote: "Reviewed trusted local Model package setup guidance and full Study case acceptance; installation qualification stays with the environment owner."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

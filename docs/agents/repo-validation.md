@@ -37,8 +37,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: "29207734be2a02673dc5461b1ef3597cc2a8960f"
-lastReviewedNote: "Skills #150: reviewed report language selection: one language at a time, default Chinese, translation remains caller-owned; existing runtime/hosted protocols unchanged."
+lastReviewedCommit: 3a275bb1610b4056cbeebb6c2768bf3002a2e795
+lastReviewedNote: "Reviewed trusted local Model package setup guidance and full Study case acceptance; installation qualification stays with the environment owner."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -146,3 +146,20 @@ Study research changes must review representative cases: product-only goals, con
 The CI test source is fixed in the workflow and qualification script. Only after frozen installation and build does the script inspect that exact source and bind its ephemeral inventory for the validation job. This is a reviewed test policy, not approval for production data. Public installed regressions independently fix the package content identity.
 
 Report guidance requires current `report render --help --json` capability checks, copied-wrapper argv/no-replay tests and an actual installed or reviewed source-candidate render. Inspect bilingual content and graph/result/source fidelity; browser/PDF qualification belongs to CLI. Do not claim autonomous scientific report correctness from a wrapper test.
+
+## Local Study case acceptance
+
+Evaluate the Study workflow with an explicitly qualified CLI and a fresh Model
+runtime configuration. Preserve original materials and trace extracted quantities
+to their source and denominator. Label task-authored synthetic records separately
+from real read-only background data. Check exact state-100 background selection,
+complete published LCI acquisition, explicit connections, local preparation and
+actual native execution. Compare inventory and LCIA against an independent numeric
+expectation, then vary the functional amount and an explicit foreground input.
+Verify saved result reads, old Run preservation, the copied Skill launcher,
+single-language report switching, graph interactions and PDF output.
+
+Run computation without network access or developer native-library/cache paths.
+Retain redacted validation and resource disposition in the delivery record; private
+acquisition wrappers stay outside Git. Agent-guided execution proves that case,
+not autonomous-agent reliability, other operating systems or scientific approval.
