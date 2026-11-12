@@ -1,6 +1,6 @@
 ---
 name: lca-study
-description: Develop or continue an LCA modeling study from a product goal, user data or an existing Model; guide evidence intake, foreground modeling, background selection, calculation, interpretation and interactive HTML/PDF research reporting. Also use for TianGong Study scenarios and revision-bound reports, review or sharing.
+description: Set up, develop or continue an LCA modeling study from a product goal, user data or an existing Model; guide evidence intake, foreground modeling, background selection, calculation, interpretation and interactive HTML/PDF research reporting. Also use for TianGong Study scenarios and revision-bound reports, review or sharing.
 ---
 
 # LCA Study
@@ -8,6 +8,8 @@ description: Develop or continue an LCA modeling study from a product goal, user
 Build a research object around an explicit Model. Keep the goal, functional unit, boundary, evidence, assumptions and actual calculation inputs connected. Start from the user's current materials; an existing Model or online Study is not required. A completed calculation supports analysis, not scientific certification.
 
 ## Start at the available evidence
+
+For a first-time user without the Skill, CLI or calculation environment, read [getting started](references/getting-started.md). Complete available installation steps and verify readiness before CLI work; preserve the installation owner's runtime selection and report unavailable release artifacts precisely. Once configured, continue here without repeating setup.
 
 Inspect the user's goal and existing files first. Resume from completed work; ask only for missing information that changes the model or interpretation. Keep an editable research brief and a source-linked inventory in the user's working directory, using readable documents or tables suited to the materials. Do not introduce a mandatory Study schema, per-step hashes or a revision workflow for local drafts. Keep raw source files intact and separate from extracted data and assumptions.
 

@@ -8,7 +8,7 @@ Discover state `100` Process candidates using supported search flags, inspect ex
 
 ## Local environment and run
 
-Read `setup model-calculation --help --json`. The environment owner can install an explicitly trusted local runtime package with `setup model-calculation --install <package-directory> --json` on macOS ARM64. It installs the engine, native dependencies and complete LCIA methods together, verifies readiness, then saves reusable configuration. No caller-maintained hashes belong in research inputs. Public download availability and qualification on other platforms must be checked separately; do not invent an available release or silently compile a sibling Worker checkout.
+Read `setup model-calculation --help --json`. The environment owner can install an explicitly trusted local runtime package with `setup model-calculation --install <package-directory> --json` on macOS ARM64, Linux glibc x64/ARM64 or Windows x64 with a qualified host-matching package. It installs the engine, native dependencies and complete LCIA methods together, verifies readiness, then saves reusable configuration. No caller-maintained hashes belong in research inputs. Public download availability and qualification on other platforms must be checked separately; do not invent an available release or silently compile a sibling Worker checkout.
 
 With existing engine and factor-cache locations, `setup model-calculation --engine <executable> --static-cache <directory> --json` verifies and saves them. Use `--check` to inspect without modifying configuration. Installation/configuration needs no login, database or queue and grants no remote permissions. Keep the selected CLI's own qualification separate from Model engine installation.
 

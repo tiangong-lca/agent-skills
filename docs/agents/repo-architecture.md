@@ -37,8 +37,8 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 3a275bb1610b4056cbeebb6c2768bf3002a2e795
-lastReviewedNote: "Reviewed trusted local Model package setup guidance and full Study case acceptance; installation qualification stays with the environment owner."
+lastReviewedCommit: 0c085debe0f92f1f887eb805c22771a63e730d5b
+lastReviewedNote: "Reviewed the Study first-use reference and bilingual entry prompts; qualified CLI selection, native package availability and human login remain explicit."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -149,3 +149,5 @@ The `lca-study` entry guides research from goals and evidence through explicit f
 Active wrappers call typed `dataset flow|process|model` actions and `review`. Searches use explicit queries/scopes, validation accepts one canonical document, and patches/diffs consume native request envelopes. Scientific authoring, dedup decisions and workflow order belong to Skills; retired automatic builders, QA directories, queues and repair aliases are not CLI capabilities. Existing Foundry tasks keep their owner-returned actions and independent runtime.
 
 Local Study reporting uses a seventh workflow step: the Skill composes a lightweight report JSON from selected evidence/Model/Run content and calls CLI `report render`. HTML/SVG/browser/print code belongs to CLI. A research report does not require hosted Study registration, approval or caller-maintained hashes. Existing signed exports retain their service-owned contracts.
+
+The Study first-use entry lives in `lca-study/references/getting-started.md`. It guides installation/configuration and then hands off to the research Skill. The one-line README prompts point there. This reference owns no installer or runtime qualification mechanism; package readiness and unavailable release artifacts remain explicit.

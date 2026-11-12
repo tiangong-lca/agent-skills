@@ -37,8 +37,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 3a275bb1610b4056cbeebb6c2768bf3002a2e795
-lastReviewedNote: "Reviewed trusted local Model package setup guidance and full Study case acceptance; installation qualification stays with the environment owner."
+lastReviewedCommit: 0c085debe0f92f1f887eb805c22771a63e730d5b
+lastReviewedNote: "Reviewed the Study first-use reference and bilingual entry prompts; qualified CLI selection, native package availability and human login remain explicit."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -163,3 +163,5 @@ Run computation without network access or developer native-library/cache paths.
 Retain redacted validation and resource disposition in the delivery record; private
 acquisition wrappers stay outside Git. Agent-guided execution proves that case,
 not autonomous-agent reliability, other operating systems or scientific approval.
+
+Study first-use guidance must cover an empty environment, reuse of a configured installation, a missing qualified CLI or native package, and login-required discovery. Check package-relative reference closure, the paired Agent prompt, copied-package offline setup behavior and the selected CLI command help. These checks do not prove public cold installation or native calculation; report those acceptance results separately.

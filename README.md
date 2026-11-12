@@ -20,9 +20,9 @@ checkPaths:
   - scripts/validate-skills.mjs
   - "*/SKILL.md"
   - "*/scripts/**"
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 8c2d96200aff353b8219ad3aa469d52ffb0b4e6d
-lastReviewedNote: "Reviewed Skills #139 P3 Study instructions: exact public v4 review/finalization/named sharing, original-key recovery and current versus historical state. P2 recipes and launcher bytes remain; no runtime reselection, direct transport, grant manufacture or actual qualification claim."
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: 0c085debe0f92f1f887eb805c22771a63e730d5b
+lastReviewedNote: "Reviewed the Study first-use reference and bilingual entry prompts; qualified CLI selection, native package availability and human login remain explicit."
 ---
 
 # Tiangong LCA Skills
@@ -249,6 +249,14 @@ On failure, retain the original failed or UNKNOWN task and its recovery evidence
 `foundry-tidas-authoring` is an internal on-demand role for a concrete Foundry work item. It reads the supplied full context and returns evidence-backed decisions or patch files to the invoking workflow. It does not install a runtime, manage authentication, apply rows or perform database operations.
 
 ## LCA Study
+
+For a first-time Agent with no Study installation, use the [getting-started guide](lca-study/references/getting-started.md). Copy this prompt after the guide is published on `main`:
+
+```text
+Read https://raw.githubusercontent.com/tiangong-lca/agent-skills/main/lca-study/references/getting-started.md, follow its setup instructions, and guide me through starting an LCA study.
+```
+
+The guide covers Skill installation, qualified CLI configuration, local engine readiness, human login when needed and the first research question. It reports unavailable release artifacts explicitly; it does not turn source availability into an installation guarantee.
 
 Install `lca-study` to guide goal definition, evidence intake/extraction, explicit foreground/background Model construction, calculation and reporting. It is independently copyable and uses the configured installed CLI above. For local reporting the Skill composes editable JSON and calls `report render`; the CLI generates a self-contained HTML report with an embedded model, language switching and browser PDF printing. Local research requires neither a hosted Study nor signed-export configuration.
 

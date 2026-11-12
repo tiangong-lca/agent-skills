@@ -20,9 +20,9 @@ checkPaths:
   - scripts/validate-skills.mjs
   - "*/SKILL.md"
   - "*/scripts/**"
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 8c2d96200aff353b8219ad3aa469d52ffb0b4e6d
-lastReviewedNote: "Reviewed Skills #139 P3 Study instructions: exact public v4 review/finalization/named sharing, original-key recovery and current versus historical state. P2 recipes and launcher bytes remain; no runtime reselection, direct transport, grant manufacture or actual qualification claim."
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: 0c085debe0f92f1f887eb805c22771a63e730d5b
+lastReviewedNote: "Reviewed the Study first-use reference and bilingual entry prompts; qualified CLI selection, native package availability and human login remain explicit."
 ---
 
 # 天工 LCA Skills
@@ -246,6 +246,14 @@ pnpm validate
 `foundry-tidas-authoring` 是面向具体 Foundry 工作项的内部按需角色。它读取已提供的完整上下文，将有证据的决定或 patch 文件交回调用流程；不安装运行时、不管理认证、不直接应用行数据或操作数据库。
 
 ## LCA 研究
+
+首次使用且尚未安装环境的 Agent，请从[启动指南](lca-study/references/getting-started.md)开始。指南发布到 `main` 后，可直接复制这句 prompt：
+
+```text
+请阅读 https://raw.githubusercontent.com/tiangong-lca/agent-skills/main/lca-study/references/getting-started.md，按说明完成安装和配置，然后引导我开始一项 LCA 研究。
+```
+
+指南覆盖 Skill 安装、合格 CLI 配置、本地引擎检查、必要时的人类登录，以及第一个研究问题；缺少发行物时明确说明，不把源码可用当作安装已就绪。
 
 `lca-study` 引导目标定义、资料收集与提取、显式前景／背景 Model 构建、计算和报告，可独立复制安装，并复用上述配置好的已安装 CLI。本地报告由 Skill 组织可编辑 JSON，调用 `report render`，由 CLI 生成内嵌模型、支持语言切换和浏览器打印 PDF 的自包含 HTML。本地研究无需创建线上 Study，也无需配置签名导出。
 
