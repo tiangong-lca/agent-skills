@@ -183,6 +183,11 @@ test('copied Study package preserves configured owner commands and UNKNOWN witho
     const originalRequest=JSON.stringify({reportRevisionId:'issued-report',expectedContentHash:'a'.repeat(64),idempotencyKey:'original-key',delegationId:'issued-one-use-delegation'});
     writeFileSync(requestFile,originalRequest);
     const v4Commands=[
+      ['setup','model-calculation','--check','--json'],
+      ['dataset','model','prepare','--input',requestFile,'--output',path.join(f.dir,'input.json'),'--json'],
+      ['dataset','model','calculate','--file',requestFile,'--output-dir',path.join(f.dir,'run-1'),'--json'],
+      ['calculation','get','--dir',path.join(f.dir,'run-1'),'--json'],
+      ['calculation','result','--dir',path.join(f.dir,'run-1'),'--kind','lcia','--json'],
       ['study','capabilities','--api-version','4','--json'],
       ['study','actions','--input',requestFile,'--json'],
       ['study','member','set','--api-version','4','--input',requestFile,'--json'],

@@ -35,9 +35,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-04
-lastReviewedCommit: 8c2d96200aff353b8219ad3aa469d52ffb0b4e6d
-lastReviewedNote: "Reviewed Skills #139 P3 Study instructions: exact public v4 review/finalization/named sharing, original-key recovery and current versus historical state. P2 recipes and launcher bytes remain; no runtime reselection, direct transport, grant manufacture or actual qualification claim."
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: c9b742a7a83c8342edca916cd523f47694416ba2
+lastReviewedNote: "Skills #150: reviewed six-stage evidence-led Model research, optional hosted Study references, local setup/result commands and normal sparse method applicability; launcher selection and disclosure authority are unchanged."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -139,3 +139,5 @@ The copied entry must execute an exact returned command action in a new process 
 The copied `lca-study` package is covered by installed-selection tests for byte-identical launcher closure, offline help/missing configuration, original argv/UNKNOWN preservation and refusal after expectation drift. Repository tests use an explicitly synthetic owner and do not establish Study API or numerical execution. Actual configured installed CLI/auth/DB/native Worker/report/offline verification belongs to the P2 workspace qualification and must run outside a source checkout before phase acceptance.
 
 For the P3 Study extension, copied-wrapper tests preserve explicit v4 argv and original inputs, UNKNOWN and delegation-denial results without replay or fallback. Independent forward evaluation must exercise new-report approval, an ambiguous pending decision, original finalization versus later current state, and revoked/withdrawn sharing. Synthetic fixtures and instruction review do not replace the installed Skill/CLI/Platform actual flow under workspace #2180.
+
+Study research changes must review representative cases: product-only goals, conflicting denominators, missing critical data, explicit state-100 background selection, complete aggregate LCI without double expansion, normal sparse LCIA applicability, and an installed CLI lacking new commands. Verify current command help and preserve existing hosted recovery and disclosure behavior. Instruction review is separate from autonomous Agent scenario evaluation; synthetic wrapper tests do not prove scientific modeling or hosted service completion.
