@@ -1,77 +1,13 @@
 #!/usr/bin/env node
-import path from 'node:path';
 import process from 'node:process';
-import { fileURLToPath } from 'node:url';
-import {
-  normalizeCliRuntimeArgs,
-  renderCliRuntimeHelp,
-  runTiangongCommand,
-} from '../../scripts/lib/cli-launcher.mjs';
+import { normalizeCliRuntimeArgs, runTiangongCommand } from "../../scripts/lib/cli-launcher.mjs";
 
-class UsageError extends Error {}
-
-const scriptDir = path.dirname(fileURLToPath(import.meta.url));
-const repoRoot = path.resolve(scriptDir, '..', '..');
-
-function fail(message) {
-  throw new UsageError(message);
-}
-
-function renderHelp() {
-  return `Usage:
-  node tiangong-lca-remote-ops/scripts/update-process-references.mjs --out-dir <dir> [options]
-
-Wrapper options:
-  --cli-dir <dir>         Select an explicit development source tiangong-cli repository path
-  -h, --help
-
-Delegates to:
-  tiangong-lca process refresh-references
-
-Runtime:
-  default                  ${renderCliRuntimeHelp()}
-  local override           --cli-dir /path/to/tiangong-cli or TIANGONG_LCA_CLI_DIR
-
-Required env for remote refresh:
-  TIANGONG_LCA_API_BASE_URL
-  TIANGONG_LCA_SUPABASE_PUBLISHABLE_KEY
-  TIANGONG_LCA_OAUTH_CLIENT_ID and a prior tiangong-lca auth login
-
-Notes:
-  - this wrapper is CLI-only; it does not own Supabase auth, session files, or schema validation logic
-  - headless execution may use only an orchestrator-injected short-lived TIANGONG_LCA_ACCESS_TOKEN
-  - do not pass credentials, authorization codes, or tokens through argv, prompts, logs, or artifacts
-  - keep --out-dir explicit so manifests, progress, blockers, and reports stay reproducible
-
-Examples:
-  node tiangong-lca-remote-ops/scripts/update-process-references.mjs --out-dir /abs/path/process-refresh --dry-run
-  node tiangong-lca-remote-ops/scripts/update-process-references.mjs --out-dir /abs/path/process-refresh --apply --limit 20
-`.trim();
-}
-
-function main() {
-  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2), { repoRoot });
-
-  if (args.includes('-h') || args.includes('--help')) {
-    console.log(renderHelp());
-    process.exit(0);
-  }
-
-  if (args.length === 0) {
-    fail('Missing required CLI arguments. Use --out-dir <dir>.');
-  }
-
-  const exitCode = runTiangongCommand(['process', 'refresh-references', ...args], {
-    ...runtime,
-    repoRoot,
-  });
-  process.exit(exitCode);
-}
-
+// Forward current atomic CLI arguments without translating inputs or retrying effects.
 try {
-  main();
+  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
+  const command = ["dataset", "process", "patch"];
+  process.exitCode = runTiangongCommand([...command, ...(args.length ? args : ['--help'])], runtime);
 } catch (error) {
-  const message = error instanceof Error ? error.message : String(error);
-  console.error(message);
-  process.exit(1);
+  console.error(`Error: ${error.message}`);
+  process.exitCode = 2;
 }

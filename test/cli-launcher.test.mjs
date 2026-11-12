@@ -103,7 +103,7 @@ test('normalizeCliRuntimeArgs leaves runtime unselected even when a sibling exis
   assert.equal(cliDir, null);
   assert.deepEqual(args, ['embedding-ft', '--help']);
 
-  assert.throws(() => buildTiangongInvocation(args, { repoRoot, pathExists: () => true }), /No CLI installation configured/);
+  assert.deepEqual(buildTiangongInvocation(args, { repoRoot, platform: 'linux' }), { mode: 'command', command: 'tiangong-lca', args, selectionSource: 'path' });
 });
 
 test('normalizeCliRuntimeArgs keeps explicit source selection', () => {
@@ -266,13 +266,20 @@ test('candidate qualification propagates through a copied environment and clears
   assert.equal(sameDirWithoutQualification.TIANGONG_LCA_CLI_CANDIDATE_SHA256, undefined);
 });
 
-test('missing selection rejects before any toolchain, install, build or business child', () => {
-  let called = false;
-  const unexpected = () => { called = true; throw new Error('unexpected child'); };
-  assert.throws(() => runTiangongCommand(['qa', 'process'], {
-    toolchainSpawnImpl: unexpected, buildSpawnImpl: unexpected, spawnImpl: unexpected,
-  }), /No CLI installation configured/);
-  assert.equal(called, false);
+test('default command dispatch needs no toolchain or installation checks', () => {
+  let calls = 0;
+  const unexpected = () => { throw new Error('unexpected preparation'); };
+  assert.equal(runTiangongCommand(['dataset', 'process', 'get', '--id', 'example'], {
+    platform: 'linux', toolchainSpawnImpl: unexpected, buildSpawnImpl: unexpected,
+    spawnImpl: (command, args, options) => {
+      calls += 1;
+      assert.equal(command, 'tiangong-lca');
+      assert.deepEqual(args, ['dataset', 'process', 'get', '--id', 'example']);
+      assert.equal(options.shell, false);
+      return { status: 7, stdout: '', stderr: '' };
+    },
+  }), 7);
+  assert.equal(calls, 1);
 });
 
 test('buildTiangongInvocation preserves spaces as one authoritative argv value', () => {

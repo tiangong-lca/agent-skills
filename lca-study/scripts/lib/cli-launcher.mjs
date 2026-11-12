@@ -8,6 +8,7 @@ import {
   missingCliMessage,
 } from './cli-development.mjs';
 import { installedInvocation } from './cli-installed.mjs';
+import { commandInvocation } from './cli-command.mjs';
 
 // Retain the explicit source-development contract.
 export {
@@ -31,9 +32,17 @@ export function normalizeCliRuntimeArgs(rawArgs, options = {}) {
   const filtered = [];
   const explicit = {};
   let selected = null;
+  let cliCommand = env.TIANGONG_LCA_CLI_COMMAND?.trim() || null;
   for (let index = 0; index < rawArgs.length; index += 1) {
     const arg = rawArgs[index];
     const flag = arg.split('=', 1)[0];
+    if (flag === '--cli-command') {
+      const value = arg === flag ? rawArgs[++index] : arg.slice(flag.length + 1);
+      if (!value?.trim() || value.startsWith('--')) throw new Error('--cli-command requires an executable path or command name');
+      cliCommand = value.trim();
+      selected = 'command';
+      continue;
+    }
     const installed = installedFlags.get(flag);
     if (installed) {
       const value = arg === flag ? rawArgs[++index] : arg.slice(flag.length + 1);
@@ -52,6 +61,13 @@ export function normalizeCliRuntimeArgs(rawArgs, options = {}) {
   const installed = {};
   for (const [key, variable] of installedFlags.values()) {
     installed[key] = explicit[key] ?? env[variable]?.trim() ?? null;
+  }
+  if (selected === 'command') {
+    const args = filtered.filter((arg) => !['--cli-dir=', '--cli-candidate-file=', '--cli-candidate-sha256='].some((prefix) => arg.startsWith(prefix)));
+    return { args, cliDir: null, cliCommand, cliSelectionSource: 'explicit' };
+  }
+  if (selected === null && cliCommand && (Object.values(installed).some(Boolean) || env.TIANGONG_LCA_CLI_DIR?.trim())) {
+    throw new Error('Conflicting CLI selections. Select --cli-command, --cli-installation or --cli-dir explicitly.');
   }
   const inherited = selected === null &&
     Object.values(installed).some(Boolean);
@@ -81,29 +97,32 @@ export function normalizeCliRuntimeArgs(rawArgs, options = {}) {
   if (selected === null && Object.keys(explicit).length) {
     throw new Error('Runtime expectation flags require --cli-installation or an installed CLI environment.');
   }
-  return normalizeDevelopmentArgs(filtered, options);
+  const runtime = normalizeDevelopmentArgs(filtered, options);
+  return runtime.cliDir ? runtime : { ...runtime, cliCommand: cliCommand || 'tiangong-lca', cliSelectionSource: cliCommand ? 'environment' : 'path' };
 }
 
 export function buildTiangongInvocation(args, options = {}) {
-  return options.cliInstallation ? installedInvocation(args, options) : buildDevelopmentInvocation(args, options);
+  if (options.cliInstallation) return installedInvocation(args, options);
+  if (options.cliDir) return buildDevelopmentInvocation(args, options);
+  if (options.cliCandidateFile || options.cliCandidateSha256) throw new Error('Candidate qualification requires --cli-dir; no command was attempted.');
+  return commandInvocation(args, options);
 }
 
 export function executeTiangongCommand(args, options = {}) {
-  if (!options.cliInstallation) return executeDevelopmentCommand(args, options);
+  if (options.cliDir && !options.cliInstallation) return executeDevelopmentCommand(args, options);
   const invocation = buildTiangongInvocation(args, options);
   const result = (options.spawnImpl ?? spawnSync)(invocation.command, invocation.args, {
     ...options.spawnOptions, stdio: 'pipe', encoding: 'utf8', shell: false,
   });
-  if (result.error) throw new Error(`Failed to execute configured TianGong CLI: ${result.error.message}`);
+  if (result.error) {
+    if (result.error.code === 'ENOENT') throw new Error(`${missingCliMessage} Selected command: ${invocation.command}`);
+    throw new Error(`Failed to execute TianGong CLI: ${result.error.message}`);
+  }
   return { invocation, status: result.status, signal: result.signal,
     stdout: result.stdout ?? '', stderr: result.stderr ?? '' };
 }
 
 export function runTiangongCommand(args, options = {}) {
-  if (!options.cliInstallation && !options.cliDir && args.some((arg) => ['--help', '-h'].includes(arg))) {
-    (options.stdoutWrite ?? ((text) => process.stdout.write(text)))(`CLI setup required for native command help.\n${missingCliMessage}\n`);
-    return 0;
-  }
   const result = executeTiangongCommand(args, options);
   if (result.stdout) (options.stdoutWrite ?? ((text) => process.stdout.write(text)))(result.stdout);
   if (result.stderr) (options.stderrWrite ?? ((text) => process.stderr.write(text)))(result.stderr);
@@ -115,6 +134,8 @@ export function runTiangongCommand(args, options = {}) {
 export function withCliRuntimeEnv(baseEnv, cliDir, options = {}) {
   const env = developmentRuntimeEnv(baseEnv, cliDir, options);
   for (const [, variable] of installedFlags.values()) delete env[variable];
+  delete env.TIANGONG_LCA_CLI_COMMAND;
+  if (!options.cliInstallation && !cliDir && options.cliCommand && options.cliCommand !== 'tiangong-lca') env.TIANGONG_LCA_CLI_COMMAND = options.cliCommand;
   if (options.cliInstallation) {
     delete env.TIANGONG_LCA_CLI_MODE;
     delete env.TIANGONG_LCA_CLI_DIR;
@@ -127,5 +148,5 @@ export function renderCliRuntimeHelp(rawArgs = process.argv.slice(2), options = 
   const selected = normalizeCliRuntimeArgs(rawArgs, options);
   if (selected.cliInstallation) return `configured installation ${selected.cliInstallation} (${selected.cliSelectionSource}); inspect with scripts/run-cli.mjs --runtime-info`;
   if (selected.cliDir) return `explicit development checkout ${selected.cliDir}`;
-  return missingCliMessage;
+  return `Uses ${selected.cliCommand || 'tiangong-lca'} from PATH by default. Optional --cli-command <executable> selects another command. If missing, follow https://github.com/tiangong-lca/cli#readme. Ordinary calls require no runtime expectation file or digest.`;
 }

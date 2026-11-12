@@ -1,8 +1,3 @@
-# Prompt requirements
+# Query formulation
 
-- Accept input in any language or mixed languages; interpret it correctly.
-- Preserve all flow constraints: substance/material, phase, flow direction/source/recipient, compartment/medium, quantities and units, geography, time/reference year, technology context, and use case; do not drop constraints.
-- Keep any structured filters (JSON or key/value hints) intact; do not rewrite keys, values, or nesting.
-- Do not invent facts or infer conditions not provided.
-- Keep output retrieval-oriented: concise noun-heavy query with core qualifiers; add common synonyms/abbreviations when helpful.
-- Keep language neutral and concise; no explanations or reasoning.
+Express the product or exchange function, relevant technology and useful synonyms. Start with the user's evidence and change one material criterion when results are too broad or absent. Compare geography, time, reference unit and technological fit through exact candidate reads. Keep a proposed proxy distinct from an adopted provider. Embedding prompts and backend rewriting belong to the search service; the Skill does not override that implementation.

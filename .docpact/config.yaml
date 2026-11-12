@@ -2,9 +2,9 @@ version: 1
 layout: repo
 # Current release proof, 2026-09-10: Skills #94 aligns wrappers and all three identical bundles to verified CLI 0.1.13 / cli-v0.1.13 / b5e209259d3bb06205b9af131b1c0edc3fba6da2, including its original permission-preserving POSIX bootstrap. The adjacent final Foundry 0.1.7 lock is byte-identical to the independently verified public release; the copied-entry native matrix proves the installed package.
 # Release proof, 2026-09-02: Skills #91 pins verified CLI 0.1.8 / b4701984b4a86fe4680fa5995d0a0b6753dbdfd6; all three bundled launchers must remain byte-identical to their root authority.
-lastReviewedAt: "2026-11-10"
-lastReviewedCommit: "dab11d7a209dd3400572a2011a40549cce4f43d1"
-lastReviewedNote: "Reviewed Skills #148 V2 input and readback bindings, including per-method complete, partial and unavailable results based on distinct missing factor indices. The calculation-only path retains its one-run stop point and original-intent recovery."
+lastReviewedAt: "2026-11-12"
+lastReviewedCommit: "bb8edfb632333cc22a96894a16c85a2296e39408"
+lastReviewedNote: "Default ordinary Skills to public tiangong-lca on PATH; retain explicit controlled runtimes, source development and managed task semantics."
 
 catalog:
   repos:
@@ -49,6 +49,7 @@ ownership:
           - pnpm-lock.yaml
           - scripts/check-toolchain.mjs
           - scripts/inspect-local-cli.mjs
+          - scripts/qualify-ci-cli.mjs
           - scripts/lib/**
           - scripts/run-cli.mjs
           - scripts/sync-tidas-public-rules.mjs
@@ -80,6 +81,7 @@ coverage:
     - pnpm-lock.yaml
     - scripts/check-toolchain.mjs
     - scripts/inspect-local-cli.mjs
+    - scripts/qualify-ci-cli.mjs
     - scripts/lib/**
     - scripts/run-cli.mjs
     - scripts/sync-tidas-public-rules.mjs
@@ -136,6 +138,7 @@ routing:
         - pnpm-lock.yaml
         - scripts/check-toolchain.mjs
         - scripts/inspect-local-cli.mjs
+        - scripts/qualify-ci-cli.mjs
         - scripts/lib/**
         - scripts/run-cli.mjs
         - scripts/sync-tidas-public-rules.mjs
@@ -158,6 +161,7 @@ routing:
         - pnpm-lock.yaml
         - scripts/check-toolchain.mjs
         - scripts/inspect-local-cli.mjs
+        - scripts/qualify-ci-cli.mjs
         - scripts/lib/**
         - scripts/run-cli.mjs
         - scripts/sync-tidas-public-rules.mjs
@@ -271,6 +275,8 @@ rules:
         kind: toolchain-validation
       - path: scripts/inspect-local-cli.mjs
         kind: local-cli-candidate-inspection
+      - path: scripts/qualify-ci-cli.mjs
+        kind: ci-test-qualification
       - path: scripts/lib/**
         kind: cli-launcher
       - path: scripts/run-cli.mjs

@@ -45,8 +45,8 @@ Block the model if any of these are true:
 - no reference process node is marked
 - no referenced process row can be resolved
 - the process graph cannot produce defensible upstream or downstream connections
-- strict `tidas-sdk` validation fails
-- `tidas-tools` classification validation fails
+- the selected CLI schema/business validation fails
+- required reference or classification evidence is unavailable
 
 ## Downstream Ownership
 
@@ -56,4 +56,6 @@ This skill does not emit:
 - `rule_verification`
 - generated resulting-process artifacts
 
-If the user later approves writes, the downstream publish layer owns any platform-specific derivation from the native `json_ordered` payload.
+If the user later approves writes, the native create/save service owns any platform-specific derivation from the native `json_ordered` payload.
+
+Read `dataset model contract` for authoritative requiredness; this structural outline does not supersede the installed schema or introduce extra required fields. Missing scientific connections require a caller decision, never automatic provider linking.

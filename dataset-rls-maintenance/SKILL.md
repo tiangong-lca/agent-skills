@@ -80,7 +80,7 @@ but must not substitute ad hoc SQL, REST deletes, or Foundry-local database code
 5. Classify every target row into one of: `delete_candidate`, `retire_candidate`, `rewrite_reference`, `redo_candidate`, `skip_missing`, `protected`, or `blocked`.
 6. Produce `maintenance-plan.json` and `dry-run-report.json`. The plan must include row-level actions, order of operations, dependency blockers, expected post-state, and rollback notes.
 7. Require explicit approval before `apply --commit`. Approval must name the plan file, operation, current user/account, row counts, and whether redo rows are ready.
-8. Execute only through the CLI maintenance command or existing public CLI save-draft/publish paths named by the approved plan.
+8. Execute only through the CLI maintenance command or explicit typed dataset create/save or Review operations named by the approved plan.
 9. Run readback verification after any commit. Verification must re-fetch affected rows and references and compare them against the plan.
 10. For redo, start a fresh Foundry import or source-evidence task from the corrected source manifest after cleanup is verified. Do not reuse stale `.foundry` artifacts as proof of the new run.
 

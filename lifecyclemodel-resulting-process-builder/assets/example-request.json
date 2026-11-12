@@ -1,30 +1,19 @@
 {
   "source_model": {
-    "id": "lm-demo-battery-pack",
+    "id": "77777777-7777-4777-8777-777777777777",
     "version": "00.00.001",
-    "name": "Battery pack model",
+    "name": "Synthetic model",
     "json_ordered_path": "example-model.json"
   },
   "projection": {
     "mode": "primary-only",
-    "process_id": "proc-demo-battery-pack-primary",
-    "process_version": "00.00.001",
-    "metadata_overrides": {
-      "type_of_data_set": "partly terminated system",
-      "projection_source": "lifecyclemodel_resulting_process_builder"
-    },
-    "attach_graph_snapshot": true,
-    "attach_graph_snapshot_uri": "file://<workspace-temp-dir>/example-model-preview.png"
+    "process_id": "88888888-8888-4888-8888-888888888888",
+    "process_version": "00.00.001"
   },
   "process_sources": {
-    "process_json_dirs": [
-      "example-processes"
+    "process_json_files": [
+      "example-processes/process.json"
     ],
     "allow_remote_lookup": false
-  },
-  "publish": {
-    "intent": "prepare_only",
-    "prepare_process_payloads": true,
-    "prepare_relation_payloads": true
   }
 }

@@ -1,57 +1,10 @@
 ---
 name: tidas-contract-context
-description: Fetch source-bound TIDAS schema, methodology YAML, CLI-owned runtime ruleset projection, and AI context-pack artifacts through the tiangong-lca CLI. Use before AI authoring or repairing TIDAS process, flow, source, contact, unitgroup, flowproperty, lifecyclemodel, or lciamethod data.
+description: Read the installed CLI's typed TIDAS schema, methodology and public-rule context before authoring or validating dataset content.
 ---
 
-# TIDAS Contract Context
+# TIDAS contract context
 
-Use this skill when an agent needs the authoritative TIDAS contract for AI data import, conversion repair, or source-document authoring.
+Use `dataset <type> contract --help --json` through the configured launcher. Types are flow, process, model, source, contact, flowproperty, unitgroup and lciamethod. Request the supported components and output explicitly; for example `dataset process contract --include schema,methodology,ruleset --output contract.json --json`. Inspect actual component availability and completeness; a missing component is not permission to invent a rule.
 
-## Boundaries
-
-- This skill is a thin wrapper over `tiangong-lca dataset context-pack` and `tiangong-lca dataset contract get`.
-- Public rule definitions are sourced from released TIDAS spec assets; profile policy and runtime-ruleset projection belong to the CLI. Published SDK 0.3.0 no longer imports or packages the retired mixed ruleset file; the configured CLI must expose the public contract context commands used below; its version is selected by the installation owner.
-- Do not copy schema, methodology YAML, or ruleset files into this skill.
-- Do not generate or mutate TIDAS rows here. Authoring and conversion should use CLI or Foundry workflows after the context pack exists.
-
-## Required Inputs
-
-- Target TIDAS type: `process`, `flow`, `source`, `contact`, `unitgroup`, `flowproperty`, `lifecyclemodel`, or `lciamethod`.
-- Output directory under the current task workspace.
-- Include list when narrower context is needed: `schema`, `methodology`, `ruleset`.
-
-## Commands
-
-Create an AI-ready context pack:
-
-```bash
-tiangong-lca dataset context-pack \
-  --type process \
-  --profile ai-import \
-  --include schema,methodology,ruleset \
-  --out-dir .foundry/workspaces/<task-id>/context/process \
-  --json
-```
-
-Create a raw contract artifact pack:
-
-```bash
-tiangong-lca dataset contract get \
-  --type flow \
-  --include schema,methodology,ruleset \
-  --out-dir .foundry/workspaces/<task-id>/contract/flow \
-  --json
-```
-
-## Verification
-
-After the command completes, verify these artifacts before using the context:
-
-- `outputs/contract-report.json`
-- `outputs/contract-manifest.json`
-- `outputs/schema.json` when `schema` was requested
-- `outputs/methodology.yaml` when `methodology` is available for the target type
-- `outputs/runtime-ruleset.json` when rules exist for the target type
-- `outputs/ai-context.json` and `outputs/ai-context.md` for `context-pack`
-
-The manifest hash values are the durable proof of which contract version the AI saw.
+The public rule definitions belong to released specification assets; executable profiles and severity belong to the consuming CLI. Read the selected content rather than relying on a different installed version or copying rule assets into this Skill. Contract retrieval does not author, save or publish data and requires no separate context-pack or production directory.

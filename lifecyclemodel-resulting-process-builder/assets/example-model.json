@@ -1,33 +1,46 @@
 {
   "lifeCycleModelDataSet": {
-    "@id": "lm-demo-battery-pack",
-    "@version": "00.00.001",
+    "@xmlns": "http://eplca.jrc.ec.europa.eu/ILCD/LifeCycleModel/2017",
+    "@xmlns:acme": "http://acme.com/custom",
+    "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@version": "1.1",
+    "@locations": "../ILCDLocations.xml",
+    "@xsi:schemaLocation": "http://eplca.jrc.ec.europa.eu/ILCD/LifeCycleModel/2017 ../../schemas/ILCD_LifeCycleModelDataSet.xsd",
     "lifeCycleModelInformation": {
       "dataSetInformation": {
-        "common:UUID": "lm-demo-battery-pack",
+        "common:UUID": "77777777-7777-4777-8777-777777777777",
         "name": {
-          "baseName": [
-            {
-              "@xml:lang": "en",
-              "#text": "Battery pack model"
-            }
-          ]
+          "baseName": {
+            "@xml:lang": "en",
+            "#text": "Synthetic model"
+          },
+          "treatmentStandardsRoutes": {
+            "@xml:lang": "en",
+            "#text": "Synthetic"
+          },
+          "mixAndLocationTypes": {
+            "@xml:lang": "en",
+            "#text": "GLO"
+          }
         },
-        "referenceToResultingProcess": {
-          "@refObjectId": "proc-demo-battery-pack-primary",
-          "@type": "process data set",
-          "@uri": "../processes/proc-demo-battery-pack-primary_00.00.001.xml",
-          "@version": "00.00.001",
-          "common:shortDescription": [
+        "classificationInformation": {
+          "common:classification": [
             {
-              "@xml:lang": "en",
-              "#text": "Battery pack resulting process"
+              "@name": "Synthetic test taxonomy",
+              "common:class": [
+                {
+                  "@level": "0",
+                  "@classId": "test",
+                  "#text": "Synthetic fixtures"
+                }
+              ]
             }
           ]
         }
       },
       "quantitativeReference": {
-        "referenceToReferenceProcess": "2"
+        "referenceToReferenceProcess": 1
       },
       "technology": {
         "processes": {
@@ -36,42 +49,14 @@
               "@dataSetInternalID": "1",
               "@multiplicationFactor": "1",
               "referenceToProcess": {
-                "@refObjectId": "proc-cell-module",
                 "@type": "process data set",
-                "@uri": "../processes/proc-cell-module_00.00.001.xml",
+                "@refObjectId": "66666666-6666-4666-8666-666666666666",
                 "@version": "00.00.001",
-                "common:shortDescription": [
-                  {
-                    "@xml:lang": "en",
-                    "#text": "Cell module assembly"
-                  }
-                ]
-              },
-              "connections": {
-                "outputExchange": {
-                  "@id": "edge-cell-to-pack",
-                  "@flowUUID": "flow-cell-module",
-                  "downstreamProcess": {
-                    "@id": "2",
-                    "@flowUUID": "flow-cell-module"
-                  }
+                "@uri": "../datasets/66666666-6666-4666-8666-666666666666.xml",
+                "common:shortDescription": {
+                  "@xml:lang": "en",
+                  "#text": "Synthetic reference"
                 }
-              }
-            },
-            {
-              "@dataSetInternalID": "2",
-              "@multiplicationFactor": "1",
-              "referenceToProcess": {
-                "@refObjectId": "proc-pack-assembly",
-                "@type": "process data set",
-                "@uri": "../processes/proc-pack-assembly_00.00.001.xml",
-                "@version": "00.00.001",
-                "common:shortDescription": [
-                  {
-                    "@xml:lang": "en",
-                    "#text": "Pack assembly"
-                  }
-                ]
               },
               "connections": {
                 "outputExchange": []
@@ -81,9 +66,97 @@
         }
       }
     },
+    "modellingAndValidation": {
+      "validation": {
+        "review": {
+          "common:referenceToNameOfReviewerAndInstitution": {
+            "@type": "contact data set",
+            "@refObjectId": "44444444-4444-4444-8444-444444444444",
+            "@version": "00.00.001",
+            "@uri": "../datasets/44444444-4444-4444-8444-444444444444.xml",
+            "common:shortDescription": {
+              "@xml:lang": "en",
+              "#text": "Synthetic reference"
+            }
+          }
+        }
+      },
+      "complianceDeclarations": {
+        "compliance": {
+          "common:referenceToComplianceSystem": {
+            "@type": "source data set",
+            "@refObjectId": "22222222-2222-4222-8222-222222222222",
+            "@version": "00.00.001",
+            "@uri": "../datasets/22222222-2222-4222-8222-222222222222.xml",
+            "common:shortDescription": {
+              "@xml:lang": "en",
+              "#text": "Synthetic reference"
+            }
+          },
+          "common:approvalOfOverallCompliance": "Not defined",
+          "common:nomenclatureCompliance": "Not defined",
+          "common:methodologicalCompliance": "Not defined",
+          "common:reviewCompliance": "Not defined",
+          "common:documentationCompliance": "Not defined",
+          "common:qualityCompliance": "Not defined"
+        }
+      }
+    },
     "administrativeInformation": {
+      "dataEntryBy": {
+        "common:timeStamp": "2026-11-08T00:00:00Z",
+        "common:referenceToDataSetFormat": {
+          "@type": "source data set",
+          "@refObjectId": "22222222-2222-4222-8222-222222222222",
+          "@version": "00.00.001",
+          "@uri": "../datasets/22222222-2222-4222-8222-222222222222.xml",
+          "common:shortDescription": {
+            "@xml:lang": "en",
+            "#text": "Synthetic reference"
+          }
+        },
+        "common:referenceToPersonOrEntityEnteringTheData": {
+          "@type": "contact data set",
+          "@refObjectId": "44444444-4444-4444-8444-444444444444",
+          "@version": "00.00.001",
+          "@uri": "../datasets/44444444-4444-4444-8444-444444444444.xml",
+          "common:shortDescription": {
+            "@xml:lang": "en",
+            "#text": "Synthetic reference"
+          }
+        }
+      },
       "publicationAndOwnership": {
-        "common:dataSetVersion": "00.00.001"
+        "common:dataSetVersion": "00.00.001",
+        "common:referenceToOwnershipOfDataSet": {
+          "@type": "contact data set",
+          "@refObjectId": "44444444-4444-4444-8444-444444444444",
+          "@version": "00.00.001",
+          "@uri": "../datasets/44444444-4444-4444-8444-444444444444.xml",
+          "common:shortDescription": {
+            "@xml:lang": "en",
+            "#text": "Synthetic reference"
+          }
+        },
+        "common:permanentDataSetURI": "https://example.test/synthetic-model",
+        "common:copyright": "false",
+        "common:licenseType": "Other"
+      },
+      "common:commissionerAndGoal": {
+        "common:referenceToCommissioner": {
+          "@type": "contact data set",
+          "@refObjectId": "44444444-4444-4444-8444-444444444444",
+          "@version": "00.00.001",
+          "@uri": "../datasets/44444444-4444-4444-8444-444444444444.xml",
+          "common:shortDescription": {
+            "@xml:lang": "en",
+            "#text": "Synthetic reference"
+          }
+        },
+        "common:intendedApplications": {
+          "@xml:lang": "en",
+          "#text": "Deterministic CLI integration testing only."
+        }
       }
     }
   }

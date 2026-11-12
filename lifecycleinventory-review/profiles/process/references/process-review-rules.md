@@ -16,13 +16,13 @@
    - `friction/`: 可选的工具限制说明
 2. QA 必须基于冻结后的输入进行；远端任务先 freeze snapshot，本地 run 也不要边读边改原始产物。
 3. `node scripts/run-review.mjs --profile process` 是本地 process deterministic QA 的 canonical CLI 入口。它产出 schema/引用/定量参考/物料平衡等可复核 findings，不负责 profile waiver、AI 语义修复或最终入库前决策。
-4. 当前远端 snapshot QA 的 canonical skill 入口是 `node scripts/run-remote-process-review.mjs`：先冻结 `tiangong-lca process list --json` 输出，再调用 `node scripts/run-review.mjs --profile process --rows-file ...`。只有在现有 `process list` 过滤维度不足以表达任务时，才使用补充 bridge，并在 QA 备注或 `friction/` 目录中记录限制。
+4. 远端检查先用 `dataset process list` 确定范围，再用精确 `dataset process get --id <id> --version <version> --output process.json` 保存单个内容，最后 `dataset process validate --input process.json`。列表或搜索结果信封不是校验输入；无法完成的检查明确标为未检查，不新增直接数据库 bridge。
 5. LLM 语义审核不在 CLI process QA 中执行。外部数据导入、BAFU 等 profile 判断、placeholder 修复、functional unit authoring、source treatment 和 evidence closure，应由 Foundry curation gate 打包 AI authoring package 后处理。
 
 ## Foundry Curation Boundary
 
 - CLI process QA 是 deterministic QA report，不是语义 authoring runtime。
-- Foundry 先通过 `dataset-curation-queue-build` / `tiangong-lca dataset curation-queue build` 建立 entity-level queue、lock、blocker、closure 和 run-plan artifacts，再读取 process payload、schema report、CLI QA report、profile context/YAML，并产出 AI authoring package、结构化 suggestion/build-plan、profile waiver 和最终 prewrite 状态。
+- 注册 Foundry 任务通过当前 runtime 返回的动作管理工作项和审核材料；当前 Skill 只读现有 payload、验证报告和证据，不创建 CLI 生产队列或私有状态。
 - 对外部 dataset import，不能只因为 CLI QA 没有 blocker 就写库；必须确认 Foundry curation action items 已被修复或被 profile 明确 waiver。
 
 ## Required Inputs
@@ -273,6 +273,6 @@ Schema 和确定性 CLI QA 通过不等于本语义轴通过。审查者必须�
 - 把 snapshot QA 和下游治理/修复编排成一个 CLI 单命令的 native flow。
 
 因此遇到更复杂的远端全量 process QA 任务时：
-- 优先使用 `run-remote-process-review.mjs` + `tiangong-lca process list` 的现有 canonical 组合；
+- 优先使用 `dataset process list/get` + `dataset process validate` 的现有 canonical 组合；
 - 只有在组合仍不足以表达任务时，才允许使用补充 bridge；
 - 补充 bridge 应视为临时方案，而不是 skill 的默认用法。

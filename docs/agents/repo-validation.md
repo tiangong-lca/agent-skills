@@ -23,6 +23,7 @@ checkPaths:
   - scripts/validate-skills.mjs
   - scripts/check-toolchain.mjs
   - scripts/inspect-local-cli.mjs
+  - scripts/qualify-ci-cli.mjs
   - scripts/lib/**
   - scripts/run-cli.mjs
   - scripts/sync-tidas-public-rules.mjs
@@ -35,9 +36,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-10
-lastReviewedCommit: dab11d7a209dd3400572a2011a40549cce4f43d1
-lastReviewedNote: "Reviewed Skills #148 V2 input and readback bindings, including per-method complete, partial and unavailable results based on distinct missing factor indices. The calculation-only path retains its one-run stop point and original-intent recovery."
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: "bb8edfb632333cc22a96894a16c85a2296e39408"
+lastReviewedNote: "Default ordinary Skills to public tiangong-lca on PATH; retain explicit controlled runtimes, source development and managed task semantics."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -53,7 +54,7 @@ pnpm install --frozen-lockfile
 pnpm prepush:gate
 ```
 
-The local `pre-push` hook runs docpact first, validates Node `24.19.0` / pnpm `11.24.0`, installs Skills from its frozen lockfile, and requires a configured installed CLI or explicit development source. A matching-release local `tiangong-lca/cli` is installed/built only when explicitly selected and only after package/engine/lock/source-manifest evidence succeeds. A different candidate must already be prepared and pass the reviewed file/digest qualification before execution; the hook does not eagerly reinstall it. The hook then runs the repository test/validation gate. The GitHub `validate-skills` workflow runs the four-platform contract matrix for runtime/launcher/inspection changes, Foundry package/test and dependency/configuration/Actions pull requests and manual dispatch; its exact release pin remains independent of local candidates.
+The local `pre-push` hook runs docpact first, validates Node `24.19.0` / pnpm `11.24.0`, installs Skills from its frozen lockfile, and uses the installed PATH CLI or an explicit runtime selection. A matching-release local `tiangong-lca/cli` is installed/built only when explicitly selected and only after package/engine/lock/source-manifest evidence succeeds. A different candidate must already be prepared and pass the reviewed file/digest qualification before execution; the hook does not eagerly reinstall it. The hook then runs the repository test/validation gate. The GitHub `validate-skills` workflow runs the four-platform contract matrix for runtime/launcher/inspection changes, Foundry package/test and dependency/configuration/Actions pull requests and manual dispatch; its exact release pin remains independent of local candidates.
 
 You may pass one or more skill directories to validate only the touched skill packages.
 
@@ -64,18 +65,18 @@ You may pass one or more skill directories to validate only the touched skill pa
 - Wrapper contract changes require checking the paired `agents/openai.yaml` and `SKILL.md` together.
 - Validation-script or test changes require running the full `pnpm prepush:gate` command when feasible.
 - New CLI-backed skills must be added to the default validation list when they are intended to ship as part of the standard checked-in skill set.
-- Wrapper-launcher changes require `pnpm test:launcher`, the pnpm consumer contract tests, zero-dispatch missing-configuration and retired-selection cases, source-manifest identity checks, and full skill validation against frozen, built CLI release merge `89c71772ca1afcfc09705f8c27a9703c6bf8ccf6` from canonical `tiangong-lca/cli`. The published Foundry bootstrap/provenance remains bound to its own qualified release source (0.1.15, bundled CLI 0.1.24).
+- Wrapper-launcher changes require `pnpm test:launcher`, the pnpm consumer contract tests, missing-command guidance and retired-selection cases, source-manifest identity checks, and full skill validation against frozen, built CLI release merge `955642482771a270fd49a199d1d7c86fcccc9ce2` from canonical `tiangong-lca/cli`. The published Foundry bootstrap/provenance remains bound to its own qualified release source (0.1.15, bundled CLI 0.1.24).
 - Local-candidate changes additionally require the qualification and original-consumer acceptance below; passing published-release checks does not qualify a separate candidate.
-- Validate the installed CLI 0.1.24 + SDK 0.4.1 Process/Flow context packs with the retired mixed SDK JSON/schema absent, and reject altered public-rule source identity. The earlier SDK 0.2.2 static-import limitation is historical evidence, not an active requirement.
+- Validate the installed CLI 0.2.0 Process/Flow context packs with the retired mixed SDK JSON/schema absent, and reject altered public-rule source identity. The earlier SDK 0.2.2 static-import limitation is historical evidence, not an active requirement.
 - Launcher filesystem fixtures and expected paths must use the host `node:path` implementation. A test that passes a synthetic `platform` may validate executable dispatch, but must not combine that target platform with host-resolved fake paths.
 - Repo-wide Markdown guards inventory only root-repository Git-tracked `*.md` paths through argv-based `git -C <root> ls-files -z`. Fixture and validator Git children remove inherited repository-location `GIT_*` variables first, so hook context cannot redirect their index or worktree; untracked or nested CI checkouts are not part of the Skills documentation contract.
 - Documentation-governance changes require docpact validation.
 - Remote-auth instruction changes require `test/oauth-skill-contract.test.mjs`, the repository-wide password-equivalent doc guard, validation against the exact OAuth-capable local CLI, and the full `pnpm prepush:gate` against the selected CLI with the required public capabilities.
-- First-install bootstrap changes require `test/installed-hybrid-bootstrap.test.mjs`: copy each of the three hybrid-search skill directories into a fresh isolated directory, clear public auth/CLI overrides and executable search paths, prove missing selection fails with setup guidance and offline help remains available, and prove no session file or outside repository launcher is used. Bundled launchers must match the root authority byte-for-byte. A separate human-controlled fresh browser login plus live redacted doctor/read-only search remains release acceptance, never a repository test credential.
+- First-install bootstrap changes require `test/installed-hybrid-bootstrap.test.mjs`: copy each of the three hybrid-search skill directories into a fresh isolated directory, clear public auth/CLI overrides and executable search paths, prove a missing PATH command fails with setup guidance and offline help remains available, and prove no session file or outside repository launcher is used. Bundled launchers must match the root authority byte-for-byte. A separate human-controlled fresh browser login plus live redacted doctor/read-only search remains release acceptance, never a repository test credential.
 
 ## Installed consumer regression
 
-`test/installed-cli-selection.test.mjs` runs a real isolated official CLI 0.1.28 install. The test-owned expected package digest is fixed independently of the consumer observation; the Node digest comes from the test host. This regression fixture is not production qualification. It copies QA and all three hybrid packages, removes executable search paths, compares a nonempty frozen Process QA result against the shared direct entry (excluding only `generated_at_utc`), checks unchanged input bytes and reads actual CLI version/selection provenance. No credentials or production data are used; search is dry-run only.
+`test/installed-cli-selection.test.mjs` runs a real isolated official CLI 0.2.0 install. The test-owned expected package digest is fixed independently of the consumer observation; the Node digest comes from the test host. This regression fixture is not production qualification. It copies QA and all three hybrid packages, removes executable search paths, compares a nonempty canonical Flow validation result against the shared direct entry (excluding only `context.observation.time`), checks unchanged input bytes and reads actual CLI version/selection provenance. No credentials or production data are used; search tests inspect native help and reject retired flags before transport.
 
 Synthetic public-owner fixtures exercise changed internal asset/layout identities without Skills edits, native nonzero stdout/stderr and UNKNOWN byte preservation, no replay, incomplete/ambiguous selection, changed expectation bytes, owner identity drift and missing installations. Existing source-candidate regressions remain mandatory. Both copied installed selection and missing/retired-selection regressions run on the existing four-platform matrix. All library bundles and the direct entry must be byte-identical to their root authority.
 
@@ -116,7 +117,7 @@ Install the versioned local hook once per checkout:
 ./scripts/install-git-hooks.sh
 ```
 
-The `pre-push` hook runs `scripts/docpact-gate.sh`, which delegates CLI lookup to `scripts/docpact` and performs strict config validation plus enforced lint before the push leaves the machine. It then runs `pnpm check:toolchain`, installs Skills with `pnpm install --frozen-lockfile`, and requires the configured installed CLI or explicit development source. If `TIANGONG_LCA_CLI_DIR` is explicitly set, `scripts/check-toolchain.mjs --cli-dir` verifies the matching-release package/name/version/engine/lock evidence or, when both candidate variables are set, the complete reviewed candidate qualification. The hook eagerly prepares only matching-release checkouts; candidate wrappers retain the post-preflight preparation and identity recheck contract. It finishes with `pnpm prepush:gate`. The wrapper checks `DOCPACT_BIN`, Cargo install locations, Homebrew install locations, and then `PATH`, so local agent shells should not fail only because bare `docpact` is unavailable. The default comparison base is `origin/main`. Override it for unusual stacks with `DOCPACT_BASE_REF=<ref>` or `scripts/docpact-gate.sh --base <ref>`. The gate writes its detailed report to a temporary file so normal pushes do not create `.docpact/runs/` artifacts.
+The `pre-push` hook runs `scripts/docpact-gate.sh`, which delegates CLI lookup to `scripts/docpact` and performs strict config validation plus enforced lint before the push leaves the machine. It then runs `pnpm check:toolchain`, installs Skills with `pnpm install --frozen-lockfile`, and uses the PATH CLI or an explicit runtime selection. If `TIANGONG_LCA_CLI_DIR` is explicitly set, `scripts/check-toolchain.mjs --cli-dir` verifies the matching-release package/name/version/engine/lock evidence or, when both candidate variables are set, the complete reviewed candidate qualification. The hook eagerly prepares only matching-release checkouts; candidate wrappers retain the post-preflight preparation and identity recheck contract. It finishes with `pnpm prepush:gate`. The wrapper checks `DOCPACT_BIN`, Cargo install locations, Homebrew install locations, and then `PATH`, so local agent shells should not fail only because bare `docpact` is unavailable. The default comparison base is `origin/main`. Override it for unusual stacks with `DOCPACT_BASE_REF=<ref>` or `scripts/docpact-gate.sh --base <ref>`. The gate writes its detailed report to a temporary file so normal pushes do not create `.docpact/runs/` artifacts.
 
 The semantic-only Foundry authoring package is included in default validation. Validate a copied isolated package for its entry metadata and local reference closure; it intentionally has no wrapper script or bootstrap runtime. Runtime/F1 and ordinary entry bootstrap qualification remain separate requirements of the full migration.
 
@@ -126,7 +127,7 @@ Default validation now includes all 24 source skill directories: the original 21
 
 Marketplace changes must resolve every listed skill to a real package, preserve existing group memberships, and list the ordinary Foundry entry before its internal semantic role. Check the two-language installation guidance together. Catalogue presence alone does not qualify a missing F1 lock or replace four-platform public bootstrap tests.
 
-For retained import/source-evidence helpers, review both invocation contexts: an independent CLI workflow keeps its original command/evidence capabilities, while a registered Foundry task consumes only current work items/actions and cannot enter the standalone checkpoint/queue procedure. Validate the changed skill and paired prompt together; this instruction review does not replace runtime no-replay tests.
+For retained import/source-evidence helpers, review both invocation contexts: an independent CLI workflow keeps its original command/evidence capabilities, while a registered Foundry task consumes only current work items/actions and cannot enter the independent atomic workflow. Validate the changed skill and paired prompt together; this instruction review does not replace runtime no-replay tests.
 
 `test/foundry-public-install.test.mjs` executes an isolated copy of the shipped Foundry entry against its adjacent final release lock. It begins with an empty private home/cache and a system-only PATH, verifies the downloaded manifest and actual Foundry/CLI/Node/TIDAS identities, performs a local cleanup task through start/status/resume, and rejects developer commands, changed scripts, a missing lock, changed cached manifests and changed base inventories. It restores the isolated altered bytes and verifies the runtime again. This credential-free installation proof is separate from the final live account RC01–RC06 evidence.
 
@@ -140,10 +141,39 @@ For Skills #144 investigation, manual dispatch with `windows_diagnostics=true` s
 
 The copied entry must execute an exact returned command action in a new process and retain ready runtime qualification. Its independent manifest digest must also reject a changed action-cache snapshot. These checks protect the managed-context correction from Foundry #151; running every continuation through the bootstrap alone cannot prove the returned-action contract. The relevant PR matrix also covers `.gitattributes` changes, because newline conversion must not alter the original final lock bytes.
 
-The copied `lca-study` package is covered by installed-selection tests for byte-identical launcher closure, offline help/missing configuration, original argv/UNKNOWN preservation and refusal after expectation drift. For calculation workflow guidance, trace the calculation-only request through the documented steps and installed CLI help: one baseline, current V2 capabilities, one completed run and its coverage. Use the base preparation’s reference Flow and unit, the frozen Scenario preparation’s input hash, and the run’s exact result and preparation artifacts to verify the documented bindings, impact axes and coverage. Check that an unmatched artifact cannot label results and that missing characterization remains distinct from zero. Review the case where V3–V6 are unavailable and confirm no optional capability is needed to reach the stop point. Separately trace a requested analysis or report to its explicit capability check and check that the original-intent recovery path is available in both cases. Repository tests use an explicitly synthetic owner and do not establish API or numerical execution. Actual installed CLI/auth/DB/native Worker numerical proof and optional report verification are separate runtime qualifications.
+The copied `lca-study` package is covered by installed-selection tests for byte-identical launcher closure, offline wrapper help/missing command, original argv/UNKNOWN preservation and refusal after expectation drift. For hosted calculation workflow guidance, trace the calculation-only request through the documented steps and installed CLI help: one baseline, current V2 capabilities, one completed run and its coverage. Use the base preparation’s reference Flow and unit, the frozen Scenario preparation’s input hash, and the run’s exact result and preparation artifacts to verify the documented bindings, impact axes and coverage. Check that an unmatched artifact cannot label results and that missing characterization remains distinct from zero. Review the case where V3–V6 are unavailable and confirm no optional capability is needed to reach the stop point. Separately trace a requested analysis or report to its explicit capability check and check that the original-intent recovery path is available in both cases. Repository tests use an explicitly synthetic owner and do not establish API or numerical execution. Actual installed CLI/auth/DB/native Worker numerical proof and optional report verification are separate runtime qualifications.
 
 For the P3 Study extension, copied-wrapper tests preserve explicit v4 argv and original inputs, UNKNOWN and delegation-denial results without replay or fallback. Independent forward evaluation must exercise new-report approval, an ambiguous pending decision, original finalization versus later current state, and revoked/withdrawn sharing. Synthetic fixtures and instruction review do not replace the installed Skill/CLI/Platform actual flow under workspace #2180.
+
+Study research changes must review representative cases: product-only goals, conflicting denominators, missing critical data, explicit state-100 background selection, complete aggregate LCI without double expansion, normal sparse LCIA applicability, and an installed CLI lacking new commands. Verify current command help and preserve existing hosted recovery and disclosure behavior. Instruction review is separate from autonomous Agent scenario evaluation; synthetic wrapper tests do not prove scientific modeling or hosted service completion.
+
+The CI test source is fixed in the workflow and qualification script. Only after frozen installation and build does the script inspect that exact source and bind its ephemeral inventory for the validation job. This is a reviewed test policy, not approval for production data. Public installed regressions independently fix the package content identity.
+
+Report guidance requires current `report render --help --json` capability checks, copied-wrapper argv/no-replay tests and an actual installed or reviewed source-candidate render. Inspect bilingual content and graph/result/source fidelity; browser/PDF qualification belongs to CLI. Do not claim autonomous scientific report correctness from a wrapper test.
+
+## Local Study case acceptance
+
+Evaluate the Study workflow with an explicitly qualified CLI and a fresh Model
+runtime configuration. Preserve original materials and trace extracted quantities
+to their source and denominator. Label task-authored synthetic records separately
+from real read-only background data. Check exact state-100 background selection,
+complete published LCI acquisition, explicit connections, local preparation and
+actual native execution. Compare inventory and LCIA against an independent numeric
+expectation, then vary the functional amount and an explicit foreground input.
+Verify saved result reads, old Run preservation, the copied Skill launcher,
+single-language report switching, graph interactions and PDF output.
+
+Run computation without network access or developer native-library/cache paths.
+Retain redacted validation and resource disposition in the delivery record; private
+acquisition wrappers stay outside Git. Agent-guided execution proves that case,
+not autonomous-agent reliability, other operating systems or scientific approval.
+
+Study first-use guidance must cover an empty environment, reuse of a configured installation, a missing qualified CLI or native package, and login-required discovery. Check package-relative reference closure, the paired Agent prompt, copied-package offline setup behavior and the selected CLI command help. These checks do not prove public cold installation or native calculation; report those acceptance results separately.
 
 Skills #142 adds copied Study V5 regression cases for explicit versioned argv, unchanged canonical configuration/input bytes, UNKNOWN preservation and denial without replay or authority changes. These are synthetic installed-owner boundary tests. Validate the touched package and canonical gate against the environment-selected qualified installation; actual V5 CLI/service/native/report qualification remains separate under workspace #2181. Preserve P2/P3 package, journal and launcher tests.
 
 For the V6 Study method extension, copied-wrapper checks preserve explicit evidence/assessment/typed-task/report/review/export4 argv, exact original evidence and UNKNOWN state, no replay, and refusal before dispatch after expectation drift. Independently qualified installed-package offline help/schema and malformed-input checks supplement those synthetic owner fixtures. Independent forward testing should cover a missing product/phase declaration, recorded-unverified evidence, an ambiguous mutation, unavailable complete-sixteen N/W and current versus historical report/share authority. These checks do not replace the actual authorized non-production installed Skill/CLI→Edge/Database/native Worker/Storage/report flow, a real complete industry case or professional qualification under workspace #2181.
+
+## Ordinary command regression
+
+Default consumers call `tiangong-lca` without runtime expectation variables. Test PATH discovery in copied packages, explicit executable override, nested propagation, paths/spaces/Unicode and shell metacharacters as unchanged argv, ordinary CLI replacement without requalification, missing commands and nonzero/UNKNOWN preservation with one dispatch. Windows CI must execute npm/pnpm-style Node shims and preserve arguments without cmd.exe interpolation. Retain opt-in installed identity and explicit source tests; they are separate contracts.

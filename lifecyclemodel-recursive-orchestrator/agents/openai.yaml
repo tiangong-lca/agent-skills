@@ -1,4 +1,4 @@
 interface:
-  display_name: "Lifecycle Model Recursive Orchestrator"
-  short_description: "Plan recursive model/process build runs"
-  default_prompt: "Use $lifecyclemodel-recursive-orchestrator to call tiangong-lca lifecyclemodel orchestrate for recursive plan, execute, and publish-handoff runs. Use scripts/run-cli.mjs for direct CLI calls and --runtime-info for identity; inherit the configured installed CLI environment without reselecting a version. Preserve original managed-task runtime and UNKNOWN recovery actions. Ordinary independent CLI calls require the configured installation; never select or download a CLI version from the skill."
+  display_name: 'Multi-level Model authoring'
+  short_description: 'Organize evidence-led multi-level Model authoring from exact Process and Model references'
+  default_prompt: 'Use $lifecyclemodel-recursive-orchestrator with the installed CLI 0.2.0 atomic interfaces. Organize evidence-led multi-level Model authoring from exact Process and Model references. Use for decomposing a modeling task and resolving explicit dependencies through current atomic CLI operations. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

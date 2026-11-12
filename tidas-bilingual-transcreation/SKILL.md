@@ -1,51 +1,21 @@
 ---
 name: tidas-bilingual-transcreation
-description: Use only for explicit post-import language-completion tasks that ask for reviewed Chinese/English TIDAS or ILCD fields. Do not use this skill as an import, publish, or source-language readiness gate.
+description: Produce evidence-supported translations for explicitly selected local TIDAS fields through typed CLI extract/apply operations, without changing scientific facts or saving remotely.
 ---
 
-# TIDAS Bilingual Transcreation
+# Bilingual content processing
 
-## Scope
+Run only when post-import language completion is requested. Source-language data can be import-ready without this step. Use the configured launcher and read `dataset <type> translations extract --help --json` and `translations apply --help --json`.
 
-- Produce reviewed bilingual translations for local TIDAS rows after `dataset bilingual extract` only when a task explicitly requests post-import language completion.
-- Do not run this skill for external dataset import readiness; import-ready rows are source-language rows.
-- Use TIDAS/ILCD context, process or flow QA artifacts, source evidence, terminology, units, classification, geography, time, and technology context.
-- Do not translate by mechanical term replacement. Write target-language text that is natural, professional, and faithful to the dataset meaning.
-- Do not perform remote writes, publish, save-draft, or credential handling from this skill.
+Extraction input contains canonical `content`, `sourceLanguage` and `targetLanguage`; save its result with `--output`. Review the returned fields in context. Applying translations uses the exact extracted `sourceDigest`, original source text, field paths and explicit translated text/basis, as specified by the native help. Do not reproduce the old rows-file/trans-units JSONL protocol or manufacture extraction evidence.
 
-## Canonical CLI Flow
+```text
+dataset process translations extract --input extract-request.json --output units.json --json
+dataset process translations apply --input apply-request.json --output applied.json --json
 
-Run the deterministic CLI steps around the AI review:
-
-```bash
-tiangong-lca dataset bilingual extract \
-  --input /abs/path/rows/processes.jsonl \
-  --type process \
-  --out-dir /abs/path/translation/process
 ```
 
-Codex then reads `outputs/trans-units.jsonl` plus the relevant evidence and writes a reviewed JSONL file:
-
-```jsonl
-{"unit_id":"...","row_index":0,"field_path":"/json_ordered/processDataSet/.../name","source_lang":"en","target_lang":"zh","source_text":"Electricity mix, high voltage","translated_text":"高压电力组合","basis":"Translated from process name, geography, and quantitative-reference context.","review_status":"agent_reviewed","reviewer":"codex"}
-```
-
-Apply and validate:
-
-```bash
-tiangong-lca dataset bilingual apply \
-  --input /abs/path/rows/processes.jsonl \
-  --translations /abs/path/translation/process/trans-reviewed.jsonl \
-  --out /abs/path/rows/processes.translated.jsonl \
-  --out-dir /abs/path/translation/process/apply
-
-tiangong-lca dataset bilingual validate \
-  --input /abs/path/rows/processes.translated.jsonl \
-  --type process \
-  --out-dir /abs/path/translation/process/validate
-```
-
-Repeat for `--type flow` when reference flows are part of the target dataset.
+`applied.json` contains `{content, changes}`. Extract its `content` to `candidate.json`, then run `dataset process validate --input candidate.json --json`. Do not pass the apply result envelope as canonical content. Preserve unmodified scientific fields and inspect the resulting diff. Source drift requires fresh extraction and review of changed fields; it never justifies overwriting existing content blindly. No remote save, review or publication occurs in this Skill.
 
 ## Translation Rules
 
@@ -54,43 +24,4 @@ Repeat for `--type flow` when reference flows are part of the target dataset.
 - Keep technical nouns precise: use terms such as `过程`, `产品流`, `基本流`, `定量参考`, `高压电力组合`, or `光伏安装系统` only when they fit the actual field context.
 - Keep source meaning narrower than style preference. Do not add process steps, environmental mechanisms, supplier claims, or assumptions not present in source evidence.
 - If the English source is itself low quality, repair the target text only within supported meaning and record the limitation in `basis`.
-- If the correct translation depends on missing evidence, output no translation for that unit and record a `manual_review` blocker outside the reviewed JSONL.
-
-## Required Inputs
-
-Use the smallest set needed for the requested rows:
-
-- `outputs/trans-units.jsonl` from `dataset bilingual extract`.
-- Source rows or selected field snippets for field-level context.
-- Source evidence, if available.
-- Process/flow QA reports, if available.
-- Flow governance decisions and process-flow reference rules, if the field names or comments mention linked flows.
-- Project terminology or user-approved glossary, if provided.
-
-## Output Contract
-
-Each reviewed translation row should include:
-
-- `unit_id`
-- `row_index`
-- `field_path`
-- `source_lang`
-- `target_lang`
-- `source_text`
-- `translated_text`
-- `basis`
-- `review_status`, normally `agent_reviewed`
-- `reviewer`, normally `codex`
-
-The CLI writes `translation-evidence.json` during `dataset bilingual apply`; do not hand-edit that evidence file except to inspect it.
-
-## Stop Rules
-
-Stop and report blockers instead of applying translations when:
-
-- source evidence is missing for a high-impact field such as name, quantitative reference, geography, time, technology, or exchange meaning;
-- translation would require inventing technical facts;
-- a field contains mixed-language residue, placeholders, or schema-invalid text that needs content repair before translation;
-- `dataset bilingual validate` reports blockers after apply.
-
-The language-completion task is not done until `dataset bilingual validate` passes and `translation-evidence.json` exists for all reviewed bilingual fields. This is not an import or publish readiness requirement.
+- If the correct translation depends on missing evidence, output no translation for that unit and record a `manual_review` blocker in the caller’s review notes.

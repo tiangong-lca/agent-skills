@@ -30,14 +30,15 @@ checkPaths:
   - scripts/install-git-hooks.sh
   - scripts/check-toolchain.mjs
   - scripts/inspect-local-cli.mjs
+  - scripts/qualify-ci-cli.mjs
   - scripts/lib/**
   - scripts/run-cli.mjs
   - scripts/sync-tidas-public-rules.mjs
   - package.json
   - pnpm-lock.yaml
-lastReviewedAt: 2026-11-10
-lastReviewedCommit: dab11d7a209dd3400572a2011a40549cce4f43d1
-lastReviewedNote: "Reviewed Skills #148 V2 input and readback bindings, including per-method complete, partial and unavailable results based on distinct missing factor indices. The calculation-only path retains its one-run stop point and original-intent recovery."
+lastReviewedAt: 2026-11-12
+lastReviewedCommit: "bb8edfb632333cc22a96894a16c85a2296e39408"
+lastReviewedNote: "Default ordinary Skills to public tiangong-lca on PATH; retain explicit controlled runtimes, source development and managed task semantics."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -56,7 +57,7 @@ related:
 - `scripts/validate-skills.mjs` and `test/**` define repo-level validation for wrappers and packaging rules.
 - `scripts/sync-tidas-public-rules.mjs` binds the selected skill-local public-rule copies to one exact published `tidas-spec` source/version/hash; package-local readers fail closed on altered assets or overrides.
 - `package.json` and `pnpm-lock.yaml` pin the validation-only Node `24.19.0` / pnpm `11.24.0` package contract; this does not turn the skill packages into a TypeScript runtime.
-- `scripts/lib/cli-launcher.mjs` owns installed/development selection, nested environment propagation and argv-only dispatch. `cli-installed.mjs` delegates installed identity to the CLI public runtime API. `cli-development.mjs` retains the existing explicit source-candidate evidence and preparation path. `scripts/run-cli.mjs` is the shared direct entry and read-only runtime identity inspection surface.
+- `scripts/lib/cli-launcher.mjs` owns ordinary command and explicit installed/development selection, nested environment propagation and argv-only dispatch. `cli-installed.mjs` delegates installed identity to the CLI public runtime API. `cli-development.mjs` retains the existing explicit source-candidate evidence and preparation path. `scripts/run-cli.mjs` is the shared direct entry and read-only runtime identity inspection surface.
 - `scripts/inspect-local-cli.mjs` owns observation of a prepared local CLI against caller-supplied source/version expectations; independent caller review and qualification remain outside the tool.
 - `README.md` and `README.zh-CN.md` explain installation and usage.
 - `.claude-plugin/marketplace.json` groups the existing skill packages for discovery. Its Foundry group lists the ordinary entry first, the on-demand authoring role, and the retained specialized workflows.
@@ -73,29 +74,25 @@ Top-level Foundry scenario skills are allowed in this repository when they only 
 - Product/runtime repositories own business logic and API behavior.
 - `lca-workspace` owns root integration state and submodule pointer updates.
 
-If a skill needs a capability that does not exist in the CLI, add the capability to `tiangong-lca/cli` first and keep the skill as a thin wrapper over that CLI surface.
+If an atomic business operation is missing, implement it in `tiangong-lca/cli` and keep its caller thin. Scientific interpretation, research steps and multi-operation workflow decisions remain Skill responsibilities.
 
 Remote authentication follows the same boundary. Skills may invoke `auth status`, instruct a human to run browser `auth login`, and require live redacted `doctor-auth`, but they never inspect session files or handle passwords, codes, or tokens. Explicit headless and multi-account configuration remain CLI/orchestrator responsibilities. The validator rejects password-equivalent invocation examples in active Markdown.
 
-Official Production's public profile is owned and bundled by the CLI, not copied into Skills. A first install needs human browser login, not dashboard/client-ID setup. Complete custom environments and explicitly targeted headless tokens remain separate. The flow/process/lifecyclemodel hybrid-search packages bundle the root launcher byte-for-byte at their own `scripts/lib/cli-launcher.mjs` so copied individual installations do not import outside their package. The installed-consumer tests check bundle equality, missing-configuration rejection and offline setup help, a real configured CLI dry-run, no local checkout/session creation, and rejection of incomplete custom destinations.
+Official Production's public profile is owned and bundled by the CLI, not copied into Skills. A first install needs human browser login, not dashboard/client-ID setup. Complete custom environments and explicitly targeted headless tokens remain separate. The flow/process/lifecyclemodel hybrid-search packages bundle the root launcher byte-for-byte at their own `scripts/lib/cli-launcher.mjs` so copied individual installations do not import outside their package. The installed-consumer tests check bundle equality, missing-command guidance and offline setup help, real installed native help and validation, no local checkout/session creation, and rejection of retired search flags.
 
 If a Foundry/source-evidence workflow needs an external Tiangong KB research skill, consume it with `npx skills` at runtime and record the resolved upstream ref in the task workspace. Do not copy the external skill package into this repository unless ownership is intentionally transferred.
 
-Current-account dataset review is owned here only as a skill package and wrapper contract. Its durable runtime behavior belongs in public `tiangong-lca` CLI commands such as dataset validation, reference rewriting, lifecyclemodel save-draft, and lifecyclemodel graph export.
+Current-account dataset review is owned here only as a skill package and wrapper contract. Its durable runtime behavior belongs in public `tiangong-lca` CLI commands such as typed dataset validation, explicit patch, distinct create/save, and Model graph export.
 
-The shared launcher requires a configured installed CLI or an explicitly selected development source. No route downloads a package or discovers a sibling/PATH CLI. Public capabilities govern Skill compatibility; installation owners govern versions and locks. CI checks out canonical `tiangong-lca/cli` at release merge `89c71772ca1afcfc09705f8c27a9703c6bf8ccf6`, which carries package version 0.1.24 and the source-bound TIDAS manifest for spec `f118660dbcbfbf736be74837cce0bf26cd177245` (0.2.3) and semantic source `9c0d8b1c8ceb1841074f5bc6de5fbb7fcc9318f5`. An explicit `--cli-dir` or `TIANGONG_LCA_CLI_DIR` may still select a matching-release local checkout without a candidate file. Its existing package/engine/lock/source-manifest checks and source-mtime-based frozen preparation remain supported. All execution stays argv-authoritative with `shell: false`, using native `pnpm.exe` on Windows.
+The shared launcher defaults to `tiangong-lca` from PATH. Skills rely on public commands and help, with installation and compatibility handled by the CLI environment. `cli-command.mjs` provides shell-free command dispatch; on Windows it resolves the Node target of npm/pnpm command shims so user arguments are never shell text. No download, build, business retry or version/hash gate occurs on this path. Optional `--cli-command` or `TIANGONG_LCA_CLI_COMMAND` selects another executable or public JavaScript entry.
 
-### Configured installed execution
+### Explicit runtime selection
 
-The consumer launch environment supplies an absolute `TIANGONG_LCA_CLI_INSTALLATION` package directory and `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE`, plus its independently trusted `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256`. This is environment configuration, not a Skills runtime registry. No local data workspace is required. All normal wrappers, nested calls and the direct `scripts/run-cli.mjs` share it. Explicit installed/source choices replace inherited selection; changing the installation requires its own explicit expectation pair. Conflicting inherited installed and source selections fail.
+Controlled environments may opt into the existing `--cli-installation` / `TIANGONG_LCA_CLI_INSTALLATION` selection with `--cli-runtime-expectation-file` / `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE` and `--cli-runtime-expectation-sha256` / `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256`. These are optional controlled-mode settings, not ordinary Skill setup. The installed adapter retains CLI-owned public identity verification, exact Node/content checks and refusal without fallback. Existing configured callers retain this explicit contract.
 
-The thin installed adapter passes the approved existing CLI expectation bytes through stdin to `@tiangong-lca/cli/runtime.assertCliRuntimeMatches`, in the selected package scope, then dispatches its public executable/argv. Identity checks remain CLI-owned. Skills verifies the external evidence digest and returned package/root/command envelope, preserves business stdout/stderr/exit and does not load `.env`, install, build, interpret schemas or read Task/attempt state. Invalid selections fail without fallback. Package qualification/complete dependency provenance stays with the installer; the public expectation's `cli-package` scope is not a substitute for it.
+`--cli-dir` / `TIANGONG_LCA_CLI_DIR` selects source development. Explicit command/installed/source selectors override inherited selection; contradictory inherited modes fail. Nested wrappers propagate the selected mode. `--runtime-info` remains optional observation, never a prerequisite or approval mechanism. Managed tasks continue using owner-returned commands; changing a default cannot replay UNKNOWN operations.
 
-`--runtime-info` on the direct entry returns the native descriptor plus selection source and expectation digest without executing a business operation. It creates no report files or registry. Existing task continuations retain their original owner's runtime; the independent environment default cannot change original managed commands or authorize UNKNOWN replay.
-
-The copied LCA Calculation package (`lca-study`) and three hybrid packages bundle all three library modules plus `scripts/run-cli.mjs` byte-for-byte. Other repository-backed skills expose a three-line `scripts/run-cli.mjs` delegator to the same repository entry, matching their existing wrapper packaging boundary.
-
-The calculation skill guides an admitted V2 run to its result and coverage. The existing `study` command and Study request fields identify the calculation project on the wire. Optional V3–V6 workflows depend on the user's request and their own capability checks; their report, review and professional qualification requirements do not control the V2 path.
+The copied Study and three hybrid packages carry byte-identical launcher, command, installed and development modules plus the direct entry. CI still qualifies exact source `955642482771a270fd49a199d1d7c86fcccc9ce2` after frozen build, independently of ordinary consumer execution.
 
 ### Explicit local candidate boundary
 
@@ -113,7 +110,7 @@ Candidate selection first binds the reviewed file to the external SHA-256, then 
 
 Recovery preserves the original failed/UNKNOWN task and its evidence. Prepare a new writable isolated checkout, observe it, review it and bind a new inventory digest. Never spoof a version, modify an old qualification to match changed artifacts, or retry with another runtime implicitly. Candidate selection grants no data or execution authority. It leaves Foundry 0.1.15 bootstrap/provenance, installed skills/runtimes, task/attempt state ownership and single-writer data permissions independent.
 
-Public rules are spec-owned; runtime-ruleset profile projection is CLI-owned. Published SDK 0.3.0 has retired the legacy mixed-file static import; the retained CLI 0.1.24 development fixture consumes the public contract API.
+Public rules are spec-owned; runtime-ruleset profile projection is CLI-owned. Published SDK 0.3.0 has retired the legacy mixed-file static import; the CLI 0.2.0 development fixture consumes the public contract API.
 
 ## Integration Semantics
 
@@ -121,7 +118,7 @@ A merged PR in this repository is repo-complete only. If the updated skill set m
 
 ## Local Docpact Push Gate
 
-This repository has a versioned local `pre-push` hook under `.githooks/pre-push` that delegates to `scripts/docpact-gate.sh`, resolves the docpact CLI through `scripts/docpact`, installs Skills through its frozen pnpm lockfile, and requires an explicitly configured installed CLI or development source for validation. It prepares matching-release local CLI checkouts only after launcher-owned evidence validation. Reviewed candidates must already be prepared and pass complete qualification; the hook does not eagerly reinstall them. The hook then runs `pnpm prepush:gate`; it is the local guard for docpact config validation, enforced doc-governance linting, toolchain tests, and skill validation. Locally retained generated reports under `.docpact/runs/` are ignored through `.gitignore`. The GitHub `validate-skills` workflow runs for runtime/launcher/inspection changes, Foundry package/test and dependency/configuration/Actions pull requests and manual dispatch, while keeping its existing release checkout pin.
+This repository has a versioned local `pre-push` hook under `.githooks/pre-push` that delegates to `scripts/docpact-gate.sh`, resolves the docpact CLI through `scripts/docpact`, installs Skills through its frozen pnpm lockfile, and can validate through the installed PATH command or an explicit runtime selection. It prepares matching-release local CLI checkouts only after launcher-owned evidence validation. Reviewed candidates must already be prepared and pass complete qualification; the hook does not eagerly reinstall them. The hook then runs `pnpm prepush:gate`; it is the local guard for docpact config validation, enforced doc-governance linting, toolchain tests, and skill validation. Locally retained generated reports under `.docpact/runs/` are ignored through `.gitignore`. The GitHub `validate-skills` workflow runs for runtime/launcher/inspection changes, Foundry package/test and dependency/configuration/Actions pull requests and manual dispatch, while keeping its existing release checkout pin.
 
 The internal `foundry-tidas-authoring` package is data-only guidance over an existing Foundry work item. Its local semantic reference is self-contained; execution, artifact registration, current authorization and readback remain Foundry/CLI responsibilities. The original workflow skill purposes remain separate.
 
@@ -137,11 +134,21 @@ The retained `external-dataset-curated-import` and `source-evidence-dataset-deve
 
 ## LCA Study workflow
 
-`lca-study` orchestrates the public core v2 and reporting v3 Study commands through a copied byte-identical installed-runtime launcher. Its operation recipes describe owner-issued references, exact claim values and recovery; they contain no numerical algorithms, database adapters or local task engine. The package requires current server capabilities and independently configured export anchors. P2 reports remain unreviewed; review/share and advanced profiles need their own qualified public contracts.
+For optional hosted research, `lca-study` orchestrates the public core v2 and reporting v3 Study commands through the public CLI or its optional copied launcher. Its operation recipes describe owner-issued references, exact claim values and recovery; they contain no numerical algorithms, database adapters or local task engine. These hosted paths require current server capabilities and independently configured export anchors. P2 reports remain unreviewed; review/share and advanced profiles need their own qualified public contracts.
 
 For Study qualification against an explicitly configured local service, the CLI-owned `tiangong.cli-loopback-auth-doctor.v1` output is a separate live diagnostic. The Skill checks its intended current tuple and actor; it does not promote that result into a canonical Production identity receipt or claim historical callback binding. Ordinary hosted doctor/identity behavior stays CLI-owned.
 
 The copied `lca-study` entry conditionally routes P3 work to `references/review-sharing.md` while retaining its P2 recipes. Its wrapper bytes and runtime selection remain unchanged. Current actions/roles, exact review/delegation/finalization and named-recipient policy stay with public CLI/server owners; a Skill never derives those policies or changes credentials to bypass a denial.
+
+The `lca-study` entry guides research from goals and evidence through explicit foreground/background Model construction and calculation. Intake and extraction are progressive references that can be delegated independently; they own evidence judgment, not deterministic calculation. Hosted Study/revision/report behavior is an optional reference. Local research does not require a server Study or caller-maintained hashes; installed CLI capability and actual service availability determine executable paths.
+
+## Atomic skill workflows
+
+Active wrappers call typed `dataset flow|process|model` actions and `review`. Searches use explicit queries/scopes, validation accepts one canonical document, and patches/diffs consume native request envelopes. Scientific authoring, dedup decisions and workflow order belong to Skills; retired automatic builders, QA directories, queues and repair aliases are not CLI capabilities. Existing Foundry tasks keep their owner-returned actions and independent runtime.
+
+Local Study reporting uses a seventh workflow step: the Skill composes a lightweight report JSON from selected evidence/Model/Run content and calls CLI `report render`. HTML/SVG/browser/print code belongs to CLI. A research report does not require hosted Study registration, approval or caller-maintained hashes. Existing signed exports retain their service-owned contracts.
+
+The Study first-use entry lives in `lca-study/references/getting-started.md`. It guides installation/configuration and then hands off to the research Skill. The one-line README prompts point there. This reference owns no installer or runtime qualification mechanism; package readiness and unavailable release artifacts remain explicit.
 
 `lca-study/references/advanced-analysis.md` holds conditional V5 OAT/uncertainty and view2/export3 recipes. It consumes only installed public CLI commands; canonical values, configuration hashes, scientific execution, role policy, journals and artifact verification remain with their existing owners. The copied launcher graph is unchanged.
 

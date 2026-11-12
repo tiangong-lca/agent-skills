@@ -1,217 +1,28 @@
 ---
 name: flow-governance-review
-description: "Run the CLI-backed flow governance commands for QA, remediation, deterministic process-flow repair, and publish preparation. Use `node scripts/run-flow-governance-review.mjs COMMAND ...` when you need the supported `tiangong-lca qa flow` and `tiangong-lca flow ...` workflows from a skill wrapper."
+description: Inspect Flow identity, content and references using public rules and current CLI validation. Use for evidence-led Flow governance and explicit repair proposals without automatic merging or specialized repair execution.
 ---
 
-# Flow Governance QA
+# Flow governance review
 
-Keep local JSON or JSONL payloads as the system of record. This skill is a thin wrapper around the supported CLI governance commands.
+Read exact Flow candidates through `dataset flow search/get/list/versions`. Compare their scientific meaning, type, reference property/unit, substance identifiers, geography and intended uses; a name match alone is not equivalence. Use `diff` for explicit before/after documents and preserve the rationale for keeping distinct or choosing an existing reference.
 
-For the five reviewed public Flow rules, `references/tidas_flows.yaml` contains only stable `public_rule_id` pointers. Before applying one, run `node scripts/read-public-rule.mjs --rule-id <id>` from this skill package and use its verified definition. The packaged index is mechanically copied from released `@tiangong-lca/tidas-spec@0.2.1`; the reader rejects a modified bundle or an incompatible explicit `--rules-dir`. CLI QA findings, evidence gates, identity decisions, authorization and publish policy remain CLI/Foundry-owned; reading a public definition never grants an operation.
+For the five reviewed public Flow rules, `references/tidas_flows.yaml` keeps stable `public_rule_id` pointers. Read each applicable definition with `node scripts/read-public-rule.mjs --rule-id <id>`; the verified public-rule bundle remains unchanged. Public definitions do not grant write or waiver authority.
 
-Do not use this skill for:
+Validate canonical Flow content with `dataset flow validate --input flow.json`. Inspect validation layers, issue paths and checks not performed. Prepare evidence-supported edits locally, validate the candidate and use a separate authorized `create` or `save`. For Process consumers, list their references and inspect exact contents; replacing a reference is a deliberate local edit followed by independent validation/save, not a global alias repair.
 
-- arbitrary remote CRUD outside the explicit CLI commit commands
-- hidden OpenClaw orchestration
-- private Python remediation helpers
-- remote scope export
+The wrapper exposes current Flow actions: `search`, `get`, `list`, `versions`, `contract`, `list-references`, `validate`, `diff`, `patch`, `create`, `save`, `delete`. Use `<action> --help` for native inputs. Specialized identity/alias repair, merge plans and regeneration queues have no automatic replacement in CLI; scope and effect decisions remain with the authorized workflow owner. Do not infer a delete or bulk repair from a canonical-selection decision.
 
-## Runtime Model
+Read `references/decision-schema.md` for decision notes and `references/workflow.md` for an atomic review sequence. `run-flow-governance-review-fixture.mjs` verifies local validation and unchanged inputs; it grants no live data permission.
 
-- The canonical entrypoint is `node scripts/run-flow-governance-review.mjs <command> ...`.
-- Write outputs to an explicit directory such as `/abs/path/artifacts/<case_slug>/...`.
-- Supported commands are all CLI-backed:
-  - `identity-preflight` -> `tiangong-lca flow identity-preflight`
-  - `build-plan` -> `tiangong-lca flow build-plan validate|materialize`
-  - `qa-flows` -> `tiangong-lca qa flow`
-  - `flow-get` -> `tiangong-lca flow get`
-  - `flow-list` -> `tiangong-lca flow list`
-  - `materialize-db-flows` -> `tiangong-lca flow fetch-rows`
-  - `materialize-approved-decisions` -> `tiangong-lca flow materialize-decisions`
-  - `remediate-flows` -> `tiangong-lca flow remediate`
-  - `publish-version` -> `tiangong-lca flow publish-version`
-  - `publish-reviewed-data` -> `tiangong-lca flow publish-reviewed-data`
-  - `build-flow-alias-map` -> `tiangong-lca flow build-alias-map`
-  - `scan-process-flow-refs` -> `tiangong-lca flow scan-process-flow-refs`
-  - `plan-process-flow-repairs` -> `tiangong-lca flow plan-process-flow-repairs`
-  - `apply-process-flow-repairs` -> `tiangong-lca flow apply-process-flow-repairs`
-  - `regen-product` -> `tiangong-lca flow regen-product`
-  - `validate-processes` -> `tiangong-lca flow validate-processes`
-- `publish-reviewed-data` is fully CLI-owned for both local preparation and commit-time process publish.
-- There is no Python fallback path and no shell compatibility shim.
+## Runtime and authorization
 
-## Authentication Gate
+Call `tiangong-lca` directly and read the needed command’s `--help --json`; preserve its current input format. Local validation and content processing do not require login. Before remote reads run `tiangong-lca auth status --json`; when login is required, hand `auth login` to a human in a trusted terminal. Never request a password, code or token. Use `auth doctor-auth --json` before authorized account-sensitive writes. Separate accounts with the caller's private `TIANGONG_LCA_SESSION_FILE`; never read its credentials in a Skill.
 
-Before any remote read or commit, run `tiangong-lca auth status --json`. If it returns `login-required`, stop and ask the human user to run `tiangong-lca auth login` in a trusted terminal; never ask an AI user for a password, authorization code, token, or legacy API key. Before commit commands, require `tiangong-lca auth doctor-auth --json` to pass. Headless execution may use only an orchestrator-injected short-lived access token, never argv or artifacts. Use a distinct private `TIANGONG_LCA_SESSION_FILE` for each account/project/client and preserve the expected account in the task evidence.
-
-## Commands
-
-- `flow-get`
-- `flow-list`
-- `identity-preflight`
-- `build-plan`
-- `materialize-db-flows`
-- `materialize-approved-decisions`
-- `remediate-flows`
-- `publish-version`
-- `publish-reviewed-data`
-- `build-flow-alias-map`
-- `scan-process-flow-refs`
-- `plan-process-flow-repairs`
-- `apply-process-flow-repairs`
-- `regen-product`
-- `validate-processes`
-- `qa-flows`
-
-Run them through:
-
-```bash
-node scripts/run-flow-governance-review.mjs <command> ...
-```
-
-For CLI-backed deterministic governance slices, prefer:
-
-```bash
-node scripts/run-flow-governance-review.mjs identity-preflight \
-  --input /abs/path/flow-preflight.json \
-  --out-dir /abs/path/identity
-
-node scripts/run-flow-governance-review.mjs build-plan validate \
-  --input /abs/path/flow-build-plan.json \
-  --out-dir /abs/path/build-plan
-
-node scripts/run-flow-governance-review.mjs build-plan materialize \
-  --input /abs/path/flow-build-plan.json \
-  --out-dir /abs/path/build-plan
-
-node scripts/run-flow-governance-review.mjs materialize-db-flows \
-  --refs-file /abs/path/flow-refs.json \
-  --out-dir /abs/path/materialized \
-  --fail-on-missing
-
-node scripts/run-flow-governance-review.mjs materialize-approved-decisions \
-  --decision-file /abs/path/approved-decisions.json \
-  --flow-rows-file /abs/path/materialized/qa-input-rows.jsonl \
-  --out-dir /abs/path/decision-artifacts
-
-node scripts/run-flow-governance-review.mjs qa-flows \
-  --rows-file /abs/path/flows.jsonl \
-  --out-dir /abs/path/qa
-
-node scripts/run-flow-governance-review.mjs remediate-flows \
-  --input-file /abs/path/invalid-flows.jsonl \
-  --out-dir /abs/path/remediation
-
-node scripts/run-flow-governance-review.mjs publish-version \
-  --input-file /abs/path/ready-flows.jsonl \
-  --out-dir /abs/path/publish \
-  --dry-run
-
-node scripts/run-flow-governance-review.mjs publish-reviewed-data \
-  --flow-rows-file /abs/path/reviewed-flows.jsonl \
-  --original-flow-rows-file /abs/path/original-flows.jsonl \
-  --out-dir /abs/path/publish-reviewed
-
-node scripts/run-flow-governance-review.mjs build-flow-alias-map \
-  --old-flow-file /abs/path/old-flows.jsonl \
-  --new-flow-file /abs/path/new-flows.jsonl \
-  --out-dir /abs/path/alias-map
-
-node scripts/run-flow-governance-review.mjs scan-process-flow-refs \
-  --processes-file /abs/path/processes.jsonl \
-  --scope-flow-file /abs/path/flows.jsonl \
-  --out-dir /abs/path/scan
-
-node scripts/run-flow-governance-review.mjs plan-process-flow-repairs \
-  --processes-file /abs/path/processes.jsonl \
-  --scope-flow-file /abs/path/flows.jsonl \
-  --scan-findings /abs/path/scan/scan-findings.json \
-  --out-dir /abs/path/repair-plan
-
-node scripts/run-flow-governance-review.mjs apply-process-flow-repairs \
-  --processes-file /abs/path/processes.jsonl \
-  --scope-flow-file /abs/path/flows.jsonl \
-  --scan-findings /abs/path/scan/scan-findings.json \
-  --out-dir /abs/path/repair-apply
-
-node scripts/run-flow-governance-review.mjs regen-product \
-  --processes-file /abs/path/processes.jsonl \
-  --scope-flow-file /abs/path/flows.jsonl \
-  --out-dir /abs/path/regen \
-  --apply
-
-node scripts/run-flow-governance-review.mjs validate-processes \
-  --original-processes-file /abs/path/before.jsonl \
-  --patched-processes-file /abs/path/after.jsonl \
-  --scope-flow-file /abs/path/flows.jsonl \
-  --out-dir /abs/path/validate
-```
-
-## Not Supported
-
-The following legacy commands were intentionally removed with the Python runtime:
-
-- `openclaw-entry`
-- `openclaw-full-run`
-- `run-governance`
-- `flow-dedup-candidates`
-- `export-openclaw-*`
-- `apply-openclaw-*`
-- `validate-openclaw-*`
-
-If you need one of those workflows, add it first as a native `tiangong-lca qa ...` or `tiangong-lca flow ...` command instead of rebuilding it inside this skill.
-
-## Preferred Usage
-
-Use the supported commands as composable slices:
-
-1. `identity-preflight` before creating a new flow. Stop on `block_duplicate` or `manual_review`.
-2. Author `unit_of_analysis` in the flow build plan before generation. For flow-only plans this may be a declared-unit dataset decision, but it must still record target kind, reference flow identity, reference unit, reference amount, flow property, and scaling evidence status. The skill makes the semantic decision; the CLI only checks that the artifact is present and complete.
-3. `build-plan validate` and `build-plan materialize` before producing a canonical `flowDataSet`.
-4. `materialize-db-flows` when the task must bind to real DB rows.
-5. `qa-flows`.
-6. `materialize-approved-decisions` after merge decisions are approved.
-7. `remediate-flows`.
-8. Keep flow names, synonyms, comments, and classification text source-language only for import/publish gates.
-9. `build-flow-alias-map` when version cleanup produced old/new scopes.
-10. `scan-process-flow-refs`.
-11. `plan-process-flow-repairs`.
-12. `apply-process-flow-repairs`.
-13. `validate-processes`.
-14. `publish-version` or `publish-reviewed-data`.
-
-## Standard Outputs
-
-- `identity-decision.json`, `identity-candidates.jsonl`, and `identity-candidate-sources.json` from `identity-preflight`
-- `build-plan-gate-report.json` and `materialized-flow.json` from `build-plan`
-- `flow-alias-map.json` when alias building is applicable
-- `scan-findings.json` and `repair-summary.json` when process snapshots are provided
-- `publish-report.json` from `publish-reviewed-data`
-- `prepared-flow-rows.json` and `flow-version-map.json` from `publish-reviewed-data`
-- `skipped-unchanged-flow-rows.json` from `publish-reviewed-data` when `--original-flow-rows-file` is provided
-- `resolved-flow-rows.jsonl`, `qa-input-rows.jsonl`, and `fetch-summary.json` from `materialize-db-flows`
-- `flow-dedup-canonical-map.json`, `flow-dedup-rewrite-plan.json`, `manual-semantic-merge-seed.current.json`, and `blocked-clusters.json` from `materialize-approved-decisions`
-
-## Example Output Layout
-
-Write generated machine outputs to an explicit directory outside the skill source tree. Typical bundles include:
-
-- `/abs/path/artifacts/<case_slug>/flow-processing/datasets/`: shared flow pool, invalid-input scope, resolved flow pool, reusable `process_pool.jsonl`
-- `/abs/path/artifacts/<case_slug>/flow-processing/validation/`: grouped validation failures that still matter for remediation planning
-- `/abs/path/artifacts/<case_slug>/flow-processing/naming/remaining-after-aggressive/`: post-aggressive completeness summaries and zero-process residuals
-- `/abs/path/artifacts/<case_slug>/flow-processing/naming/zero-process-completion-pack/`: reference review materials retained for follow-up
-- `/abs/path/artifacts/<case_slug>/flow-processing/remediation/`: deterministic remediation and publish preparation artifacts
-- `/abs/path/artifacts/<case_slug>/flow-remediation-batch-smoketest/`: historical smoke-test evidence for remediation-helper startup checks
-
-## Load References On Demand
-
-- `references/workflow.md`: command matrix, outputs, removed surface, and recommended sequencing.
-- `references/env.md`: canonical CLI env expectations for read, review, and publish commands.
-- `references/real-db-first-runbook.md`: real-DB-first execution guardrails, refs-file shape, and blocked-case handling.
-- `references/decision-schema.md`: approved decision file schema, merge examples, and downstream artifact meanings.
+Read the shared result envelope and actual `completeness`, validation layers and artifacts. A completed invocation may report invalid content. Missing/invisible records are not permission to create a replacement. `create` and `save` are distinct intentions; a failed save never becomes a create, and an unknown write uses its original request/intent recovery, never a new request or replay. Local files, queries, validation and candidate generation do not publish or submit review.
 
 ## CLI selection
 
-Use `node scripts/run-cli.mjs` for direct CLI calls so they share this skill wrapper's runtime selection. A consumer may configure `TIANGONG_LCA_CLI_INSTALLATION`, `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE` and `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256` once in its launch environment. These select an already installed and independently qualified CLI through its public runtime API; normal calls need no per-invocation overrides, Git checkout, pnpm or build. Inspect actual identity and selection source with `node scripts/run-cli.mjs --runtime-info`. Invalid configured evidence fails without falling back.
+Call `tiangong-lca` directly. Read the needed command’s `--help --json` before constructing inputs. Optional Node wrappers use the same PATH command; `--cli-command <executable>` selects a custom path. If unavailable, follow the official CLI installation guidance. Existing managed tasks continue through their owner-returned actions.
 
-Without an installed selection, execution stops with CLI setup guidance; Skills never downloads or chooses a CLI version. `--cli-dir` is an explicit development-source path. CLI versions and release locks belong to the installation owner, while Skills depend on the public commands and capabilities they use. Continue existing managed tasks through their original owner-returned actions; do not replace their runtime or replay UNKNOWN operations with this standalone entry.
+If `tiangong-lca` is unavailable, follow its official installation instructions. Source development and controlled runtime settings are optional environment choices; ordinary use requires no identity file or digest.

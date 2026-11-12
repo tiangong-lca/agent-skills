@@ -1,4 +1,4 @@
 interface:
-  display_name: "LCA Publish Executor"
-  short_description: "Publish LCA artifact bundles through CLI verification gates"
-  default_prompt: "Use $lca-publish-executor through CLI OAuth. Require doctor-auth before publish, keep account sessions separate, hand login to the human, never request credentials/codes/tokens/API keys, then read publish and verification reports and stop on blockers. Use scripts/run-cli.mjs for direct CLI calls and --runtime-info for identity; inherit the configured installed CLI environment without reselecting a version. Preserve original managed-task runtime and UNKNOWN recovery actions. Ordinary independent CLI calls require the configured installation; never select or download a CLI version from the skill."
+  display_name: 'Dataset review submission'
+  short_description: 'Prepare validated datasets for explicitly authorized review submission and distinguish dra'
+  default_prompt: 'Use $lca-publish-executor with the installed CLI 0.2.0 atomic interfaces. Prepare validated datasets for explicitly authorized review submission and distinguish draft persistence, review and data product publication. Use when a user asks to submit or continue dataset review. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

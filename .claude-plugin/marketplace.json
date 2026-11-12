@@ -64,7 +64,7 @@
         },
         {
             "name": "lca-study",
-            "description": "LCA calculation through a configured installed CLI, with optional scenario analysis, report review and named sharing.",
+            "description": "LCA research and Model calculation through a configured CLI, with optional hosted analysis, report review and named sharing.",
             "source": "./",
             "strict": false,
             "skills": [

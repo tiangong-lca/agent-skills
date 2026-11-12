@@ -1,115 +1,23 @@
 #!/usr/bin/env node
 import process from 'node:process';
-import {
-  normalizeCliRuntimeArgs,
-  renderCliRuntimeHelp,
-  runTiangongCommand,
-} from '../../scripts/lib/cli-launcher.mjs';
+import { normalizeCliRuntimeArgs, runTiangongCommand } from '../../scripts/lib/cli-launcher.mjs';
 
-class UsageError extends Error {}
-
-function fail(message) {
-  throw new UsageError(message);
-}
-
-function renderHelp() {
-  return `Usage:
-  node scripts/run-review.mjs [--profile <process|lifecyclemodel>] [options]
-
-Wrapper options:
-  --profile <name>         process | lifecyclemodel (default: process)
-  --cli-dir <dir>          Select an explicit development source tiangong-lca-cli repository path
-
-Profiles:
-  process                  Delegate to tiangong-lca qa process for either --rows-file or --run-root input
-  lifecyclemodel           Delegate to tiangong-lca qa lifecyclemodel
-
-Runtime:
-  default                  ${renderCliRuntimeHelp()}
-  local override           --cli-dir /path/to/tiangong-lca-cli or TIANGONG_LCA_CLI_DIR
-
-Examples:
-  node scripts/run-review.mjs --profile process --rows-file /abs/path/process-list-report.json --out-dir /abs/path/process-qa
-  node scripts/run-review.mjs --profile process --run-root /path/to/artifacts/process_from_flow/<run_id> --run-id <run_id> --out-dir /abs/path/process-qa
-  node scripts/run-review.mjs --profile process --run-root /path/to/artifacts/process_from_flow/<run_id> --run-id <run_id> --out-dir /abs/path/process-qa --enable-llm
-  node scripts/run-review.mjs --profile lifecyclemodel --run-dir /path/to/artifacts/lifecyclemodel_auto_build/<run_id> --out-dir /abs/path/lifecyclemodel-qa
-`.trim();
-}
-
-function normalizeArgs(rawArgs) {
-  const { args, ...runtime } = normalizeCliRuntimeArgs(rawArgs);
-  let profile = 'process';
-  const forwardedArgs = [];
-
-  for (let index = 0; index < args.length; index += 1) {
-    const arg = args[index];
-    if (arg === '--profile') {
-      if (index + 1 >= args.length) {
-        fail('--profile requires a value');
-      }
-      profile = args[index + 1];
-      index += 1;
-      continue;
-    }
-
-    if (arg.startsWith('--profile=')) {
-      profile = arg.slice('--profile='.length);
-      continue;
-    }
-
-    forwardedArgs.push(arg);
-  }
-
-  return {
-    runtime,
-    profile,
-    args: forwardedArgs,
-  };
-}
-
-function main() {
-  const { runtime, profile, args } = normalizeArgs(process.argv.slice(2));
-
-  if (args.length === 0) {
-    console.log(renderHelp());
-    process.exit(0);
-  }
-
-  if (args.includes('-h') || args.includes('--help')) {
-    if (profile === 'process') {
-      process.exit(runTiangongCommand(['qa', 'process', ...args], runtime));
-    }
-
-    if (profile === 'lifecyclemodel') {
-      process.exit(runTiangongCommand(['qa', 'lifecyclemodel', ...args], runtime));
-    }
-
-    console.log(renderHelp());
-    process.exit(0);
-  }
-
-  if (profile === 'process') {
-    process.exit(runTiangongCommand(['qa', 'process', ...args], runtime));
-  }
-
-  if (profile === 'lifecyclemodel') {
-    process.exit(runTiangongCommand(['qa', 'lifecyclemodel', ...args], runtime));
-  }
-
-  fail(`Unknown profile: ${profile}`);
-}
-
+// Canonical --input content and current validation flags are forwarded unchanged.
 try {
-  main();
-} catch (error) {
-  if (error instanceof UsageError) {
-    console.error(`Error: ${error.message}`);
-    console.error('');
-    console.error(renderHelp());
-    process.exit(2);
+  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
+  let profile = 'process';
+  let selected = false;
+  const forwarded = [];
+  for (let i = 0; i < args.length; i++) {
+    if (args[i] === '--profile' || args[i].startsWith('--profile=')) {
+      if (selected) throw new Error('Repeated --profile');
+      selected = true;
+      profile = args[i] === '--profile' ? args[++i] : args[i].slice('--profile='.length);
+    } else forwarded.push(args[i]);
   }
-
-  const message = error instanceof Error ? error.message : String(error);
-  console.error(`Error: ${message}`);
-  process.exit(1);
+  if (!['flow', 'process', 'model'].includes(profile)) throw new Error('--profile must be flow, process or model');
+  process.exitCode = runTiangongCommand(['dataset', profile, 'validate', ...(forwarded.length ? forwarded : ['--help'])], runtime);
+} catch (error) {
+  console.error(`Error: ${error.message}`);
+  process.exitCode = 2;
 }

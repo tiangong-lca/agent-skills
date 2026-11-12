@@ -1,4 +1,4 @@
 interface:
-  display_name: "Flow Hybrid Search"
-  short_description: "Debug and tune flow hybrid search requests"
-  default_prompt: "Use $flow-hybrid-search through the configured CLI OAuth session and its zero-config official Production profile; check auth status first, hand browser login to the human when required, and never request credentials, codes, or tokens. Use scripts/run-cli.mjs for direct CLI calls and --runtime-info for identity; inherit the configured installed CLI environment without reselecting a version. Preserve original managed-task runtime and UNKNOWN recovery actions. Ordinary independent CLI calls require the configured installation; never select or download a CLI version from the skill."
+  display_name: "Flow Dataset Search"
+  short_description: "Find and inspect explicit flow dataset candidates"
+  default_prompt: "Call tiangong-lca directly from PATH; check required command help and install through official guidance if missing. Use $flow-hybrid-search with the installed CLI's dataset flow search/get operations. Choose scope explicitly, preserve exact candidate versions, inspect completeness and distinguish a proposed proxy from an adopted reference. Never silently discard unsupported legacy filters or switch installations."

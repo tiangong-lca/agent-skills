@@ -183,7 +183,7 @@ test('validation CI installs the exact CLI checkout through frozen pnpm only', (
   const diagnostics = workflow.slice(diagnosticsStart);
 
   assert.match(workflow, /repository: tiangong-lca\/cli/u);
-  assert.match(workflow, /ref: 89c71772ca1afcfc09705f8c27a9703c6bf8ccf6/u);
+  assert.match(workflow, /ref: 955642482771a270fd49a199d1d7c86fcccc9ce2/u);
   assert.match(
     workflow,
     /uses: pnpm\/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4/u,
@@ -194,6 +194,8 @@ test('validation CI installs the exact CLI checkout through frozen pnpm only', (
   assert.match(workflow, /cache: true/u);
   assert.match(workflow, /pnpm install --frozen-lockfile/u);
   assert.match(workflow, /pnpm run build/u);
+  assert.match(workflow, /node scripts\/qualify-ci-cli\.mjs/u);
+  assert.match(read('scripts/qualify-ci-cli.mjs'), /expectedCommit: '955642482771a270fd49a199d1d7c86fcccc9ce2'/u);
   assert.doesNotMatch(workflow, /--published-cli/u);
   assert.equal(
     qualification.match(
@@ -253,7 +255,6 @@ test('qualified candidates reach the shared toolchain validator and avoid a seco
 test('nested validation, QA and fixture wrappers propagate the complete normalized candidate runtime', () => {
   for (const relativePath of [
     'scripts/validate-skills.mjs',
-    'lifecycleinventory-review/scripts/run-remote-process-review.mjs',
     'flow-governance-review/scripts/run-flow-governance-review-fixture.mjs',
   ]) {
     const wrapper = read(relativePath);
