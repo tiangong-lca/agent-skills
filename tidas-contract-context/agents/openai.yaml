@@ -1,4 +1,4 @@
 interface:
-  display_name: "TIDAS Contract Context"
-  short_description: "Fetch schema, methodology, ruleset, and AI context packs through the CLI"
-  default_prompt: "Use $tidas-contract-context through the configured CLI public commands before AI authoring or repairing TIDAS import data."
+  display_name: "Tidas Contract Context"
+  short_description: "Use current typed CLI operations with explicit evidence"
+  default_prompt: "Use $tidas-contract-context through the environment-selected CLI and read current help before constructing inputs. Preserve source meaning, actual validation scope, separate local processing from create/save/review, and keep managed Foundry tasks on their original returned actions. Do not call retired generic Dataset or production workflow commands."

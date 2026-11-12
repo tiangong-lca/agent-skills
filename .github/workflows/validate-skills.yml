@@ -16,6 +16,11 @@ on:
       - "lifecyclemodel-resulting-process-builder/**"
       - "process-automated-builder/**"
       - "flow-governance-review/**"
+      - "**/SKILL.md"
+      - "**/agents/openai.yaml"
+      - "**/references/**"
+      - "**/assets/**"
+      - "**/scripts/**"
       - "test/**"
       - "AGENTS.md"
       - "README.md"
@@ -62,7 +67,7 @@ jobs:
         with:
           persist-credentials: false
           repository: tiangong-lca/cli
-          ref: 89c71772ca1afcfc09705f8c27a9703c6bf8ccf6
+          ref: 955642482771a270fd49a199d1d7c86fcccc9ce2
           path: .ci/tiangong-lca-cli
 
       - name: Set up pnpm 11.24.0 and Node 24.19.0
@@ -81,6 +86,9 @@ jobs:
         run: |
           pnpm install --frozen-lockfile
           pnpm run build
+
+      - name: Qualify the pinned CLI test fixture
+        run: node scripts/qualify-ci-cli.mjs
 
       - name: Test Skills repository contracts
         env:

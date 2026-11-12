@@ -1,25 +1,5 @@
-# lifecyclemodel profile
+# Model review
 
-Status: **implemented**.
+Use `node scripts/run-review.mjs --profile model --input model.json --json`, which invokes `dataset model validate`. The input is one canonical Model document. Inspect graph structure separately through `dataset model graph` and exact dependency reads; current validation does not claim every retired workflow QA check or scientific review.
 
-Canonical path:
-1. Run `node scripts/run-review.mjs --profile lifecyclemodel`.
-2. The wrapper delegates directly to `tiangong-lca qa lifecyclemodel`.
-
-Required inputs:
-- `--run-dir <dir>`
-- `--out-dir <dir>`
-
-Optional inputs:
-- `--start-ts <iso>`
-- `--end-ts <iso>`
-- `--logic-version <name>`
-
-Review artifacts:
-- `model_summaries.jsonl`
-- `findings.jsonl`
-- `lifecyclemodel_review_summary.json`
-- `lifecyclemodel_review_zh.md`
-- `lifecyclemodel_review_en.md`
-- `lifecyclemodel_review_timing.md`
-- `lifecyclemodel_review_report.json`
+Preserve exact versions, explicit connections, units, source evidence and actual not-checked scope. Proposed repairs are local candidates until separately authorized create/save. Run-directory QA profiles and automatic model generation are not supported inputs.

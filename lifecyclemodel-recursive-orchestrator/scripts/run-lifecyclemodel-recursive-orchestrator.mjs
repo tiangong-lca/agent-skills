@@ -1,102 +1,13 @@
 #!/usr/bin/env node
 import process from 'node:process';
-import {
-  normalizeCliRuntimeArgs,
-  renderCliRuntimeHelp,
-  runTiangongCommand,
-} from '../../scripts/lib/cli-launcher.mjs';
+import { normalizeCliRuntimeArgs, runTiangongCommand } from "../../scripts/lib/cli-launcher.mjs";
 
-class UsageError extends Error {}
-
-function fail(message) {
-  throw new UsageError(message);
-}
-
-function renderHelp() {
-  return `Usage:
-  node scripts/run-lifecyclemodel-recursive-orchestrator.mjs <plan|execute|publish> [options]
-
-Wrapper options:
-  --cli-dir <dir>           Select an explicit development source tiangong-lca-cli repository path
-
-Canonical CLI command:
-  tiangong-lca lifecyclemodel orchestrate <plan|execute|publish> [options]
-
-Compatibility aliases:
-  --request <file>          Alias for the CLI's --input <file>
-
-Examples:
-  node scripts/run-lifecyclemodel-recursive-orchestrator.mjs plan --request assets/example-request.json --out-dir /abs/path/run-001 --json
-  node scripts/run-lifecyclemodel-recursive-orchestrator.mjs execute --request assets/example-request.json --out-dir /abs/path/run-001 --allow-process-build --allow-submodel-build --json
-  node scripts/run-lifecyclemodel-recursive-orchestrator.mjs publish --run-dir /abs/path/run-001 --publish-lifecyclemodels --publish-resulting-process-relations --json
-
-Notes:
-  - default runtime is ${renderCliRuntimeHelp()}
-  - this wrapper is CLI-only; there is no Python fallback path
-  - recursive orchestration now lives in tiangong-lca lifecyclemodel orchestrate
-`.trim();
-}
-
-function normalizeForwardArgs(args) {
-  const forwardArgs = [];
-
-  for (let index = 0; index < args.length; index += 1) {
-    const arg = args[index];
-    if (arg === '--request') {
-      if (index + 1 >= args.length) {
-        fail('--request requires a value');
-      }
-      forwardArgs.push('--input', args[index + 1]);
-      index += 1;
-      continue;
-    }
-
-    if (arg.startsWith('--request=')) {
-      forwardArgs.push(`--input=${arg.slice('--request='.length)}`);
-      continue;
-    }
-
-    forwardArgs.push(arg);
-  }
-
-  return forwardArgs;
-}
-
-function main() {
-  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
-  const action = args[0];
-  const forwardedArgs = normalizeForwardArgs(args.slice(1));
-
-  if (!action || action === 'help' || action === '-h' || action === '--help') {
-    console.log(renderHelp());
-    process.exit(0);
-  }
-
-  if (action !== 'plan' && action !== 'execute' && action !== 'publish') {
-    fail(`Unknown action: ${action}`);
-  }
-
-  process.exit(
-    runTiangongCommand([
-      'lifecyclemodel',
-      'orchestrate',
-      action,
-      ...forwardedArgs,
-    ], runtime),
-  );
-}
-
+// Forward current atomic CLI arguments without translating inputs or retrying effects.
 try {
-  main();
+  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
+  const command = ["dataset", "model"];
+  process.exitCode = runTiangongCommand([...command, ...(args.length ? args : ['--help'])], runtime);
 } catch (error) {
-  if (error instanceof UsageError) {
-    console.error(`Error: ${error.message}`);
-    console.error('');
-    console.error(renderHelp());
-    process.exit(2);
-  }
-
-  const message = error instanceof Error ? error.message : String(error);
-  console.error(`Error: ${message}`);
-  process.exit(1);
+  console.error(`Error: ${error.message}`);
+  process.exitCode = 2;
 }

@@ -1,52 +1,23 @@
 ---
 name: lca-publish-executor
-description: Publish local LCA artifact bundles through the unified `tiangong-lca publish run` contract. Use when another skill already produced local publish artifacts and needs one stable publish request instead of per-skill glue.
+description: Prepare validated datasets for explicitly authorized review submission and distinguish draft persistence, review and data product publication. Use when a user asks to submit or continue dataset review.
 ---
 
-# LCA Publish Executor
+# Dataset review submission
 
-## Overview
-- Accept one JSON request that points at `publish-bundle.json` files, direct dataset payloads, or `process_from_flow` run ids.
-- Forward that request shape to `tiangong-lca publish run`.
-- Keep relation metadata local when the publish mode says `local_manifest_only`.
-- Reuse publish bundles prepared by upstream CLI-backed builders instead of inventing a second publish contract here.
+Confirm whether the user intends to create/save a dataset draft, submit/resubmit a review, process an assigned review, or publish a data product. These are distinct operations and authorities. Never translate a generic publish request directly into a write or Release approval.
 
-## When To Use
-- Use after `lifecyclemodel-recursive-orchestrator publish`.
-- Use after `lifecyclemodel-resulting-process-builder publish`.
-- Use when a caller wants one standard publish manifest for multiple skills.
-- Use when another caller should know only one publish request shape.
+Validate complete content and inspect exact referenced objects first. Perform an authorized `dataset <type> create` or `save` separately. Then use `review submit` or `review resubmit` with the installed command's supported input; read `review get` for actual status. The convenience `run-lca-publish-executor.mjs` forwards current `review <action>` arguments. It does not combine dataset writes and review submission into a transaction.
 
-## Commands
-```bash
-node scripts/run-lca-publish-executor.mjs publish \
-  --request assets/example-request.json \
-  --dry-run \
-  --json
-```
+The supported service may submit one root and its related data; do not promise optional association switches or multi-root review packages unless capabilities actually advertise them. Submission means accepted for review, not approved or published. Reviewer decisions require the current assigned-role authority. Unknown outcomes use original-request recovery, not a new submission.
 
-## Request Contract
-- Read `assets/request.schema.json` for the stable manifest shape.
-- Read `references/publish-contract.md` for bundle ingestion rules and relation handling.
-- `inputs.bundle_paths[]`: one or more upstream `publish-bundle.json` files.
-- `inputs.lifecyclemodels[]` / `processes[]` / `sources[]`: direct dataset payloads or file references.
-- `inputs.process_build_runs[]`: delegated `process_from_flow` publish targets; each item needs `run_id`.
-- `publish.commit=false` means dry-run preparation only.
-- `publish.relation_mode=local_manifest_only` is currently the only supported relation mode.
+Data-product publication uses the separately authorized `release` workflow. This Skill does not reinterpret draft save or review submission as Release publication. Return each operation's actual identity, state, effects, unresolved outcome and next action.
 
-## Outputs
-- whatever `tiangong-lca publish run` emits for the request shape
-- at minimum expect `publish-report.json`
-- expect `verification-report.json` next to the publish report; read it before treating a dry-run or commit as complete
-- when relation mode stays local, also expect a local relation manifest in the publish output bundle
+## Runtime and authorization
 
-## Notes
-- This wrapper is CLI-only; there is no Python or MCP fallback path.
-- Before any remote publish, require `tiangong-lca auth doctor-auth --json`. A `login-required` result is a human handoff to `auth login`; never request a password, authorization code, token, or legacy API key. Keep a distinct private session per account/project/client. Headless tokens may come only from an approved orchestrator and never enter argv, prompts, logs, or artifacts.
-- Keep this skill as a stable request façade only. Do not add publish internals here.
-- Do not publish if upstream identity, build-plan, schema, deterministic QA, Foundry process curation, reference, matrix-readiness, or account-verification gates are missing or blocked.
-- If `verification-report.json` contains blockers, stop and hand off the artifact path instead of retrying blindly.
-- After a commit-mode publish, run the appropriate post-write verification: `tiangong-lca dataset verify-remote` for TIDAS references and `tiangong-lca process verify-rows` for persisted process row snapshots.
+Use this package's `node scripts/run-cli.mjs` and the environment owner's qualified CLI selection. Inspect `--runtime-info` and current command `--help --json`; do not discover a sibling checkout, download a default version or reinterpret old request formats. Local validation and content processing do not require login. Before remote reads run `tiangong-lca auth status --json`; when login is required, hand `auth login` to a human in a trusted terminal. Never request a password, code or token. Use `auth doctor-auth --json` before authorized account-sensitive writes. Separate accounts with the caller's private `TIANGONG_LCA_SESSION_FILE`; never read its credentials in a Skill.
+
+Read the shared result envelope and actual `completeness`, validation layers and artifacts. A completed invocation may report invalid content. Missing/invisible records are not permission to create a replacement. `create` and `save` are distinct intentions; a failed save never becomes a create, and an unknown write uses its original request/intent recovery, never a new request or replay. Local files, queries, validation and candidate generation do not publish or submit review.
 
 ## CLI selection
 

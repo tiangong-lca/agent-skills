@@ -1,4 +1,4 @@
 interface:
-  display_name: "Current Account Dataset Review"
-  short_description: "Run CLI-backed current-account dataset review, reference, and verification gates"
-  default_prompt: "Use $current-account-dataset-review through the CLI OAuth session. Check auth status first, require doctor-auth before commit, keep separate private sessions per account, hand browser login to the human, and never request a password, code, token, or legacy API key. Use scripts/run-cli.mjs for direct CLI calls and --runtime-info for identity; inherit the configured installed CLI environment without reselecting a version. Preserve original managed-task runtime and UNKNOWN recovery actions. Ordinary independent CLI calls require the configured installation; never select or download a CLI version from the skill."
+  display_name: 'Current-account dataset review'
+  short_description: 'Review current-account datasets and apply explicit, evidence-supported repairs through typ'
+  default_prompt: 'Use $current-account-dataset-review with the qualified CLI 0.2.0 atomic interfaces. Review current-account datasets and apply explicit, evidence-supported repairs through typed CLI operations. Use for inspecting owned drafts, references and changes before separate saves. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

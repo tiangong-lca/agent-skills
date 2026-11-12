@@ -31,6 +31,7 @@ checkPaths:
   - scripts/validate-skills.mjs
   - scripts/check-toolchain.mjs
   - scripts/inspect-local-cli.mjs
+  - scripts/qualify-ci-cli.mjs
   - scripts/lib/**
   - scripts/run-cli.mjs
   - scripts/sync-tidas-public-rules.mjs
@@ -43,8 +44,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: c9b742a7a83c8342edca916cd523f47694416ba2
-lastReviewedNote: "Skills #150: reviewed six-stage evidence-led Model research, optional hosted Study references, local setup/result commands and normal sparse method applicability; launcher selection and disclosure authority are unchanged."
+lastReviewedCommit: fc46a3df63e584f7a5a9f0c5b489d8afa43a696d
+lastReviewedNote: "Skills #150: migrated active wrappers and guidance to CLI 0.2.0 atomic contracts, preserved managed Foundry/runtime boundaries and reviewed installed/native validation coverage."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
@@ -103,14 +104,15 @@ Route those tasks to:
 
 - Repo-local documentation governance is encoded in `.docpact/config.yaml` and enforced locally by the pre-push docpact gate; `.github/workflows/ai-doc-lint.yml` is manual-dispatch fallback.
 - This repo is distribution-oriented; each skill should stay a thin wrapper over the unified CLI or a data-only semantic role over current Foundry work items
-- If a capability is missing, add it to `tiangong-lca/cli` first, then update the skill wrapper here
+- Active wrappers use typed CLI 0.2.0 dataset and review operations. Scientific workflows stay in Skills; missing workflow commands do not justify restoring legacy schedulers or repair aliases.
+- If an atomic capability is missing, add it to `tiangong-lca/cli` first, then update the skill wrapper here
 - Current-account dataset review skills may orchestrate frozen local inputs through public CLI commands, but must not own direct database access, credential parsing, or private account runtime logic.
 - Active remote skills must check `tiangong-lca auth status --json`, hand `auth login` to a human-controlled trusted terminal when required, and use `auth doctor-auth` before account-sensitive commits. They never collect or emit usernames, passwords, authorization codes, tokens, or legacy API keys.
 - Official Production public configuration belongs to the CLI and needs no Skills env setup. Only complete custom project URL/key/client/callback tuples override it; headless tokens require an explicit destination/key and must not implicitly select Production.
 - The independently installable Study and three hybrid-search packages carry byte-identical `scripts/lib/cli-launcher.mjs` bundles inside their own directories. The root `scripts/lib/cli-{launcher,installed,development}.mjs` and `scripts/run-cli.mjs` remain the only source authorities; update all bundled files together and retain the isolated copied-package plus byte-equality regression. Do not add authentication or transport logic to those bundles.
 - Headless tokens are orchestrator-injected, short-lived, and absent from argv/prompts/logs/artifacts. Multi-account work uses a distinct private `TIANGONG_LCA_SESSION_FILE` per account/project/client and preserves expected identity evidence.
 - Source-evidence import skills may instruct agents to resolve external research skills with `npx skills`, but this repository should not mirror or pin those external skill packages.
-- `external-dataset-curated-import`, `source-evidence-dataset-development`, and `dataset-rls-maintenance` are top-level workflow skills only; executable conversion, queue state, validation, QA, write/delete/redo, and verify behavior stays in CLI/Foundry-owned commands.
+- `external-dataset-curated-import`, `source-evidence-dataset-development`, and `dataset-rls-maintenance` are top-level workflow skills only; atomic conversion, validation and persistence stay in CLI-owned commands; managed task/queue state and returned actions stay in Foundry.
 - Dataset maintenance under user RLS must use CLI-owned maintenance plans and readback verification. Skills must not add direct Supabase CRUD, service-role paths, or broad delete filters.
 - Repository validation pins Node `24.19.0` / pnpm `11.24.0`. Ordinary Skills depend on public CLI capabilities; the installation owner selects and locks versions. Missing selection stops execution, never downloading a default or latest package. Configured installed execution instead uses the CLI-owned public runtime expectation and needs no pnpm or source checkout.
 - Never auto-discover a PATH or sibling CLI. Ordinary consumers must set `TIANGONG_LCA_CLI_INSTALLATION`, `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE` and `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256` once in their launch environment; direct `scripts/run-cli.mjs` and skill wrappers share that selection. `--cli-installation` plus the two `--cli-runtime-expectation-*` flags explicitly select another qualified installation. `--cli-dir` remains the development-source path. Retired `--published-cli` and `TIANGONG_LCA_CLI_MODE=published` selections fail with migration guidance. Ambiguous inherited installed/development selections fail.

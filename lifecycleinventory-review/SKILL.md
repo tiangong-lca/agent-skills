@@ -1,106 +1,23 @@
 ---
 name: lifecycleinventory-review
-description: "QA process-level or lifecyclemodel-level lifecycle inventory outputs from local TianGong build runs, plus frozen remote TianGong process snapshots. Use when auditing process_from_flow batches, remote process rows fetched through the canonical snapshot wrapper, or lifecyclemodel build artifacts through the unified CLI with reproducible QA inputs and outputs."
+description: Review canonical Process, Flow or Model data with current CLI validation and evidence-led scientific interpretation. Use for local inventory checks or reviewing explicitly selected remote versions.
 ---
 
-# lifecycleinventory-review
+# Inventory review
 
-当前保留 `process` 和 `lifecyclemodel` 两个 CLI-backed QA profile；规则文档按 profile 收敛在各自的 `profiles/*/references/` 下。
+Use `dataset <type> validate --input content.json --json` for one canonical document. The convenience wrapper is `run-review.mjs --profile process|flow|model --input content.json --json`; default profile is Process. It forwards current validation flags and preserves the CLI result. Old QA row envelopes, run-directory profiles and LLM-validation flags are not equivalent inputs.
 
-Process 的两条已裁决公共命名规则不再由本技能手工定义。需要解释命名要求时，先从本技能包执行 `node scripts/read-public-rule.mjs --rule-id <id>` 读取已发布 spec 0.2.1 的校验索引；显式 `--rules-dir` 覆盖也必须通过同一身份与哈希校验。`profiles/process/references/process-review-rules.md` 只保留冻结输入、证据、QA 与修复建议的技能流程；公共规则不授予写入或 waiver 权限。
+For remote data, `run-remote-process-review.mjs` forwards current `dataset process` actions. List a bounded scope, fetch an exact Process with `get --id <id> --version <version> --output content.json`, then validate that canonical content. Search/list envelopes are not validation payloads. Repeat only for explicitly selected objects and preserve completeness; do not claim an exhaustive remote audit from one page.
 
-## Profiles
-- `process`（默认）：通过统一 CLI 执行 process_from_flow 产物 QA。
-- `lifecyclemodel`：通过统一 CLI 执行 lifecyclemodel build run QA。
+Read the two reviewed Process naming rules through `node scripts/read-public-rule.mjs --rule-id <id>`. Public rule definitions remain in the verified spec bundle and do not grant waivers or writes. Interpret schema, authoring evidence, content and multilingual layers separately. Remote references require explicitly selected evidence; missing evidence stays unverified. Scientific adequacy, review decisions and publication eligibility are separate from a successful validator invocation.
 
-## 统一入口
-- `node scripts/run-review.mjs`：本地 `process_from_flow` / `lifecyclemodel` QA 入口，通过 `--profile` 选择子能力。
-- `node scripts/run-remote-process-review.mjs`：远端 `process` snapshot freeze + QA 的推荐 wrapper。
+Return exact dataset identities, issue paths and evidence, checks actually performed and the proposed next action. Produce a local candidate only for authorized corrections; validate it and inspect its diff before a separate save. See `profiles/process/references/process-review-rules.md` for scientific review judgment.
 
-运行模型：
+## Runtime and authorization
 
-- canonical path 为 `skill -> Node .mjs wrapper -> tiangong-lca qa process | qa lifecyclemodel`
-- 两个 profile 都不再走 skill 私有 Python / OpenAI 入口
-- 没有 shell 兼容壳
+Use this package's `node scripts/run-cli.mjs` and the environment owner's qualified CLI selection. Inspect `--runtime-info` and current command `--help --json`; do not discover a sibling checkout, download a default version or reinterpret old request formats. Local validation and content processing do not require login. Before remote reads run `tiangong-lca auth status --json`; when login is required, hand `auth login` to a human in a trusted terminal. Never request a password, code or token. Use `auth doctor-auth --json` before authorized account-sensitive writes. Separate accounts with the caller's private `TIANGONG_LCA_SESSION_FILE`; never read its credentials in a Skill.
 
-远端 snapshot 前先运行 `tiangong-lca auth status --json`。若返回 `login-required`，停止并把可信终端交给人类运行 `tiangong-lca auth login`；不得向用户索取用户名、密码、authorization code、token 或旧 API key。账号敏感复审使用独立私有 `TIANGONG_LCA_SESSION_FILE`，并在冻结 snapshot 前运行 `tiangong-lca auth doctor-auth --json`。headless 仅允许 orchestrator 注入短期 access token，且不能进入 argv、prompt、日志或产物。
-
-### 默认 profile
-若未显式传入 `--profile`，默认使用 `process`。
-
-## process profile
-使用 `tiangong-lca qa process` 执行 process 维度 QA：
-- 统一规则与输出合同见 `profiles/process/references/process-review-rules.md`。
-- 读取当前 Process 的来源绑定 schema/methodology context，按 rubric 的用途文本检查区分 `intendedApplications`、`useAdviceForDataSet` 和 `technologicalApplicability`。语义审查需记录准确路径、问题原文、具体修复和保留的科学限制；CLI/schema 通过不代表此项已检查。
-- 当前默认 process rubric 已移除 ILCD taxonomy 分类映射语义检查，但会检查 schema-required 结构完整性；重点放在 schema-required 字段存在性、命名、dataset type / flow 引用结构完整性、定量参考、单位与平衡、代表性、前景系统语境和工具生成语言清理。
-- 命名检查默认按 `name.baseName`、`name.treatmentStandardsRoutes`、`name.mixAndLocationTypes`、`name.functionalUnitFlowProperties` 四字段拆分执行；其中 `baseName` / `treatmentStandardsRoutes` / `mixAndLocationTypes` 作为 schema-required 字段必须保留，禁止把整串 reference flow short description 直接塞进 `baseName`，也不要把 required 键省略掉。
-- 当任务是复审当前认证可访问的远端 process（例如 `state_code=0/100`）时：
-  - 先选择一个输出目录并冻结远端 snapshot。
-  - canonical 路径是优先使用 `node scripts/run-remote-process-review.mjs --out-dir ... --list ... [--qa ...]`。
-  - 该 wrapper 会冻结 `tiangong-lca process list --json` 的原始报告到 `inputs/process-list-report.json`，并额外落盘 `inputs/processes.snapshot.rows.jsonl` 后再调用 `node scripts/run-review.mjs --profile process --rows-file ...`。
-  - 当 `tiangong-lca process list` 的现有过滤维度不足以表达任务（例如缺少某类反向引用或更复杂筛选）时，可使用补充 bridge，并在 QA 备注中记录该限制。
-- 输入：`(--rows-file | --run-root) --out-dir [--run-id] [--start-ts] [--end-ts] [--logic-version] [--enable-llm] [--llm-model] [--llm-max-processes]`
-- 输出：
-  - `qa-input-summary.json`
-  - `qa-input/materialization-summary.json`（仅 `--rows-file` 模式）
-  - `one_flow_rerun_timing.md`
-  - `one_flow_rerun_qa_v2_1_zh.md`
-  - `one_flow_rerun_qa_v2_1_en.md`
-  - `flow_unit_issue_log.md`
-  - `qa_summary_v2_1.json`
-  - `process-qa-report.json`
-
-## lifecyclemodel profile
-使用 `tiangong-lca qa lifecyclemodel` 执行 lifecyclemodel 维度 QA：
-- 输入：`--run-dir --out-dir [--start-ts] [--end-ts] [--logic-version]`
-- 输出：
-  - `model_summaries.jsonl`
-  - `findings.jsonl`
-  - `lifecyclemodel_qa_summary.json`
-  - `lifecyclemodel_qa_zh.md`
-  - `lifecyclemodel_qa_en.md`
-  - `lifecyclemodel_qa_timing.md`
-  - `lifecyclemodel_qa_report.json`
-
-## 运行示例
-```bash
-tiangong-lca process list \
-  --state-code 100 \
-  --limit 20 \
-  --json > /abs/path/process-list-report.json
-
-node scripts/run-review.mjs \
-  --profile process \
-  --rows-file /abs/path/process-list-report.json \
-  --out-dir /abs/path/process-qa
-
-node scripts/run-remote-process-review.mjs \
-  --out-dir /abs/path/qa-runs/process-qa \
-  --list --state-code 0 --state-code 100 --all
-
-node scripts/run-remote-process-review.mjs \
-  --out-dir /abs/path/qa-runs/process-qa \
-  --list --user-id <owner> --state-code 0 --all \
-  --qa --logic-version 2026-04-14
-
-node scripts/run-review.mjs \
-  --profile process \
-  --run-root /path/to/process_from_flow/<run_id> \
-  --run-id <run_id> \
-  --out-dir /abs/path/process-qa \
-  --start-ts 2026-02-22T16:01:51+00:00 \
-  --end-ts 2026-02-22T16:21:40+00:00
-
-node scripts/run-review.mjs \
-  --profile lifecyclemodel \
-  --run-dir /path/to/lifecyclemodel_auto_build/<run_id> \
-  --out-dir /abs/path/lifecyclemodel-qa
-```
-
-## 后续扩展
-- flow QA 已完全移出本 skill，由 `flow-governance-review` 单独承担。
-- `profiles/process/references/process-review-rules.md`：沉淀 process 维度的默认 QA rubric、输出合同和远端 snapshot 特殊约束。
-- `profiles/lifecyclemodel`：沉淀 lifecycle model 维度 QA 规则与 CLI 输出约定。
+Read the shared result envelope and actual `completeness`, validation layers and artifacts. A completed invocation may report invalid content. Missing/invisible records are not permission to create a replacement. `create` and `save` are distinct intentions; a failed save never becomes a create, and an unknown write uses its original request/intent recovery, never a new request or replay. Local files, queries, validation and candidate generation do not publish or submit review.
 
 ## CLI selection
 

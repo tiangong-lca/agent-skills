@@ -161,18 +161,6 @@ const docGuards = [
       "source-analysis.md should treat the old Python validator as historical context, not as the current execution path.",
   },
   {
-    file: "lca-publish-executor/assets/example-request.json",
-    pattern: /"out_dir": "\/tmp\//u,
-    message:
-      "lca-publish-executor example request should use a platform-neutral temp directory placeholder.",
-  },
-  {
-    file: "lifecyclemodel-resulting-process-builder/assets/example-request.json",
-    pattern: /file:\/\/\/tmp\//u,
-    message:
-      "lifecyclemodel-resulting-process-builder example request should use a platform-neutral file URI placeholder.",
-  },
-  {
     file: "process-scope-statistics/SKILL.md",
     pattern: /--env-file/u,
     message:
@@ -182,7 +170,7 @@ const docGuards = [
     file: "process-dedup-review/SKILL.md",
     pattern: /review_duplicate_processes\.py|--xlsx/u,
     message:
-      "process-dedup-review should delegate to tiangong-lca process dedup-review with grouped JSON input, not a bundled Python workbook runtime.",
+      "process-dedup-review should use native dataset process diff with before/after content, not a bundled Python workbook runtime.",
   },
   {
     file: "process-dedup-review/agents/openai.yaml",
@@ -249,15 +237,15 @@ const docGuards = [
 const requiredDocPatterns = [
   {
     file: "lifecycleinventory-review/SKILL.md",
-    pattern: /--rows-file/u,
+    pattern: /--input/u,
     message:
-      "lifecycleinventory-review should document the native --rows-file process QA path.",
+      "lifecycleinventory-review should document the current canonical --input validation path.",
   },
   {
     file: "lifecycleinventory-review/scripts/run-review.mjs",
-    pattern: /--rows-file/u,
+    pattern: /--input/u,
     message:
-      "run-review.mjs help should include a rows-file process QA example.",
+      "run-review.mjs help should include the canonical input validation route.",
   },
   {
     file: "lifecycleinventory-review/SKILL.md",
@@ -267,27 +255,27 @@ const requiredDocPatterns = [
   },
   {
     file: "README.md",
-    pattern: /process list --json/u,
+    pattern: /dataset process (?:get|validate)/u,
     message:
-      "README.md should mention the native process list -> qa process rows-file path.",
+      "README.md should mention the typed exact Process reads and canonical validation.",
   },
   {
     file: "README.zh-CN.md",
-    pattern: /process list --json/u,
+    pattern: /dataset process (?:get|validate)/u,
     message:
-      "README.zh-CN.md should mention the native process list -> qa process rows-file path.",
+      "README.zh-CN.md should mention the typed exact Process reads and canonical validation.",
   },
   {
     file: "process-scope-statistics/SKILL.md",
-    pattern: /tiangong-lca process scope-statistics/u,
+    pattern: /tiangong-lca dataset process statistics/u,
     message:
-      "process-scope-statistics should document the canonical tiangong-lca process scope-statistics command.",
+      "process-scope-statistics should document the canonical dataset process statistics command.",
   },
   {
     file: "process-dedup-review/SKILL.md",
-    pattern: /tiangong-lca process dedup-review/u,
+    pattern: /tiangong-lca dataset process diff/u,
     message:
-      "process-dedup-review should document the canonical tiangong-lca process dedup-review command.",
+      "process-dedup-review should document the canonical dataset process diff command.",
   },
   {
     file: "process-automated-builder/SKILL.md",
@@ -399,7 +387,7 @@ const targetedSmokeChecks = [
   {
     skill: "lifecycleinventory-review",
     script: "lifecycleinventory-review/scripts/run-review.mjs",
-    args: ["--profile", "lifecyclemodel", "--help"],
+    args: ["--profile", "model", "--help"],
     description: "lifecyclemodel QA profile help",
   },
   {

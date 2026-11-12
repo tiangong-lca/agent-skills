@@ -1,4 +1,4 @@
 interface:
-  display_name: "Lifecycle Model Resulting Process Builder"
-  short_description: "Build resulting processes via the unified CLI"
-  default_prompt: "Use $lifecyclemodel-resulting-process-builder through the configured CLI and its OAuth session. Keep the default flow local; explicit Production lookup uses the CLI profile, custom projects need complete settings, and any required browser login belongs to the human without credential, code, or token handoff. Use scripts/run-cli.mjs for direct CLI calls and --runtime-info for identity; inherit the configured installed CLI environment without reselecting a version. Preserve original managed-task runtime and UNKNOWN recovery actions. Ordinary independent CLI calls require the configured installation; never select or download a CLI version from the skill."
+  display_name: 'Generate a resulting Process'
+  short_description: 'Generate a resulting Process candidate from an explicit Model using the current CLI aggreg'
+  default_prompt: 'Use $lifecyclemodel-resulting-process-builder with the qualified CLI 0.2.0 atomic interfaces. Generate a resulting Process candidate from an explicit Model using the current CLI aggregation operation, then validate it and perform a separate authorized create or save. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

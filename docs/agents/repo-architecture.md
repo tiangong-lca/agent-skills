@@ -30,14 +30,15 @@ checkPaths:
   - scripts/install-git-hooks.sh
   - scripts/check-toolchain.mjs
   - scripts/inspect-local-cli.mjs
+  - scripts/qualify-ci-cli.mjs
   - scripts/lib/**
   - scripts/run-cli.mjs
   - scripts/sync-tidas-public-rules.mjs
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: c9b742a7a83c8342edca916cd523f47694416ba2
-lastReviewedNote: "Skills #150: reviewed six-stage evidence-led Model research, optional hosted Study references, local setup/result commands and normal sparse method applicability; launcher selection and disclosure authority are unchanged."
+lastReviewedCommit: fc46a3df63e584f7a5a9f0c5b489d8afa43a696d
+lastReviewedNote: "Skills #150: migrated active wrappers and guidance to CLI 0.2.0 atomic contracts, preserved managed Foundry/runtime boundaries and reviewed installed/native validation coverage."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -73,17 +74,17 @@ Top-level Foundry scenario skills are allowed in this repository when they only 
 - Product/runtime repositories own business logic and API behavior.
 - `lca-workspace` owns root integration state and submodule pointer updates.
 
-If a skill needs a capability that does not exist in the CLI, add the capability to `tiangong-lca/cli` first and keep the skill as a thin wrapper over that CLI surface.
+If an atomic business operation is missing, implement it in `tiangong-lca/cli` and keep its caller thin. Scientific interpretation, research steps and multi-operation workflow decisions remain Skill responsibilities.
 
 Remote authentication follows the same boundary. Skills may invoke `auth status`, instruct a human to run browser `auth login`, and require live redacted `doctor-auth`, but they never inspect session files or handle passwords, codes, or tokens. Explicit headless and multi-account configuration remain CLI/orchestrator responsibilities. The validator rejects password-equivalent invocation examples in active Markdown.
 
-Official Production's public profile is owned and bundled by the CLI, not copied into Skills. A first install needs human browser login, not dashboard/client-ID setup. Complete custom environments and explicitly targeted headless tokens remain separate. The flow/process/lifecyclemodel hybrid-search packages bundle the root launcher byte-for-byte at their own `scripts/lib/cli-launcher.mjs` so copied individual installations do not import outside their package. The installed-consumer tests check bundle equality, missing-configuration rejection and offline setup help, a real configured CLI dry-run, no local checkout/session creation, and rejection of incomplete custom destinations.
+Official Production's public profile is owned and bundled by the CLI, not copied into Skills. A first install needs human browser login, not dashboard/client-ID setup. Complete custom environments and explicitly targeted headless tokens remain separate. The flow/process/lifecyclemodel hybrid-search packages bundle the root launcher byte-for-byte at their own `scripts/lib/cli-launcher.mjs` so copied individual installations do not import outside their package. The installed-consumer tests check bundle equality, missing-configuration rejection and offline setup help, real installed native help and validation, no local checkout/session creation, and rejection of retired search flags.
 
 If a Foundry/source-evidence workflow needs an external Tiangong KB research skill, consume it with `npx skills` at runtime and record the resolved upstream ref in the task workspace. Do not copy the external skill package into this repository unless ownership is intentionally transferred.
 
-Current-account dataset review is owned here only as a skill package and wrapper contract. Its durable runtime behavior belongs in public `tiangong-lca` CLI commands such as dataset validation, reference rewriting, lifecyclemodel save-draft, and lifecyclemodel graph export.
+Current-account dataset review is owned here only as a skill package and wrapper contract. Its durable runtime behavior belongs in public `tiangong-lca` CLI commands such as typed dataset validation, explicit patch, distinct create/save, and Model graph export.
 
-The shared launcher requires a configured installed CLI or an explicitly selected development source. No route downloads a package or discovers a sibling/PATH CLI. Public capabilities govern Skill compatibility; installation owners govern versions and locks. CI checks out canonical `tiangong-lca/cli` at release merge `89c71772ca1afcfc09705f8c27a9703c6bf8ccf6`, which carries package version 0.1.24 and the source-bound TIDAS manifest for spec `f118660dbcbfbf736be74837cce0bf26cd177245` (0.2.3) and semantic source `9c0d8b1c8ceb1841074f5bc6de5fbb7fcc9318f5`. An explicit `--cli-dir` or `TIANGONG_LCA_CLI_DIR` may still select a matching-release local checkout without a candidate file. Its existing package/engine/lock/source-manifest checks and source-mtime-based frozen preparation remain supported. All execution stays argv-authoritative with `shell: false`, using native `pnpm.exe` on Windows.
+The shared launcher requires a configured installed CLI or an explicitly selected development source. No route downloads a package or discovers a sibling/PATH CLI. Public capabilities govern Skill compatibility; installation owners govern versions and locks. CI checks out CLI 0.2.0 source `955642482771a270fd49a199d1d7c86fcccc9ce2`. `scripts/qualify-ci-cli.mjs` binds the reviewed test source/version after frozen installation and build, producing an ephemeral test-only candidate; it does not qualify production use. An explicit `--cli-dir` or `TIANGONG_LCA_CLI_DIR` may still select a matching-release local checkout without a candidate file. Its existing package/engine/lock/source-manifest checks and source-mtime-based frozen preparation remain supported. All execution stays argv-authoritative with `shell: false`, using native `pnpm.exe` on Windows.
 
 ### Configured installed execution
 
@@ -111,7 +112,7 @@ Candidate selection first binds the reviewed file to the external SHA-256, then 
 
 Recovery preserves the original failed/UNKNOWN task and its evidence. Prepare a new writable isolated checkout, observe it, review it and bind a new inventory digest. Never spoof a version, modify an old qualification to match changed artifacts, or retry with another runtime implicitly. Candidate selection grants no data or execution authority. It leaves Foundry 0.1.15 bootstrap/provenance, installed skills/runtimes, task/attempt state ownership and single-writer data permissions independent.
 
-Public rules are spec-owned; runtime-ruleset profile projection is CLI-owned. Published SDK 0.3.0 has retired the legacy mixed-file static import; the retained CLI 0.1.24 development fixture consumes the public contract API.
+Public rules are spec-owned; runtime-ruleset profile projection is CLI-owned. Published SDK 0.3.0 has retired the legacy mixed-file static import; the CLI 0.2.0 development fixture consumes the public contract API.
 
 ## Integration Semantics
 
@@ -142,3 +143,7 @@ For Study qualification against an explicitly configured local service, the CLI-
 The copied `lca-study` entry conditionally routes P3 work to `references/review-sharing.md` while retaining its P2 recipes. Its wrapper bytes and runtime selection remain unchanged. Current actions/roles, exact review/delegation/finalization and named-recipient policy stay with public CLI/server owners; a Skill never derives those policies or changes credentials to bypass a denial.
 
 The `lca-study` entry guides research from goals and evidence through explicit foreground/background Model construction and calculation. Intake and extraction are progressive references that can be delegated independently; they own evidence judgment, not deterministic calculation. Hosted Study/revision/report behavior is an optional reference. Local research does not require a server Study or caller-maintained hashes; installed CLI capability and actual service availability determine executable paths.
+
+## Atomic skill workflows
+
+Active wrappers call typed `dataset flow|process|model` actions and `review`. Searches use explicit queries/scopes, validation accepts one canonical document, and patches/diffs consume native request envelopes. Scientific authoring, dedup decisions and workflow order belong to Skills; retired automatic builders, QA directories, queues and repair aliases are not CLI capabilities. Existing Foundry tasks keep their owner-returned actions and independent runtime.

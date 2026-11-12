@@ -1,0 +1,253 @@
+{
+  "processDataSet": {
+    "@xmlns": "http://lca.jrc.it/ILCD/Process",
+    "@xmlns:common": "http://lca.jrc.it/ILCD/Common",
+    "@xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "@version": "1.1",
+    "@locations": "../ILCDLocations.xml",
+    "@xsi:schemaLocation": "http://lca.jrc.it/ILCD/Process ../../schemas/ILCD_ProcessDataSet.xsd",
+    "processInformation": {
+      "dataSetInformation": {
+        "common:UUID": "66666666-6666-4666-8666-666666666666",
+        "name": {
+          "baseName": [
+            {
+              "#text": "Annual volume validation fixture",
+              "@xml:lang": "en"
+            }
+          ],
+          "treatmentStandardsRoutes": [
+            {
+              "#text": "Controlled validation fixture",
+              "@xml:lang": "en"
+            }
+          ],
+          "mixAndLocationTypes": [
+            {
+              "#text": "GLO",
+              "@xml:lang": "en"
+            }
+          ],
+          "functionalUnitFlowProperties": [
+            {
+              "#text": "kg",
+              "@xml:lang": "en"
+            }
+          ]
+        },
+        "classificationInformation": {
+          "common:classification": {
+            "common:class": [
+              {
+                "@level": "0",
+                "@classId": "D",
+                "#text": "Electricity, gas, steam and air conditioning supply"
+              },
+              {
+                "@level": "1",
+                "@classId": "35",
+                "#text": "Electricity, gas, steam and air conditioning supply"
+              },
+              {
+                "@level": "2",
+                "@classId": "351",
+                "#text": "Electric power generation, transmission and distribution activities"
+              },
+              {
+                "@level": "3",
+                "@classId": "3511",
+                "#text": "Electric power generation activities from non-renewable sources"
+              }
+            ]
+          }
+        },
+        "common:generalComment": [
+          {
+            "#text": "Controlled synthetic test input; no operational dataset.",
+            "@xml:lang": "en"
+          }
+        ]
+      },
+      "quantitativeReference": {
+        "@type": "Reference flow(s)",
+        "referenceToReferenceFlow": "1"
+      },
+      "time": {
+        "common:referenceYear": 2025,
+        "common:timeRepresentativenessDescription": [
+          {
+            "#text": "Reference year documented in build plan evidence.",
+            "@xml:lang": "en"
+          }
+        ]
+      },
+      "geography": {
+        "locationOfOperationSupplyOrProduction": {
+          "@location": "GLO",
+          "descriptionOfRestrictions": [
+            {
+              "#text": "Operation location: GLO.",
+              "@xml:lang": "en"
+            }
+          ]
+        }
+      },
+      "technology": {
+        "technologyDescriptionAndIncludedProcesses": [
+          {
+            "#text": "Controlled validation fixture",
+            "@xml:lang": "en"
+          }
+        ]
+      }
+    },
+    "modellingAndValidation": {
+      "LCIMethodAndAllocation": {
+        "typeOfDataSet": "Unit process, single operation",
+        "LCIMethodPrinciple": "Attributional"
+      },
+      "dataSourcesTreatmentAndRepresentativeness": {
+        "dataCutOffAndCompletenessPrinciples": [
+          {
+            "#text": "Cut-off and completeness principles are documented in the build plan evidence.",
+            "@xml:lang": "en"
+          }
+        ],
+        "referenceToDataSource": {
+          "@type": "source data set",
+          "@refObjectId": "33333333-3333-4333-8333-333333333333",
+          "@version": "00.00.000",
+          "@uri": "../source-data-set/33333333-3333-4333-8333-333333333333.xml",
+          "common:shortDescription": {
+            "#text": "Build plan evidence source",
+            "@xml:lang": "en"
+          }
+        },
+        "annualSupplyOrProductionVolume": [
+          {
+            "#text": "100 kg/year",
+            "@xml:lang": "en"
+          }
+        ]
+      },
+      "validation": {
+        "review": {
+          "@type": "Not reviewed"
+        }
+      },
+      "complianceDeclarations": {
+        "compliance": {
+          "common:referenceToComplianceSystem": {
+            "@type": "source data set",
+            "@refObjectId": "3fe52597-8eb8-5b70-9b5d-8e966000304f",
+            "@version": "00.00.000",
+            "@uri": "../source-data-set/3fe52597-8eb8-5b70-9b5d-8e966000304f.xml",
+            "common:shortDescription": {
+              "#text": "Build plan compliance system",
+              "@xml:lang": "en"
+            }
+          },
+          "common:approvalOfOverallCompliance": "Not defined",
+          "common:nomenclatureCompliance": "Not defined",
+          "common:methodologicalCompliance": "Not defined",
+          "common:reviewCompliance": "Not defined",
+          "common:documentationCompliance": "Not defined",
+          "common:qualityCompliance": "Not defined"
+        }
+      }
+    },
+    "administrativeInformation": {
+      "common:commissionerAndGoal": {
+        "common:referenceToCommissioner": {
+          "@type": "contact data set",
+          "@refObjectId": "6ad65cb3-6224-53fb-ba60-42c5eaf798dd",
+          "@version": "00.00.000",
+          "@uri": "../contact-data-set/6ad65cb3-6224-53fb-ba60-42c5eaf798dd.xml",
+          "common:shortDescription": {
+            "#text": "Build plan commissioner",
+            "@xml:lang": "en"
+          }
+        },
+        "common:intendedApplications": [
+          {
+            "#text": "Automated LCA data production draft for expert review.",
+            "@xml:lang": "en"
+          }
+        ]
+      },
+      "dataEntryBy": {
+        "common:timeStamp": "1970-01-01T00:00:00.000Z",
+        "common:referenceToDataSetFormat": {
+          "@type": "source data set",
+          "@refObjectId": "56e8b7bd-4eaf-5c2c-9113-f8d42b8f14b3",
+          "@version": "00.00.000",
+          "@uri": "../source-data-set/56e8b7bd-4eaf-5c2c-9113-f8d42b8f14b3.xml",
+          "common:shortDescription": {
+            "#text": "TIDAS / ILCD data set format",
+            "@xml:lang": "en"
+          }
+        },
+        "common:referenceToPersonOrEntityEnteringTheData": {
+          "@type": "contact data set",
+          "@refObjectId": "d1d4b02d-5cab-5f60-a784-781239de028c",
+          "@version": "00.00.000",
+          "@uri": "../contact-data-set/d1d4b02d-5cab-5f60-a784-781239de028c.xml",
+          "common:shortDescription": {
+            "#text": "Build plan data_entry",
+            "@xml:lang": "en"
+          }
+        }
+      },
+      "publicationAndOwnership": {
+        "common:dataSetVersion": "00.00.001",
+        "common:permanentDataSetURI": "https://data.tiangong.earth/processes/11111111-1111-4111-8111-111111111111.xml",
+        "common:referenceToOwnershipOfDataSet": {
+          "@type": "contact data set",
+          "@refObjectId": "4d2c29b9-6856-54df-994f-d118e1e0484d",
+          "@version": "00.00.000",
+          "@uri": "../contact-data-set/4d2c29b9-6856-54df-994f-d118e1e0484d.xml",
+          "common:shortDescription": {
+            "#text": "Build plan owner",
+            "@xml:lang": "en"
+          }
+        },
+        "common:copyright": "false",
+        "common:licenseType": "Free of charge for all users and uses"
+      }
+    },
+    "exchanges": {
+      "exchange": [
+        {
+          "@dataSetInternalID": "1",
+          "referenceToFlowDataSet": {
+            "@type": "flow data set",
+            "@refObjectId": "22222222-2222-4222-8222-222222222222",
+            "@version": "01.00.000",
+            "@uri": "../flow-data-set/22222222-2222-4222-8222-222222222222.xml",
+            "common:shortDescription": {
+              "#text": "Fixture reference product",
+              "@xml:lang": "en"
+            }
+          },
+          "exchangeDirection": "Output",
+          "meanAmount": "1",
+          "resultingAmount": "1",
+          "dataDerivationTypeStatus": "Estimated",
+          "quantitativeReference": true,
+          "referencesToDataSource": {
+            "referenceToDataSource": {
+              "@type": "source data set",
+              "@refObjectId": "33333333-3333-4333-8333-333333333333",
+              "@version": "00.00.000",
+              "@uri": "../source-data-set/33333333-3333-4333-8333-333333333333.xml",
+              "common:shortDescription": {
+                "#text": "Build plan evidence source",
+                "@xml:lang": "en"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

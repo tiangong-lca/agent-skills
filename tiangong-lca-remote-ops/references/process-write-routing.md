@@ -46,8 +46,8 @@ Reason:
 
 Tooling implication:
 
-- prefer a canonical `update` MCP / CLI adapter when available
-- accept a save-draft path only if it preserves the same-row draft update semantics
+- use `dataset process save` with exact identity, current before-content and actor/environment preconditions
+- a missing or conflicting target never becomes create
 - if the available write path creates a new version for every draft edit, treat that as a tooling mismatch and record CLI friction
 
 ## 3. `state_code=100`
@@ -75,7 +75,7 @@ Reason:
 
 Tooling implication:
 
-- prefer a version-bump adapter that writes the next version under the same UUID
+- use an explicitly authorized `dataset process create` request for the justified new version under the same UUID; submit review separately
 - do not use clone/new-UUID behavior as the default update path
 - only create a new UUID when the user explicitly wants a fork, a new lineage, or a materially different dataset identity
 
@@ -98,15 +98,4 @@ For every bulk write report, state explicitly:
 - actual tool used
 - whether the actual tool matched the intended lineage semantics
 
-After every remote write, re-fetch the remote rows and run the canonical verifier. The skill wrapper delegates to the same CLI command:
-
-```bash
-tiangong-lca process verify-rows \
-  --rows-file /abs/path/process-list-report.json \
-  --out-dir /abs/path/artifacts/<case_slug>/outputs/post-write-verification
-```
-
-The final gate is not “HTTP 200” or “row came back”. The final gate is:
-- remote row re-fetched successfully
-- `ProcessSchema.safeParse(...)` passes
-- required process name fields still exist on the persisted payload
+After a confirmed remote write, re-fetch the exact target with `dataset process get --id <id> --version <version> --output process.json --json`, compare the actual content and validate the canonical file. For an unknown write, use the original intent's recovery path first; do not retry with a new request ID. The validation wrapper is not remote readback and does not inspect every consumer automatically.

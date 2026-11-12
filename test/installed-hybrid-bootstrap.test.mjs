@@ -27,7 +27,7 @@ for (const entity of ['flow', 'process', 'lifecyclemodel']) {
       env.PATH = ''; // No package manager, Git, or external CLI can be discovered.
       const run = (extra = [], overrides = {}) => spawnSync(
         process.execPath,
-        [path.join(installed, 'scripts', `run-${name}.mjs`), '--dry-run', '--json', ...extra],
+        [path.join(installed, 'scripts', `run-${name}.mjs`), '--query', 'water', '--json', ...extra],
         { cwd: sandbox, env: { ...env, ...overrides }, encoding: 'utf8', shell: false, timeout: 60_000 },
       );
       const result = run();
@@ -48,7 +48,7 @@ for (const entity of ['flow', 'process', 'lifecyclemodel']) {
       const directHelp = spawnSync(process.execPath, [direct, '--help'], { cwd: sandbox, env, encoding: 'utf8', shell: false });
       assert.equal(directHelp.status, 0, directHelp.stderr);
       assert.match(directHelp.stdout, /TIANGONG_LCA_CLI_INSTALLATION/);
-      assert.equal(existsSync(sessionFile), false, 'dry-run must not create an OAuth session');
+      assert.equal(existsSync(sessionFile), false, 'unconfigured search must not create an OAuth session');
       assert.equal(existsSync(path.join(sandbox, 'scripts')), false, 'no repository launcher is installed');
       assert.equal(
         readFileSync(path.join(installed, 'scripts', 'lib', 'cli-launcher.mjs'), 'utf8'),

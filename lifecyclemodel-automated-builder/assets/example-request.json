@@ -1,6 +1,0 @@
-{
-  "run_label": "demo-local-run-lifecyclemodel-build",
-  "local_runs": [
-    "./process-build-run"
-  ]
-}

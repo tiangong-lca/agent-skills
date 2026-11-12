@@ -1,37 +1,7 @@
-# Request/response
+# Search inputs and results
 
-## Endpoint
-- POST `https://qgzvkongdjqiiamzbbts.supabase.co/functions/v1/process_hybrid_search`
-- Headers: `Authorization: Bearer <CLI-resolved-Supabase-access-token>`, `x-region: us-east-1`
+The public interface is `dataset process search --query <text> --scope current-user|public --limit <n> --json`. Read its help for actual state filtering and defaults. The wrapper forwards these arguments unchanged. It does not accept a service request body or construct headers.
 
-The CLI obtains that bearer from its private OAuth session and never prints it. The skill does not accept or construct an Authorization header.
+The result is the CLI shared envelope: `operation`, `status`, `outcome`, `summary`, `data`, `context`, `completeness`, `artifacts`, `warnings`, `error`, `nextActions`, `replyTemplate`. Use returned exact identity/version to select a candidate and inspect it with `dataset process get`. Read the returned content rather than assuming list/search summaries are complete datasets.
 
-## Input
-```json
-{
-  "query": "Open-loop mechanical recycling process for HDPE packaging",
-  "filter": {
-    "processInformation": {
-      "geography": {
-        "locationOfOperationSupplyOrProduction": {
-          "@location": "CN"
-        }
-      },
-      "time": {
-        "common:referenceYear": 2021
-      }
-    }
-  }
-}
-```
-- `filter` optional; if string, used as-is; if object, passed as JSON.
-
-## Output
-- 200 `{ "data": [...] }` from `hybrid_search_processes`; returns `[]` when no matches.
-- 400 when `query` is missing; 500 on embedding/model/RPC errors.
-
-## RPC expectation
-- Expects Postgres function `hybrid_search_processes(query_text text, query_embedding text, filter_condition jsonb|text)`.
-
-## Auth
-- Run `tiangong-lca auth status --json` before remote work. The CLI owns bearer resolution and refresh; this skill never accepts raw credentials or tokens.
+Search has no pagination cursor. A limit-bounded result is not a complete catalog; refine criteria or use the appropriate list/statistics operation. Missing/invisible and transport errors stay errors. Dataset field constraints that the search command does not expose must be checked against selected data; never silently discard a legacy filter.

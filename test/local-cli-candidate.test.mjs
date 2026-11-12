@@ -612,7 +612,7 @@ test('a copied hybrid-search package uses qualification evidence without forward
   const wrapper = path.join(copiedSkill, 'scripts', 'run-process-hybrid-search.mjs');
   const result = subprocess(fixture, wrapper, ['--help']);
   assert.equal(result.status, 0, result.stderr);
-  assert.deepEqual(JSON.parse(result.stdout), ['search', 'process', '--help']);
+  assert.deepEqual(JSON.parse(result.stdout), ['dataset', 'process', 'search', '--help']);
   const env = subprocessEnv(fixture);
   delete env.TIANGONG_LCA_CLI_DIR;
   delete env.TIANGONG_LCA_CLI_CANDIDATE_FILE;
@@ -624,7 +624,7 @@ test('a copied hybrid-search package uses qualification evidence without forward
     '--help',
   ], env);
   assert.equal(fromFlags.status, 0, fromFlags.stderr);
-  assert.deepEqual(JSON.parse(fromFlags.stdout), ['search', 'process', '--help']);
+  assert.deepEqual(JSON.parse(fromFlags.stdout), ['dataset', 'process', 'search', '--help']);
   const invalid = subprocess(fixture, wrapper, ['--help'], {
     ...subprocessEnv(fixture), TIANGONG_LCA_CLI_CANDIDATE_SHA256: '0'.repeat(64),
   });

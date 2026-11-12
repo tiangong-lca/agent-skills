@@ -1,48 +1,30 @@
 ---
 name: process-hybrid-search
-description: Execute and troubleshoot Supabase edge function `process_hybrid_search`, which rewrites process descriptions and calls `hybrid_search_processes` with optional filters. Use when validating process query/filter behavior, tuning retrieval prompts, or debugging auth, embedding, and RPC failures.
+description: Find and compare TianGong process datasets through the configured CLI, select an explicit search scope and inspect exact candidate versions. Use for dataset discovery and choosing suitable modeling references.
 ---
 
-# Process Hybrid Search
+# Process dataset search
 
-## Run Workflow
-1. The wrapper uses the configured installed CLI; without that configuration, it reports the missing setup instead of downloading a package. Use `TIANGONG_LCA_CLI_DIR` or `--cli-dir` only for an exact local dev/CI override.
-2. Official Production needs no environment setup: the CLI owns its public profile. Only Dev/self-hosted/custom clients need the complete matching configuration in `references/env.md`.
-3. Run `tiangong-lca auth status --json`. If it returns `login-required`, stop and ask the human user to run `tiangong-lca auth login` in a trusted terminal.
-4. Execute `node scripts/run-process-hybrid-search.mjs` with standard `tiangong-lca search process` flags.
-5. The wrapper delegates to `tiangong-lca search process`; the CLI resolves and refreshes its private OAuth session.
-6. Confirm response shape, then debug with focused references.
+Use `node scripts/run-process-hybrid-search.mjs` for `tiangong-lca dataset process search`, or the bundled `scripts/run-cli.mjs` for other atomic operations. Read `--help --json` from the configured CLI before using its options. The wrapper forwards current flags without supplying a default query, translating legacy JSON filters, downloading a CLI or retrying an operation.
 
-Never ask an AI user for a username, password, authorization code, access token, refresh token, or the deprecated encoded API key. Headless runs require an explicit destination/publishable key and may use only an orchestrator-injected short-lived `TIANGONG_LCA_ACCESS_TOKEN`; do not pass it through argv, prompts, logs, or artifacts.
-
-## Commands
+1. Run `tiangong-lca auth status --json` through the launcher before remote reads. If login is required, ask the human user to run `auth login` in a trusted terminal. Never collect a password or token.
+2. State the research selection criteria and query. Use `--scope public` for published background discovery; the default is `current-user`. Where supported, use `--state 100`. A matching name is a candidate, not an approved substitute.
+3. Search with a bounded `--limit`; inspect `completeness` and narrow the query when needed. Search has no cursor and is not an exhaustive inventory.
+4. Inspect selected exact versions using `dataset process get --id <id> --version <version>`. Preserve identity and evidence when choosing a reference; do not silently switch to another version.
 
 ```bash
-node scripts/run-cli.mjs auth status --json
-
-# Only the human user completes browser login when login-required is reported
-node scripts/run-cli.mjs auth login
-
-node scripts/run-process-hybrid-search.mjs --dry-run
-node scripts/run-process-hybrid-search.mjs --input ./assets/example-request.json
-
-# Explicit local CLI override for development only
-node scripts/run-process-hybrid-search.mjs --cli-dir /path/to/tiangong-lca-cli --dry-run
+node scripts/run-process-hybrid-search.mjs --help --json
+node scripts/run-process-hybrid-search.mjs --query electricity --scope public --limit 10 --json
+node scripts/run-cli.mjs dataset process get --id <id> --version <version> --output dataset.json --json
 ```
 
-## Fast Triage
+The new search surface accepts `--query`, `--scope`, `--state`, `--limit`, `--output` and `--json` as advertised by its help. Old `--input` filter envelopes, `--dry-run` search planning and endpoint/header overrides are not translated; unsupported options fail before a remote operation. Use available selection information and exact reads for criteria not expressible as search flags; report any unverified criteria.
 
-- An independently installed skill includes its launcher and example input; no Skills/CLI/Data Foundry checkout is required. The launcher is a byte-checked bundle of the repository authority, not a separate auth implementation.
-- Fresh `auth status` / `doctor-auth` returns `login-required` (exit 1), not a missing Production client. A custom `--base-url` requires matching complete custom configuration.
-- `400`: missing or invalid `query`.
-- `500`: embedding provider or `hybrid_search_processes` RPC failure.
-- Empty `data`: query/filter mismatch; inspect generated retrieval query and filter structure.
+Inspect `operation`, `status`, `data`, `context`, `completeness`, `error` and `nextActions`. Empty results do not prove nonexistence; permission or transport failure is not an empty match. CLI owns authentication, retrieval implementation and safe errors. It does not expose raw service responses as the Skill contract.
 
-## Load References On Demand
-- `references/env.md`: auth, region, and endpoint overrides.
-- `references/request-response.md`: payload contract and RPC expectations.
-- `references/prompts.md`: query-rewrite prompt constraints.
-- `references/testing.md`: smoke test checklist.
+Headless execution may use an orchestrator-injected short-lived `TIANGONG_LCA_ACCESS_TOKEN` only with its explicitly bound environment. Never put credentials in argv, prompts, logs or artifacts. Keep account contexts separate.
+
+Read `references/env.md` for runtime selection, `references/request-response.md` for command semantics, and `references/testing.md` for validation. Query formulation guidance is in `references/prompts.md`.
 
 ## CLI selection
 

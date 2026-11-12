@@ -122,7 +122,7 @@ The complete entry bundles the final release lock for [Foundry 0.1.15](https://g
 
 The existing skills retain their independent uses:
 
-- `$external-dataset-curated-import`: BAFU, USLCI, and other structured LCA package imports through CLI conversion, curation queue `next`/`verify`, child skills, and publish handoff gates.
+- `$external-dataset-curated-import`: BAFU, USLCI, and other structured LCA package imports through CLI conversion, canonical validation, evidence-led review and separate authorized create/save/review.
 - `$source-evidence-dataset-development`: evidence-driven data creation or update from PDFs, Word files, URLs, APIs, reports, database references, or scientific literature.
 - `$dataset-rls-maintenance`: current-user RLS-scoped cleanup, delete/retire, reference repair, and redo planning for previously imported rows; orchestrates CLI maintenance plans and readback verification without private database access.
 
@@ -136,7 +136,7 @@ export TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE=/absolute/path/to/approved-cli-
 export TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256='<approved-64-character-sha256>'
 node scripts/run-cli.mjs --runtime-info
 node scripts/run-cli.mjs auth status --json
-node lifecycleinventory-review/scripts/run-review.mjs --rows-file /absolute/path/rows.json --out-dir /absolute/path/qa
+node lifecycleinventory-review/scripts/run-review.mjs --profile process --input /absolute/path/process.json --json
 ```
 
 In PowerShell set the same three `$env:TIANGONG_LCA_...` variables to the approved absolute paths/digest. Persist them in the consuming application's launch configuration when calls span shells. No project-path discovery or `.env` parsing is added. Skill-local `scripts/run-cli.mjs` selects exactly the same runtime as its wrapper. `--runtime-info` exposes the selected identity/source without writing a report; its observation cannot approve its own qualification.
@@ -157,7 +157,7 @@ If the result is `login-required`, stop the agent workflow and let the human use
 
 Only custom environments need a complete matching `TIANGONG_LCA_API_BASE_URL`, `TIANGONG_LCA_SUPABASE_PUBLISHABLE_KEY`, and registered `TIANGONG_LCA_OAUTH_CLIENT_ID` plus its exact callback. Partial custom settings must not inherit Production fields. Use a separate private `TIANGONG_LCA_SESSION_FILE` for each account/project/client context. Approved headless automation must explicitly set its destination/key and `TIANGONG_LCA_AUTH_MODE=access-token` before the orchestrator injects one short-lived `TIANGONG_LCA_ACCESS_TOKEN`; a token alone never selects Production and must never enter argv, prompts, logs, or artifacts. No legacy API-key mode exists.
 
-The three hybrid-search skill folders are independently installable: each includes the same byte-checked launcher and its example input, without a Skills/CLI/Data Foundry checkout. The CLI remains the authentication authority.
+The three hybrid-search skill folders are independently installable: each includes the same byte-checked launcher and explicit query guidance, without a Skills/CLI/Data Foundry checkout. The CLI remains the authentication authority.
 
 ## Validation
 
@@ -169,16 +169,18 @@ The three hybrid-search skill folders are independently installable: each includ
   ```bash
   pnpm validate
   ```
-- Validate against a local checkout matching the CLI 0.1.24 development-test baseline:
+- Validate a reviewed CLI 0.2.0 source candidate with all three selection fields:
   ```bash
   TIANGONG_LCA_CLI_DIR=/path/to/tiangong-lca-cli \
+  TIANGONG_LCA_CLI_CANDIDATE_FILE=/path/to/reviewed-candidate.json \
+  TIANGONG_LCA_CLI_CANDIDATE_SHA256='<approved-sha256>' \
   pnpm validate
   ```
 - Validate only the skills you changed:
   ```bash
-  pnpm validate lifecycleinventory-qa process-hybrid-search
+  pnpm validate lifecycleinventory-review process-hybrid-search
   ```
-- CI runs the same validation in `.github/workflows/validate-skills.yml` after checking out immutable development-test CLI commit `89c71772ca1afcfc09705f8c27a9703c6bf8ccf6` (published package 0.1.24), installing both repositories with frozen pnpm lockfiles, and building the CLI. The Foundry entry's bootstrap is tested against its own qualified 0.1.15 release lock and its bundled CLI 0.1.24.
+- CI runs the same validation in `.github/workflows/validate-skills.yml` against immutable CLI 0.2.0 source `955642482771a270fd49a199d1d7c86fcccc9ce2`. Its reviewed test policy qualifies that source after frozen installation and successful build; the generated inventory is scoped to CI testing. The Foundry entry's bootstrap is tested against its own qualified 0.1.15 release lock and its bundled CLI 0.1.24.
 - A different local candidate requires the reviewed inventory and independent digest described below. Local candidate acceptance also requires real qualification failures, isolated bundled and nested-wrapper propagation, and validation by the original consumer; a generated inventory or fixture-only result does not complete that acceptance.
 
 ## Execution note
@@ -187,18 +189,21 @@ Skills in this repository are expected to be thin wrappers over the unified `tia
 
 Current rules:
 
+- active wrappers use the CLI 0.2.0 typed `dataset <type> <action>` and `review` interfaces; retired command families are not aliases. Study setup/prepare/calculation extensions require their advertised capability in the selected runtime
+
 - ordinary wrappers use the configured installed CLI; missing configuration stops execution without package download or PATH/sibling discovery
 - source-development execution is opt-in only through `--cli-dir` or `TIANGONG_LCA_CLI_DIR`
 - direct and nested wrappers propagate the same configured installation; retired published selection is rejected
 - a matching-release local checkout still uses `--cli-dir` alone and must identify `@tiangong-lca/cli@0.1.24` with its exact Node/pnpm engines, v9 `pnpm-lock.yaml` and published TIDAS source manifest (spec 0.2.3)
+- that retained launcher qualification does not make retired CLI commands compatible with current Skills; use the required current capabilities
 - other local package versions require the reviewed candidate file and externally supplied digest below; an explicit local failure never silently falls back to the published package
 - the local pre-push hook validates local release or candidate evidence first; wrapper preparation installs with `pnpm install --frozen-lockfile` before `pnpm run build` when source mtimes require it and rechecks candidate identity before dispatch
 - launcher execution uses argv arrays with `shell: false`, so paths containing spaces remain one argument and child exit/stdout/stderr are preserved
-- for remote process QA snapshots, prefer `tiangong-lca process list --json` followed by `qa process --rows-file ...` instead of ad hoc bridge scripts
+- for Process review, use `dataset process list`/`get` for discovery and exact canonical content, then `dataset process validate --input process.json`; semantic review remains Agent work
 - use native cross-platform Node `.mjs` wrappers as the canonical entrypoint
 - skill wrappers should not bundle business-specific Python runtimes, shell shims, MCP transports, or private env parsers
 - remote skill instructions must use CLI OAuth status/login/doctor handoff and must not add API-key flags or bearer examples
-- if a capability is missing, add a native `tiangong-lca <noun> <verb>` command first, then update the skill to call it
+- if an atomic business capability is missing, add a native `tiangong-lca <noun> <verb>` command first, then update the skill to call it
 
 ### Reviewed local CLI candidates
 

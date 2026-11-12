@@ -1,66 +1,21 @@
 ---
 name: tiangong-lca-remote-ops
-description: Wrap TianGong CLI process maintenance commands for authenticated remote process refreshes and local post-write verification. Use when tasks need current-user process reference refreshes, resumable process maintenance artifacts, or strict local verification of fetched process rows.
+description: Perform explicitly scoped remote dataset reads and authorized atomic draft writes with the current CLI. Use for exact readback, reference inspection and evidence-supported Process changes.
 ---
 
-# TianGong LCA Remote Ops
+# Remote dataset operations
 
-## Scope
-- This skill is a thin wrapper around native `tiangong-lca process ...` commands.
-- Use it when the task is specifically about remote `processes` maintenance or post-write verification.
-- Do not add business-specific runtime logic, Supabase auth code, or custom `.env` parsing into this skill. If capability is missing, add it to `tiangong-cli` first.
+Use typed `dataset <type> get/list/search/versions` for reads. Preserve exact identities, scope and pagination completeness. Fetch canonical content before local edits or validation; do not pass a list envelope as a dataset.
 
-## Canonical Commands
-- Refresh current-user process references:
+For Process references, use `dataset process list-references`, exact target reads, local editing or `dataset process patch`, and validation. `update-process-references.mjs` now forwards the native explicit patch request; it does not resolve latest versions, refresh all references or save anything. `verify-process-rows.mjs` forwards `dataset process validate --input content.json`; remote existence/readback is a separate exact get, not a side effect of validation.
 
-```bash
-node tiangong-lca-remote-ops/scripts/update-process-references.mjs \
-  --out-dir /abs/path/process-refresh \
-  --dry-run
-```
+For writes read `references/process-write-routing.md`. Reuse one stable owned draft identity/version across edits, preserve the before-content and use explicit `save`. New objects or justified new versions use `create`. Actual current service permissions decide what is allowed; there is no raw database/MCP fallback. Re-read and compare after confirmed writes; an unknown outcome follows the original intent's recovery path.
 
-- Commit the refresh after the local gate passes:
+## Runtime and authorization
 
-```bash
-node tiangong-lca-remote-ops/scripts/update-process-references.mjs \
-  --out-dir /abs/path/process-refresh \
-  --apply
-```
+Use this package's `node scripts/run-cli.mjs` and the environment owner's qualified CLI selection. Inspect `--runtime-info` and current command `--help --json`; do not discover a sibling checkout, download a default version or reinterpret old request formats. Local validation and content processing do not require login. Before remote reads run `tiangong-lca auth status --json`; when login is required, hand `auth login` to a human in a trusted terminal. Never request a password, code or token. Use `auth doctor-auth --json` before authorized account-sensitive writes. Separate accounts with the caller's private `TIANGONG_LCA_SESSION_FILE`; never read its credentials in a Skill.
 
-- Verify frozen rows after any remote write:
-
-```bash
-node tiangong-lca-remote-ops/scripts/verify-process-rows.mjs \
-  --rows-file /abs/path/process-list-report.json \
-  --out-dir /abs/path/post-write-verification
-```
-
-- For multi-type TIDAS reference verification, use the public dataset command through `current-account-dataset-review`:
-
-```bash
-node current-account-dataset-review/scripts/run-current-account-dataset-review.mjs verify-remote \
-  --input /abs/path/rows.jsonl \
-  --out-dir /abs/path/dataset-verify-remote
-```
-
-## Runtime Contract
-- Remote refresh uses canonical CLI env only:
-  - `TIANGONG_LCA_API_BASE_URL`
-  - `TIANGONG_LCA_SUPABASE_PUBLISHABLE_KEY`
-  - `TIANGONG_LCA_OAUTH_CLIENT_ID`
-- Run `tiangong-lca auth status --json` before remote reads and `tiangong-lca auth doctor-auth --json` before `--apply`. If login is required, stop and ask the human to run `auth login` in a trusted terminal.
-- Never ask for or print a username, password, authorization code, token, or legacy API key. A headless orchestrator may inject one short-lived access token without exposing it to argv, prompts, logs, or artifacts.
-- Use a separate private `TIANGONG_LCA_SESSION_FILE` for each account/project/client.
-- `verify-process-rows` is local-only and does not require remote credentials by itself.
-- Wrapper-local `--cli-dir` is the only supported override for choosing a local CLI checkout.
-
-## Guardrails
-- Never hardcode or print passwords, access tokens, refresh tokens, authorization codes, decoded legacy payloads, or raw secret env values.
-- Keep `--out-dir` explicit so manifests, progress logs, blockers, and verification artifacts are reproducible.
-- Before any remote write, apply the state-driven routing rule in [references/process-write-routing.md](references/process-write-routing.md).
-- Treat local `ProcessSchema` validation plus unresolved-reference checks as the hard gate, not HTTP success alone.
-- If upstream identity, build-plan, Foundry process curation, reference, or matrix-readiness reports contain blockers, do not call the remote write path.
-- Preserve post-write verification artifacts in the handoff; a successful HTTP response is not sufficient evidence.
+Read the shared result envelope and actual `completeness`, validation layers and artifacts. A completed invocation may report invalid content. Missing/invisible records are not permission to create a replacement. `create` and `save` are distinct intentions; a failed save never becomes a create, and an unknown write uses its original request/intent recovery, never a new request or replay. Local files, queries, validation and candidate generation do not publish or submit review.
 
 ## CLI selection
 

@@ -1,86 +1,21 @@
 ---
 name: process-scope-statistics
-description: "Delegate to the TianGong CLI to snapshot visible or owner-filtered process rows and compute repeatable coverage statistics for domains, crafts/routes, unit-process rows, and products. Use when you need stable process-scope metrics, especially for `state_code=0/100` maintenance planning."
+description: Count and summarize a clearly selected Process dataset scope through current CLI statistics. Use for state or classification distributions and honest reporting of bounded scans.
 ---
 
-# process-scope-statistics
+# Process scope statistics
 
-Use this skill when the task is to answer questions like:
-- “这些 process 覆盖多少领域/工艺/产品？”
-- “当前可见的 `state_code=0,100` process 有多少单元过程、多少产品？”
-- “给我一个以后可重复跑的 process scope 统计方案”
+Use `tiangong-lca dataset process statistics` through `node scripts/run-process-scope-statistics.mjs`. Read help for supported scope, owner, state, grouping and maximum-row limits. For example `--scope current-user --group-by state --max-rows 10000 --json`.
 
-## Workflow
+The optional `--input` is the current statistics request, with scope, owner, stateCodes, groupBy and maxRows; it is not an old snapshot directory. `--output` writes the result artifact. Do not translate old state-code, reuse-snapshot or out-dir flags silently.
 
-1. Create an output directory first.
-2. Ensure the API base URL, Supabase publishable key, and public OAuth client ID are exported, then run `tiangong-lca auth status --json`. If it returns `login-required`, stop and ask the human to run `auth login` in a trusted terminal; never request a username, password, credential, code, or token.
-3. Run `node scripts/run-process-scope-statistics.mjs`.
-4. Review the JSON summaries and Markdown reports in that output directory.
-5. If you need a Chinese report, keep the `.zh-CN.md` output.
+Report selected scope, actual scanned count, group counts and completeness together. A bounded/partial scan is not a complete account or database total; preserve unknown counts and limits. Statistics neither proves scientific quality nor grants deletion or publication authority. Use exact typed reads for subsequent review rather than inferring individual rows from aggregate counts.
 
-## Default Statistical Scope
+## Runtime and authorization
 
-Unless the user says otherwise, use:
-- `--scope visible`
-- `--state-codes 0,100`
+Use this package's `node scripts/run-cli.mjs` and the environment owner's qualified CLI selection. Inspect `--runtime-info` and current command `--help --json`; do not discover a sibling checkout, download a default version or reinterpret old request formats. Local validation and content processing do not require login. Before remote reads run `tiangong-lca auth status --json`; when login is required, hand `auth login` to a human in a trusted terminal. Never request a password, code or token. Use `auth doctor-auth --json` before authorized account-sensitive writes. Separate accounts with the caller's private `TIANGONG_LCA_SESSION_FILE`; never read its credentials in a Skill.
 
-`visible` means “all process rows visible to the current authenticated session”.
-In practice this typically includes:
-- draft rows owned by the current account, such as `state_code=0`
-- publicly visible rows such as `state_code=100`
-
-## Canonical Script
-
-```bash
-node scripts/run-process-scope-statistics.mjs \
-  --out-dir /abs/path/process-scope-stats \
-  --scope visible \
-  --state-code 0 \
-  --state-code 100
-```
-
-Useful options:
-- `--scope current-user`
-- `--state-code 0`
-- `--state-code 100`
-- `--page-size 200`
-- `--reuse-snapshot`
-
-The wrapper delegates to the canonical CLI command:
-
-```bash
-tiangong-lca process scope-statistics --out-dir /abs/path/process-scope-stats --scope visible --state-code 0 --state-code 100
-```
-
-Compatibility note:
-- `--state-codes 0,100` is still accepted as a wrapper/CLI alias, but repeatable `--state-code` flags are the canonical shape.
-
-## Outputs
-
-- `inputs/processes.snapshot.manifest.json`
-- `inputs/processes.snapshot.rows.jsonl`
-- `outputs/process-scope-summary.json`
-- `outputs/domain-summary.json`
-- `outputs/craft-summary.json`
-- `outputs/product-summary.json`
-- `outputs/type-of-dataset-summary.json`
-- `reports/process-scope-statistics.md`
-- `reports/process-scope-statistics.zh-CN.md`
-
-## Metric Definitions
-
-Read `references/metric-definitions.md` when you need the exact counting rules for:
-- domain
-- craft / route
-- unit process
-- product
-
-## Notes
-
-- This is a read-only statistics skill; it does not save remote edits.
-- Use a separate private session file per account/project/client. Headless execution may use only an orchestrator-injected short-lived access token that never enters argv, prompts, logs, or artifacts.
-- The skill is a thin wrapper over `tiangong-lca process scope-statistics`; it does not carry a separate remote runtime or private `.env` parser.
-- The metric layer is deterministic and string-based. It does not try to semantically merge cross-language variants unless they already share the same stable identifier.
+Read the shared result envelope and actual `completeness`, validation layers and artifacts. A completed invocation may report invalid content. Missing/invisible records are not permission to create a replacement. `create` and `save` are distinct intentions; a failed save never becomes a create, and an unknown write uses its original request/intent recovery, never a new request or replay. Local files, queries, validation and candidate generation do not publish or submit review.
 
 ## CLI selection
 

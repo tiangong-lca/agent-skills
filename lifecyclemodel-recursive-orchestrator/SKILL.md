@@ -1,113 +1,23 @@
 ---
 name: lifecyclemodel-recursive-orchestrator
-description: Plan and orchestrate recursive LCA assembly across `process-automated-builder`, `lifecyclemodel-automated-builder`, and `lifecyclemodel-resulting-process-builder`, including reuse decisions, submodel builds, resulting-process construction, graph manifests, and lineage manifests. Use when a product system request spans multiple model/process layers and needs a reproducible local orchestration run before any publish handoff.
+description: Organize evidence-led multi-level Model authoring from exact Process and Model references. Use for decomposing a modeling task and resolving explicit dependencies through current atomic CLI operations.
 ---
 
-# Lifecycle Model Recursive Orchestrator
+# Multi-level Model authoring
 
-Use this skill when one request needs more than a single builder call. The orchestrator validates a request, resolves each node to reuse/build/cutoff, invokes the native `tiangong-lca lifecyclemodel orchestrate` actions, and writes a full local run directory.
+Inspect the chosen root Model and its exact references before traversing dependencies. Maintain a caller-owned worklist with the requested boundary, visited exact identities and unresolved evidence. Distinguish repeated use of an existing Process from recursion; do not expand published aggregate background LCI into its original upstream graph.
 
-## What The Implementation Does
+Use `dataset model get`, `list-references`, `graph` and `validate`, plus typed Process reads, to inspect actual content. Follow only the references and authoring scope the task requires. A missing/invisible reference is an unresolved input, not permission to create a substitute. Handle circular dependencies as an explicit modeling decision; never silently truncate them.
 
-- validates `assets/request.schema.json`
-- normalizes `root`, optional extra `nodes`, and dependency `edges`
-- chooses per-node resolution in this order:
-  - reuse existing resulting process
-  - reuse existing process
-  - reuse existing lifecycle model
-  - build with `lifecyclemodel-automated-builder`
-  - build with `process-automated-builder`
-  - unresolved / cutoff
-- records invocation results for native CLI builder slices
-- emits:
-  - `assembly-plan.json`
-  - `graph-manifest.json`
-  - `lineage-manifest.json`
-  - `boundary-report.json`
-  - `publish-bundle.json` via `publish`
+Author and validate each needed candidate from source evidence. The wrapper forwards current `dataset model` actions; it does not execute a recursive production queue, automatically build missing Processes or publish related records. Create/save each authorized object through its native request contract and retain partial/unknown effects independently. Existing managed workflows keep their owner-returned continuations.
 
-## Request Shape
+For a resulting Process, use `dataset model build-resulting-process` with explicit supported inputs, then validate and separately create/save the candidate only when requested. Record exactly which dependencies and effects completed; do not announce a whole tree as published from one successful operation.
 
-Required top-level fields:
+## Runtime and authorization
 
-- `goal`
-- `root`
-- `orchestration`
-- `publish`
+Use this package's `node scripts/run-cli.mjs` and the environment owner's qualified CLI selection. Inspect `--runtime-info` and current command `--help --json`; do not discover a sibling checkout, download a default version or reinterpret old request formats. Local validation and content processing do not require login. Before remote reads run `tiangong-lca auth status --json`; when login is required, hand `auth login` to a human in a trusted terminal. Never request a password, code or token. Use `auth doctor-auth --json` before authorized account-sensitive writes. Separate accounts with the caller's private `TIANGONG_LCA_SESSION_FILE`; never read its credentials in a Skill.
 
-Optional top-level fields:
-
-- `candidate_sources`
-- `nodes`
-- `edges`
-- `notes`
-
-The `root` block may directly carry:
-
-- candidate lists
-- `process_builder`
-- `submodel_builder`
-- `projector`
-
-Supported `process_builder` fields are intentionally narrow:
-
-- `flow_file`
-- `flow_json`
-- `run_id`
-
-Removed legacy fields such as `mode=langgraph` and `python_bin` are not part of the supported request surface anymore.
-
-Use extra `nodes` only for additional dependencies or subsystems beyond the root node.
-
-## Downstream Builders
-
-- `process_builder` reuses the same native slice as `tiangong-lca process auto-build`
-- `submodel_builder` reuses the same native slice as `tiangong-lca lifecyclemodel auto-build`
-- `projector` reuses the same native slice as `tiangong-lca lifecyclemodel build-resulting-process`
-
-The wrapper does not call other skills directly. It delegates to `tiangong-lca lifecyclemodel orchestrate`, and the CLI orchestrator owns request normalization, node resolution, invocation ordering, and final manifests.
-
-Current limitation:
-
-- candidate discovery must already be resolved into the request or into local artifacts upstream
-- the submodel builder path only covers the CLI-backed `auto-build` slice
-- `validate-build` and `publish-build` for lifecyclemodels now exist in the CLI, but this orchestrator does not invoke them yet
-
-## Typical Workflow
-
-1. Read `assets/request.schema.json` and prepare a manifest.
-2. Run `plan` and inspect the generated `assembly-plan.json`.
-3. Run `execute` to invoke native CLI builder slices and persist invocation logs.
-4. Run `publish` only to prepare a local handoff bundle. Remote writes remain outside this skill and should later go through `tiangong-lca publish run`.
-
-## Commands
-
-```bash
-node scripts/run-lifecyclemodel-recursive-orchestrator.mjs plan \
-  --request assets/example-request.json \
-  --out-dir /abs/path/run-001 \
-  --json
-
-node scripts/run-lifecyclemodel-recursive-orchestrator.mjs execute \
-  --request assets/example-request.json \
-  --out-dir /abs/path/run-001 \
-  --allow-process-build \
-  --allow-submodel-build \
-  --json
-
-node scripts/run-lifecyclemodel-recursive-orchestrator.mjs publish \
-  --run-dir /abs/path/run-001 \
-  --publish-lifecyclemodels \
-  --publish-resulting-process-relations \
-  --json
-```
-
-## Load References On Demand
-
-- `references/workflow.md`: stage-level orchestration flow and policy knobs
-- `references/data-model.md`: graph/lineage fields and version contract
-- `references/invocation-contracts.md`: exact handoff contract to each downstream skill
-- `references/minimal-relation-fields.md`: minimum relation tuple to preserve
+Read the shared result envelope and actual `completeness`, validation layers and artifacts. A completed invocation may report invalid content. Missing/invisible records are not permission to create a replacement. `create` and `save` are distinct intentions; a failed save never becomes a create, and an unknown write uses its original request/intent recovery, never a new request or replay. Local files, queries, validation and candidate generation do not publish or submit review.
 
 ## CLI selection
 

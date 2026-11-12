@@ -1,11 +1,9 @@
 ---
 name: external-dataset-curated-import
-description: Orchestrate structured external LCA packages such as BAFU or USLCI into TIDAS candidate rows through CLI conversion, queue state, child skills, deterministic gates, and readback-safe publish handoff.
+description: Guide external LCA packages through supported CLI conversion, evidence-led candidate review and separate atomic persistence, or assist an existing managed Foundry task without changing its owner protocol.
 ---
 
-# External Dataset Curated Import
-
-Use this top-level skill when the input is a packaged or semi-structured LCA dataset that should enter TianGong through a repeatable import profile.
+# External dataset import
 
 ## Managed Foundry tasks
 
@@ -13,108 +11,23 @@ When the caller supplies a registered public Foundry task and its current result
 
 Use the current task brief and only the applicable registered decisions supplied by the caller. Distinguish a user's instruction from an AI assumption and the package's source facts; neither a choice nor a recommendation supplies missing measurements or write authority. Return a material unresolved gap to the ordinary Foundry entry with its affected result, evidence and precise question or next investigation. This managed-task guidance does not change the independent CLI workflow below.
 
-Advance the task only through its supplied structured `next_actions`, preserving executable, argv, CWD and binding. Do not run the standalone queue procedure below inside that task, overwrite registered rows or reports, write `checkpoint.json` yourself, or recreate a task after an uncertain write. Follow the original task's readback/recovery action. Task and account permission remain bound to the existing scope.
+Advance the task only through its supplied structured `next_actions`, preserving executable, argv, CWD and binding. Do not run the standalone atomic sequence below inside that task, overwrite registered rows or reports, write `checkpoint.json` yourself, or recreate a task after an uncertain write. Follow the original task's readback/recovery action. Task and account permission remain bound to the existing scope.
 
 `foundry-tidas-import` is the ordinary entry for starting and continuing managed Foundry work. This helper can consume a supplied task result without requiring another skill directory to be installed. The remaining procedure applies to an independent CLI workflow whose state is outside the managed public task protocol.
 
 ## Boundaries
 
-- This skill is a workflow coordinator only.
-- Do not parse source package formats in this skill. Use `tiangong-lca dataset import-lca convert` or `tidas-tools`.
-- Do not implement queue state, schema validation, QA, remote writes, or database verification in this skill. Use the CLI.
-- Do not make BAFU, USLCI, or any account a code path. They are profile inputs.
-- Do not hand-edit row JSONL as the primary repair path. Use child skills to write structured decisions or patches, then apply them through deterministic CLI/Foundry commands.
+Independent conversion and validation do not authorize persistence. Keep managed and independent execution contexts separate.
 
-## Required Inputs
+## Independent import sequence
 
-- Foundry task directory under `.foundry/workspaces/<task-id>/`.
-- Frozen source package manifest and checksum.
-- Import profile id, such as `generic`, `bafu`, or `uslci`.
-- Account/write guard when the task may eventually request remote write.
-- Target entity scope: support, flow, process, lifecyclemodel, or a bounded subset.
+1. Establish input format, source/license, scope, intended use and actor/account constraints. Preserve original files. Source facts and conversion assumptions remain distinct.
+2. Read `dataset <type> contract` for actual target schema, methodology and ruleset. Use `dataset import-lca convert --help` and only its supported format options for deterministic conversion; inspect conversion completeness and artifact paths.
+3. Extract each canonical target document from the conversion output, keeping exact source/identity mappings. Do not treat row collections or command envelopes as single-object validation inputs.
+4. Validate each selected document with `dataset <type> validate --input content.json`. Read issue paths, evidence gaps, actual check coverage and source-language semantics. Repair only from evidence, then inspect diff and validate again. Ordinary editable notes track unfinished work; no CLI curation queue/checkpoint protocol is required or provided.
+5. Search/read existing candidates before deciding to create a distinct object. Preserve one stable draft identity/version while editing. Choose explicit create versus save, with the native request envelope and preconditions; reference-only objects do not gain public write authority because their schemas exist.
+6. After an authorized write, inspect its actual receipt and exact readback. Submission uses review submit/resubmit separately. Release publication is another explicitly authorized workflow. Unknown effects recover the original intent without replay.
 
-## Workflow
+For field-level evidence or scientific judgment use the relevant domain Skill and public rules. Source-language imports do not require bilingual completion; apply translations only when requested. Keep unknown quantities unknown and never fabricate inventory to pass a gate.
 
-1. Fetch SDK-backed contract context for every target TIDAS type:
-
-```bash
-tiangong-lca dataset context-pack \
-  --type <process|flow|source|contact|unitgroup|flowproperty|lifecyclemodel> \
-  --profile ai-import \
-  --out-dir .foundry/workspaces/<task-id>/context/<type> \
-  --json
-```
-
-2. Convert the source package:
-
-```bash
-tiangong-lca dataset import-lca convert \
-  --input /abs/path/source-package \
-  --output-dir .foundry/workspaces/<task-id>/conversion \
-  --from-format auto \
-  --target tidas \
-  --json
-```
-
-3. Normalize converted rows into explicit support, flow, and process JSONL files.
-
-4. Run schema validation and deterministic QA through the CLI.
-
-5. Build the entity queue:
-
-```bash
-tiangong-lca dataset curation-queue build \
-  --processes .foundry/workspaces/<task-id>/rows/processes.jsonl \
-  --flows .foundry/workspaces/<task-id>/rows/flows.jsonl \
-  --support .foundry/workspaces/<task-id>/rows/sources.jsonl \
-  --out-dir .foundry/workspaces/<task-id>/curation-queue \
-  --json
-```
-
-6. Drive the queue with CLI state, not ad hoc batches:
-
-```bash
-tiangong-lca dataset curation-queue next \
-  --queue-dir .foundry/workspaces/<task-id>/curation-queue \
-  --json
-```
-
-Execute only the returned task. Support tasks complete before flow tasks; flow tasks complete before dependent process tasks.
-
-7. For semantic blockers, route to existing child skills:
-
-- Support/source/contact repair: use Foundry authoring task packages or dedicated support child skills when they exist.
-- Flow repair: use `flow-governance-review` or a future `flow-authoring` alias.
-- Process repair: use `process-automated-builder` or a future `process-authoring` alias.
-- Publish handoff: use `lca-publish-executor` only after deterministic prewrite gates are ready.
-
-8. After each task finishes, write or update that task's `checkpoint.json`, then call `curation-queue next` again.
-
-9. Before remote write, verify queue completion for the intended scope:
-
-```bash
-tiangong-lca dataset curation-queue verify \
-  --queue-dir .foundry/workspaces/<task-id>/curation-queue \
-  --type process \
-  --json
-```
-
-The verify report must be `passed` for the committed scope. If verify is blocked while `next` still returns `ready`, continue the queue.
-
-10. Before the first remote account read or write, run `tiangong-lca auth status --json`; before commit, require `tiangong-lca auth doctor-auth --json`. If login is required, stop and ask the human to run `auth login` in a trusted terminal. Never request a username, password, authorization code, token, or legacy API key. Use a separate private session per account/project/client; headless tokens may come only from an approved orchestrator and never enter argv or artifacts.
-
-## Stop Rules
-
-Stop and return blocker evidence when:
-
-- source manifest or profile lock is missing;
-- conversion reports blockers or unsupported source format;
-- schema, QA, curation, or queue verify blocks with no runnable next task;
-- a child skill would need to invent source evidence;
-- remote write would require direct database access or bypass a CLI dry-run/verification gate.
-
-## Done Criteria
-
-- Source package, profile lock, contract context, converted rows, schema/QA reports, queue artifacts, task checkpoints, mapping/provenance, dry-run, commit handoff, and readback verification are all present for the final scope.
-- `tiangong-lca dataset curation-queue verify` is `passed` for the committed scope.
-- Foundry task completion report aggregates the exact closeout artifacts.
+Run `tiangong-lca auth status --json` before remote work; hand `auth login` to the human in a trusted terminal when required. Never collect a password or token. `auth doctor-auth --json` precedes account-sensitive writes. Use the environment-selected qualified CLI via the package launcher, with no default installation or direct database fallback. In managed Foundry tasks, return selected input files through the owner's actual actions instead of independently advancing task state.

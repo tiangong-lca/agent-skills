@@ -1,111 +1,25 @@
 ---
 name: current-account-dataset-review
-description: Review and repair current-account TianGong dataset snapshots across flow, process, and lifecyclemodel rows through public CLI commands only. Use when a task needs local schema validation, deterministic reference rewrites, lifecyclemodel save-draft handoff, lifecyclemodel graph audit, and artifact-first stop rules for account-owned dataset governance.
+description: Review current-account datasets and apply explicit, evidence-supported repairs through typed CLI operations. Use for inspecting owned drafts, references and changes before separate saves.
 ---
 
-# Current Account Dataset Review
+# Current-account dataset review
 
-## Scope
+Choose exact object types and scope before reading. Use `dataset <type> list --scope current-user` with supported pagination; inspect exact targets with `get --id <id> --version <version>`. Preserve original content and the returned actor/environment context.
 
-- This skill is a thin orchestration layer over public `tiangong` CLI commands.
-- Use it for current-account multi-type dataset governance when the input rows or manifests are already frozen locally.
-- Do not import `tiangong-cli/dist/src/lib/**`, write direct Supabase REST glue, or parse raw credentials in this skill.
-- If a capability is missing from the public CLI, record it as a CLI gap instead of adding private runtime logic here.
+1. Fetch the current type contract and validate canonical content with `dataset <type> validate --input content.json`.
+2. Inspect outgoing references with `list-references`; use exact typed `get` for referenced data. Existence, visibility and relationship validity are separate facts.
+3. For an agreed repair, edit a local candidate or apply an explicit `patch` request, inspect `diff` and validate again. Never silently advance references to latest.
+4. Save an existing draft with an explicit `save` request containing its before-content and intended actor/environment; independently read back the exact target. Creation needs its own `create` intention. Model graphs use `dataset model graph --input graph-request.json`, whose input contains `{ "content": <canonical Model> }`.
+5. Submit or resubmit through `review` only when requested. Reviewer decisions are separate from validation or authoring.
 
-## Canonical Flow
+The convenience script accepts the current suffix `<type> <action> ...` after `dataset`; for example `run-current-account-dataset-review.mjs process validate --input process.json --json`. It does not implement batch repair, reference rewriting or automatic save.
 
-1. Before remote account work, run `tiangong-lca auth status --json`. If it returns `login-required`, stop and ask the human to run `tiangong-lca auth login` in a trusted terminal. Run `tiangong-lca auth doctor-auth --json` before a commit or account-sensitive readback. Never ask for a username, password, authorization code, token, or legacy API key.
-2. Freeze or receive the account-scoped input rows.
-3. Validate all local rows:
+## Runtime and authorization
 
-```bash
-node current-account-dataset-review/scripts/run-current-account-dataset-review.mjs validate \
-  --input /abs/path/rows.jsonl \
-  --type auto \
-  --out-dir /abs/path/dataset-validate
-```
+Use this package's `node scripts/run-cli.mjs` and the environment owner's qualified CLI selection. Inspect `--runtime-info` and current command `--help --json`; do not discover a sibling checkout, download a default version or reinterpret old request formats. Local validation and content processing do not require login. Before remote reads run `tiangong-lca auth status --json`; when login is required, hand `auth login` to a human in a trusted terminal. Never request a password, code or token. Use `auth doctor-auth --json` before authorized account-sensitive writes. Separate accounts with the caller's private `TIANGONG_LCA_SESSION_FILE`; never read its credentials in a Skill.
 
-4. If an upstream flow version changes, rewrite downstream references locally first:
-
-```bash
-node current-account-dataset-review/scripts/run-current-account-dataset-review.mjs rewrite-references \
-  --input /abs/path/rows.jsonl \
-  --from flow:<old-id>@<old-version> \
-  --to flow:<new-id>@<new-version> \
-  --type process \
-  --type lifecyclemodel \
-  --out-dir /abs/path/reference-rewrite \
-  --dry-run
-```
-
-5. Refresh references against reachable remote rows when the task requires current published versions:
-
-```bash
-node current-account-dataset-review/scripts/run-current-account-dataset-review.mjs refresh-remote-references \
-  --input /abs/path/rows.jsonl \
-  --out /abs/path/rows.refreshed.jsonl \
-  --out-dir /abs/path/reference-refresh \
-  --dry-run
-```
-
-Input artifact: frozen flow, process, or lifecyclemodel rows.
-Output artifacts: refreshed rows, remote lookup report, and blockers emitted by `tiangong-lca dataset references refresh-remote`.
-
-6. Save lifecyclemodel drafts only after local validation passes:
-
-```bash
-node current-account-dataset-review/scripts/run-current-account-dataset-review.mjs save-lifecyclemodels \
-  --input /abs/path/lifecyclemodels.jsonl \
-  --out-dir /abs/path/lifecyclemodel-save-draft \
-  --dry-run
-```
-
-7. Generate graph artifacts and connection findings for lifecyclemodels:
-
-```bash
-node current-account-dataset-review/scripts/run-current-account-dataset-review.mjs graph-lifecyclemodels \
-  --input /abs/path/lifecyclemodels.jsonl \
-  --out-dir /abs/path/lifecyclemodel-graph \
-  --format all \
-  --check-connections
-```
-
-8. After any remote write, re-fetch or freeze the persisted rows and run remote/reference verification:
-
-```bash
-node current-account-dataset-review/scripts/run-current-account-dataset-review.mjs verify-remote \
-  --input /abs/path/rows.jsonl \
-  --out-dir /abs/path/dataset-verify-remote
-```
-
-Input artifact: frozen persisted rows or row snapshots.
-Output artifact: `dataset-remote-verify` report from `tiangong-lca dataset verify-remote`.
-
-## Runtime Contract
-
-- Wrapper-local `--cli-dir` is the only supported override for choosing a local CLI checkout.
-- Local dry-runs do not require remote credentials.
-- Commit paths use the canonical CLI env only:
-  - `TIANGONG_LCA_API_BASE_URL`
-  - `TIANGONG_LCA_SUPABASE_PUBLISHABLE_KEY`
-  - `TIANGONG_LCA_OAUTH_CLIENT_ID`
-- Use a separate private `TIANGONG_LCA_SESSION_FILE` for each account/project/client. Headless runs may use only an orchestrator-injected short-lived `TIANGONG_LCA_ACCESS_TOKEN` that never enters argv, prompts, logs, or artifacts.
-
-## Stop Rules
-
-- Any commit must be preceded by a dry-run artifact set.
-- If a publish or save-draft step partially fails, do not rerun the full scope blindly; use the generated failure artifacts to plan a targeted retry.
-- After changing flow or process versions, re-validate downstream process and lifecyclemodel references.
-- Lifecyclemodel review must include schema validation and graph connection checks.
-- Final completion for remote write tasks requires a fresh `dataset verify-remote` pass.
-- If any upstream identity gate reports `manual_review` or `block_duplicate`, stop account-level mutation and preserve the gate artifact path in the handoff.
-- Treat schema, reference-refresh, remote-verification, graph, and post-write verification blockers as hard stops.
-
-## Known CLI Gaps
-
-- `dataset inventory --current-user`
-- `flow publish-version` server-side next available version / conflict retry
-- `dataset scope expand`
+Read the shared result envelope and actual `completeness`, validation layers and artifacts. A completed invocation may report invalid content. Missing/invisible records are not permission to create a replacement. `create` and `save` are distinct intentions; a failed save never becomes a create, and an unknown write uses its original request/intent recovery, never a new request or replay. Local files, queries, validation and candidate generation do not publish or submit review.
 
 ## CLI selection
 

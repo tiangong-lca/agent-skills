@@ -1,224 +1,37 @@
 ---
 name: process-automated-builder
-description: Execute the supported `process_from_flow` CLI workflow. Use `node scripts/run-process-automated-builder.mjs auto-build|resume-build|publish-build|batch-build` when you need the unified `tiangong-lca process ...` surface from a skill wrapper.
+description: Author evidence-supported canonical Process datasets using current CLI contracts, validation and explicit writes; preserve scientific meaning and existing managed Foundry task boundaries.
 ---
 
-# Process Automated Builder
+# Process authoring
 
-## Scope
+The Agent owns source research, scientific interpretation, unit-of-analysis selection and candidate content. CLI owns atomic contracts, validation and authorized persistence. Use this Skill for evidence-supported Process authoring, not a hidden CLI production scheduler. Registered Foundry tasks continue through the returned work items/actions and retain the selected runtime.
 
-- Prepare one local `process_from_flow` run from a request or reference-flow input.
-- Reopen an existing run to write deterministic resume metadata.
-- Prepare one local publish bundle from an existing run.
-- Prepare a deterministic batch of local process-build runs.
-- Run the process identity, build-plan, required-field, and local verification gates that must surround any automated process generation.
+1. Establish the functional unit, system boundary, reference Flow/property/unit and amount. Resolve whether the source describes a production operation, service, average or aggregate before writing exchanges.
+2. Retrieve field-level evidence with bounded queries and authoritative sources. Record the source location, units, period, geography, conversion and limitations in ordinary caller-owned notes. Unknown facts remain explicit; there is no CLI evidence-search queue or author-plan format to manufacture.
+3. Inspect `dataset process contract`, discover existing candidates with `search` and exact `get`, and decide whether an existing identity already fits. Create a new identity only for a distinct object; do not generate an identity merely because a task resumed.
+4. Author canonical Process JSON from the evidence. Distinguish intended applications, scientific use advice and technological applicability; draft/review state is not the data's intended scientific purpose. Preserve real identifiers and boundary/proxy restrictions.
+5. Run `dataset process validate --input process.json --json`, inspect its validation layers and not-checked scope, and inspect exact reference evidence. Edit or apply a deliberate `patch`, then compare with `diff` and validate again. No automatic default unit, emissions, annual volume or provider weights may substitute for evidence.
+6. Use distinct `create`/`save` request envelopes and current preconditions for an authorized write. A local draft file is not a persisted dataset. Review submission and Release publication are separate. Read exact content after confirmed writes; unknown effects use original-intent recovery.
 
-This skill uses the CLI only. Legacy alternate runtimes are not part of the supported path.
+`run-process-automated-builder.mjs` forwards current `dataset process <action>` arguments. Native operations include contract, search/get, validate, diff, patch, create/save and statistics. It does not implement auto-build/resume/publish queues or supply missing authoring facts. Read the supported operation's help for current input, output and failure semantics.
 
-## Canonical Runtime
+Names, descriptions and comments state domain facts only; operational attempts and repair history belong in task records.
 
-1. Read `references/workflow-map.md` and `references/operations-playbook.md`.
-2. Choose an explicit output directory, for example `/abs/path/artifacts/<case_slug>/...`.
-3. Use `node scripts/run-process-automated-builder.mjs auto-build ... --out-dir <dir>` to create one local run root.
-4. Continue with `resume-build`, `publish-build`, or `batch-build` as needed, passing `--run-dir` or `--out-dir` explicitly.
-5. If a missing capability is discovered, add a native `tiangong-lca process ...` command in `tiangong-lca-cli` first. Do not add new business runtime inside this skill.
+## Scientific evidence and managed-runtime boundaries
 
-## Production Gate Sequence
+Use the installed CLI validation and the actual owner authoring/repair capability. `annualSupplyOrProductionVolume` must come from explicit annual source evidence: a real annualized quantity with its unit and period. Never derive it from the quantitative reference flow's `meanAmount`/`resultingAmount`, from a default unit, from a per-year assumption of an unstated basis, or from a sentinel such as `9999`. When the source does not prove an annual volume, keep it unknown: the CLI's supported unknown representation (`[]`) with the row-level evidence gap its report records, and the open evidence need stated where the task tracks gaps. Structural validity is not evidence quality — read the CLI report's `validation_layers` (schema, authoring_evidence, content, multilingual) and its evidence-gap entries instead of re-implementing validation in the skill, treat such a row as neither publication-ready nor provider-weight eligible, and never let an LLM choose fresh weights per run. The bounded existing-owner-draft metadata repair lane is released: qualified Foundry 0.1.10 provides it (Foundry #171, released by #185 as `1e4f48bf8359f5e9bacba5741d15b7ff78f2eb41`) and it consumes the bounded existing-Process metadata admission from CLI #283, published since CLI 0.1.19. Run that repair only through the bounded lane and the `next_actions` the installed runtime returns: fresh before-image and the exact owner/state authorization the lane requires, one consumed attempt, no replay, unknown outcomes read back, publication left false, and no scientific field touched — the owners' recorded repair changed only the row's ownership-reference text. Never write the repair contract or its report yourself, and never claim a lane the runtime does not return. Installed support stays separate from merged source behavior: the recorded CLI `0.1.24` release evidence and the Foundry entry's adjacent lock for independently qualified Foundry `0.1.15` (whose bundled CLI `0.1.24` is independently bound by Foundry provenance) carry the unknown-`[]` behavior, the validation-layer report and that repair entry in their released sources, but the runtime you actually invoke is the authority. If that runtime still emits a numeric sentinel such as `9999` for a missing annual volume, or its report carries no validation-layer/evidence-gap fields, stop and report that qualified adoption is incomplete. Never hand-write, overwrite or delete the empty array in the dataset. Never rewrite or drop the runtime's report. Never bypass its gate. Keep merged source behavior and published support separate in every handoff.
 
-Use this sequence for target-quality process production:
+Keep authored rows source-language only for import/publish handoff unless a separate post-import language-completion task explicitly requests additional language fields.
 
-1. Run field-level evidence retrieval before authoring values that depend on public facts.
+Prepare publish handoff only after evidence retrieval, unit-of-analysis decision, local schema/business validation, semantic review, reference verification, and matrix/compute readiness gates pass.
+Read `references/ilcd_method_guardrails.md` and the Process naming public-rule references when their scientific topic applies; use actual verified public rule definitions.
 
-Use this step for geography, time, technology, production volume, electricity mix, emission factor, allocation, source, and any numeric or factual field that is not already proven by a local row or source document.
+## Runtime and authorization
 
-The skill/Codex workflow owns the semantic search strategy:
+Use this package's `node scripts/run-cli.mjs` and the environment owner's qualified CLI selection. Inspect `--runtime-info` and current command `--help --json`; do not discover a sibling checkout, download a default version or reinterpret old request formats. Local validation and content processing do not require login. Before remote reads run `tiangong-lca auth status --json`; when login is required, hand `auth login` to a human in a trusted terminal. Never request a password, code or token. Use `auth doctor-auth --json` before authorized account-sensitive writes. Separate accounts with the caller's private `TIANGONG_LCA_SESSION_FILE`; never read its credentials in a Skill.
 
-- identify the field path, expected evidence, geography, time scope, units, and acceptance criteria;
-- prefer direct evidence from official statistics, standards, PCR/PEF/ILCD/TIDAS context, primary source documents, or source rows before generic web pages;
-- generate a bounded source-language query matrix with documented synonyms when needed;
-- use search APIs or Codex web search first; use Browser/Computer Use only for JS-rendered pages, login/session UI, PDF/readback, or visual verification;
-- change keywords only when the previous result set adds no new authoritative source or exposes a better source name;
-- stop when enough authoritative evidence is found, when the configured query/result budget is exhausted, or when the remaining gap is explicit.
-
-Record the deterministic artifacts through the CLI:
-
-```bash
-node scripts/run-process-automated-builder.mjs evidence-search plan \
-  --input /abs/path/evidence-search.request.json \
-  --out-dir /abs/path/artifacts/<case_slug>/evidence/<field_slug> \
-  --json
-
-node scripts/run-process-automated-builder.mjs evidence-search run \
-  --input /abs/path/evidence-search.request.json \
-  --results /abs/path/search-results.json \
-  --out-dir /abs/path/artifacts/<case_slug>/evidence/<field_slug> \
-  --json
-```
-
-Input artifact: `evidence-search.request.json` with `question`, optional `field`, `preferred_domains`, `required_terms`, `required_evidence`, and `budget`.
-Output artifacts: `outputs/evidence-search-plan.json`, `outputs/evidence-search-results.jsonl`, `outputs/evidence-search-report.json`, and `outputs/evidence-search-declaration.json` when sufficient evidence is absent or only partial.
-Blockers: if `evidence-search-report.json` is `completed_no_sufficient_evidence`, do not invent the value. If it is `completed_with_partial_evidence`, write only a scoped value such as current-year-to-date, forecast, proxy, or assumption when the build plan explicitly records that scope; otherwise stop for review.
-
-2. Decide `unit_of_analysis` before generation.
-
-The skill/Codex workflow must author a `unit_of_analysis` object in `process-build-plan.json` before `build-plan validate` or `materialize` can pass. This is a semantic decision, not a CLI industry-judgement step. Use source evidence, PCR/PEF/ILCD/TIDAS context, flow governance findings, and the target data purpose to decide:
-
-- `target_kind`
-- functional unit or declared unit
-- reference flow identity, reference unit, reference amount, and flow property
-- scaling evidence or explicit scaling evidence status
-- decision: `ready_for_materialization`, `declared_unit_dataset`, `blocked_until_scaling_evidence`, or `manual_review`
-
-Only `ready_for_materialization` and `declared_unit_dataset` may proceed to materialization. `blocked_until_scaling_evidence` and `manual_review` are autonomous stop states. The CLI only checks presence/completeness and blocks non-automatic decisions; it does not choose the unit basis for the agent.
-
-Minimal artifact shape:
-
-```json
-{
-  "unit_of_analysis": {
-    "target_kind": "countable_durable_product",
-    "decision": "ready_for_materialization",
-    "functional_unit": {
-      "what": "provide visual display",
-      "how_much": "1 LCD monitor",
-      "how_well": "representative LCD technology",
-      "how_long": "documented service lifetime or display-hours"
-    },
-    "reference_flow": {
-      "flow_identity": "LCD monitor, finished product",
-      "reference_unit": "item",
-      "reference_amount": 1,
-      "flow_property": "Number of items"
-    },
-    "scaling_evidence_status": "source_available"
-  }
-}
-```
-
-3. Run identity preflight before generation:
-
-```bash
-node scripts/run-process-automated-builder.mjs identity-preflight \
-  --input /abs/path/process-preflight.json \
-  --out-dir /abs/path/artifacts/<case_slug>/identity \
-  --json
-```
-
-Input artifact: `process-preflight.json` with the target identity, candidate rows, and optional remote candidate search settings.
-Output artifacts: `outputs/identity-decision.json`, `outputs/identity-candidates.jsonl`, and `outputs/identity-candidate-sources.json`.
-Blockers: `block_duplicate` means do not create a new process; `manual_review` means stop autonomous execution and hand off the candidate evidence.
-
-4. Materialize or complete only through CLI-owned gates:
-
-Before materialization, supply `administrative_information.intended_applications` from the evidenced study goal or current task brief, and bind that basis in `evidence_manifest.field_bindings` at the canonical `field_path: administrative_information.intended_applications`. The value may use the supported `administrativeInformation.intendedApplications` alias; the evidence binding keeps the canonical path. Read the supplied Process schema and methodology context for these distinct fields (paths are relative to `processDataSet`):
-
-- `administrativeInformation.common:commissionerAndGoal.common:intendedApplications`: why the data were collected or developed, the study or decision they support, and the declared detail, specificity or quality objectives.
-- `modellingAndValidation.dataSourcesTreatmentAndRepresentativeness.useAdviceForDataSet`: scientifically relevant instructions and limits on using the data.
-- `processInformation.technology.technologicalApplicability`: the real-world applicability of the represented technology, product or service.
-
-Read applicable examples from the actual source-bound context pack; do not claim that an example added to upstream Spec is already present in the installed runtime. If the purpose is unknown, record the gap in the task and resolve it before calling this semantic check complete. A draft/review/save status is not a purpose, including a generator default such as `Automated LCA data production draft for expert review.` Inspect the materialized field as well as the plan; return an unsuitable generated value through the supported repair path.
-
-Keep source-backed proxy assumptions, boundary restrictions, scientific identifiers and any applicable EF supporting-dataset notice. This is a field-meaning check, not a ban on identifiers or the words draft/review; real review and publication metadata remain in their designated fields. Keep execution and approval history in task evidence.
-
-```bash
-node scripts/run-process-automated-builder.mjs build-plan validate \
-  --input /abs/path/process-build-plan.json \
-  --out-dir /abs/path/artifacts/<case_slug>/build-plan \
-  --json
-
-node scripts/run-process-automated-builder.mjs build-plan materialize \
-  --input /abs/path/process-build-plan.json \
-  --out-dir /abs/path/artifacts/<case_slug>/build-plan \
-  --json
-```
-
-Input artifact: `process-build-plan.json`.
-Output artifacts: `outputs/build-plan-gate-report.json` and, for `materialize`, `outputs/materialized-process.json`.
-Blockers: any failed gate, unresolved identity decision, missing `unit_of_analysis`, non-automatic unit decision, missing evidence, schema failure, duplicate finding, or required-field gap stops publish preparation.
-
-5. Complete required authoring fields for row snapshots when a full build plan is not the input:
-
-```bash
-node scripts/run-process-automated-builder.mjs complete-required-fields \
-  --input /abs/path/processes.jsonl \
-  --out /abs/path/processes.completed.jsonl \
-  --default-unit MJ
-```
-
-The CLI owns the deterministic writer. `annualSupplyOrProductionVolume` must come from explicit annual source evidence: a real annualized quantity with its unit and period. Never derive it from the quantitative reference flow's `meanAmount`/`resultingAmount`, from a default unit, from a per-year assumption of an unstated basis, or from a sentinel such as `9999`. When the source does not prove an annual volume, keep it unknown: the CLI's supported unknown representation (`[]`) with the row-level evidence gap its report records, and the open evidence need stated where the task tracks gaps. Structural validity is not evidence quality — read the CLI report's `validation_layers` (schema, authoring_evidence, content, multilingual) and its evidence-gap entries instead of re-implementing validation in the skill, treat such a row as neither publication-ready nor provider-weight eligible, and never let an LLM choose fresh weights per run. The bounded existing-owner-draft metadata repair lane is released: qualified Foundry 0.1.10 provides it (Foundry #171, released by #185 as `1e4f48bf8359f5e9bacba5741d15b7ff78f2eb41`) and it consumes the bounded existing-Process metadata admission from CLI #283, published since CLI 0.1.19. Run that repair only through the bounded lane and the `next_actions` the installed runtime returns: fresh before-image and the exact owner/state authorization the lane requires, one consumed attempt, no replay, unknown outcomes read back, publication left false, and no scientific field touched — the owners' recorded repair changed only the row's ownership-reference text. Never write the repair contract or its report yourself, and never claim a lane the runtime does not return. Installed support stays separate from merged source behavior: the recorded CLI `0.1.24` release evidence and the Foundry entry's adjacent lock for independently qualified Foundry `0.1.15` (whose bundled CLI `0.1.24` is independently bound by Foundry provenance) carry the unknown-`[]` behavior, the validation-layer report and that repair entry in their released sources, but the runtime you actually invoke is the authority. If that runtime still emits a numeric sentinel such as `9999` for a missing annual volume, or its report carries no validation-layer/evidence-gap fields, stop and report that qualified adoption is incomplete. Never hand-write, overwrite or delete the empty array in the dataset. Never rewrite or drop the runtime's report. Never bypass its gate. Keep merged source behavior and published support separate in every handoff.
-
-6. Keep authored rows source-language only for import/publish handoff unless a separate post-import language-completion task explicitly requests additional language fields.
-
-7. Prepare publish handoff only after evidence retrieval, unit-of-analysis decision, local schema, deterministic process QA, reference verification, and matrix/compute readiness gates pass. For external dataset/source-document imports, Foundry must also run the process curation gate so profile waivers and AI-authored repair packages are explicit before publish preparation.
-
-## Parallel Execution Contract
-
-- `Run-level parallel`: multiple flow inputs can run concurrently, but each run must use a distinct `run_id`.
-- `In-run parallel`: do not run multiple writers against the same `run_id`.
-- Single-writer rule:
-  - never let multiple agents write the same `<run_dir>/cache/process_from_flow_state.json`
-  - within one `run_id`, only one active writer process is allowed at a time
-  - enforcement is code-level through the CLI state lock
-
-## Canonical Node Wrapper Commands
-
-```bash
-node scripts/run-process-automated-builder.mjs auto-build --help
-node scripts/run-process-automated-builder.mjs identity-preflight --help
-node scripts/run-process-automated-builder.mjs build-plan --help
-node scripts/run-process-automated-builder.mjs evidence-search --help
-node scripts/run-process-automated-builder.mjs resume-build --help
-node scripts/run-process-automated-builder.mjs publish-build --help
-node scripts/run-process-automated-builder.mjs batch-build --help
-
-node scripts/run-process-automated-builder.mjs auto-build \
-  --flow-file /abs/path/reference-flow.json \
-  --operation produce \
-  --out-dir /abs/path/artifacts/<case_slug>/process_from_flow/<run_id> \
-  --json
-
-node scripts/run-process-automated-builder.mjs resume-build --run-dir /abs/path/artifacts/<case_slug>/process_from_flow/<run_id> --run-id <run_id> --json
-node scripts/run-process-automated-builder.mjs publish-build --run-dir /abs/path/artifacts/<case_slug>/process_from_flow/<run_id> --run-id <run_id> --json
-node scripts/run-process-automated-builder.mjs batch-build --input /abs/path/batch-request.json --out-dir /abs/path/artifacts/<case_slug>/process_batch/<batch_id> --json
-node scripts/run-process-automated-builder.mjs verify-rows --rows-file /abs/path/process-list-report.json --out-dir /abs/path/artifacts/<case_slug>/process-verify
-node scripts/run-process-automated-builder.mjs evidence-search plan --query "中国2026年电力结构数据" --out-dir /abs/path/artifacts/<case_slug>/evidence --json
-```
-
-## Runtime Requirements
-
-- The wrapper uses the configured CLI through `node scripts/run-cli.mjs`.
-- Set `TIANGONG_LCA_CLI_DIR` or pass `--cli-dir` only when you need a local CLI working tree for dev/CI.
-- The wrapper requires explicit output paths instead of relying on `cwd/artifacts/...` defaults.
-- For repeatable runs, use an explicit output root such as `/abs/path/artifacts/<case_slug>/...`.
-- The current canonical commands prepare local run outputs and do not depend on legacy private runtimes.
-- If a future native CLI command needs additional env, document it in `tiangong-lca-cli` first and keep this skill as a thin caller only.
-
-## Process Name Contract
-
-- Any generated process payload must preserve the four-part process name object:
-  `name.baseName`, `name.treatmentStandardsRoutes`, `name.mixAndLocationTypes`, `name.functionalUnitFlowProperties`.
-- `baseName`, `treatmentStandardsRoutes`, and `mixAndLocationTypes` are schema-required in current TianGong process payloads. Keep the keys even when one field is semantically empty; do not collapse the whole reference-flow short description back into `baseName`.
-- Names, descriptions and comments state domain facts only. Never put workflow status, approval counters, revision or resume histories, queue/action-item text, or "pending confirmation" chatter into dataset prose; that belongs in the task's operational evidence.
-- When name splitting is ambiguous, align with `../lifecycleinventory-review/profiles/process/references/process-review-rules.md` instead of inventing a one-off local convention.
-
-## Fast Troubleshooting
-
-- Local CLI override issues: set `TIANGONG_LCA_CLI_DIR` or pass `--cli-dir` only when you intentionally need an unpublished working tree.
-- Missing `--out-dir` or `--run-dir`: the wrapper requires an explicit output path such as `/abs/path/artifacts/<case_slug>/...`.
-- Missing `--input` / `--flow-file`: new runs need one explicit request or reference-flow input.
-- Run-level conflicts: do not reuse the same `run_id` across concurrent writers.
-- Publish preparation issues: inspect `stage_outputs/10_publish/` and `cache/agent_handoff_summary.json` before touching downstream publish flow.
-- Identity blockers: `block_duplicate` and `manual_review` are stop states, not warnings.
-- Unit-of-analysis blockers: missing `unit_of_analysis`, `manual_review`, and `blocked_until_scaling_evidence` are stop states. Fix the skill-authored decision artifact; do not patch around the CLI gate.
-- Evidence blockers: `completed_no_sufficient_evidence` is a stop state for factual field authoring; `completed_with_partial_evidence` may proceed only when the partial scope is written into the field evidence and build plan.
-- Build-plan blockers: inspect `outputs/build-plan-gate-report.json`; do not patch around a failed CLI gate inside the skill.
-- Process QA findings from `qa process` are not a substitute for Foundry profile curation. If the rows came from an external import, route schema/QA findings through Foundry curation instead of asking the CLI to make semantic authoring decisions.
-- If a required step is missing, add it as a native `tiangong-lca process ...` command instead of reintroducing a legacy runtime here.
-
-## Load References On Demand
-
-- `references/workflow-map.md`: current CLI-only execution map and output layout.
-- `references/operations-playbook.md`: concise command examples and troubleshooting.
+Read the shared result envelope and actual `completeness`, validation layers and artifacts. A completed invocation may report invalid content. Missing/invisible records are not permission to create a replacement. `create` and `save` are distinct intentions; a failed save never becomes a create, and an unknown write uses its original request/intent recovery, never a new request or replay. Local files, queries, validation and candidate generation do not publish or submit review.
 
 ## CLI selection
 

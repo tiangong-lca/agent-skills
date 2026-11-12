@@ -122,7 +122,7 @@ npx skills add https://github.com/tiangong-lca/agent-skills --skill foundry-tida
 
 原有技能保留各自用途：
 
-- `$external-dataset-curated-import`：BAFU、USLCI 等结构化 LCA 数据包导入，走 CLI 转换、curation queue `next`/`verify`、子 skill 和发布 handoff gates。
+- `$external-dataset-curated-import`：BAFU、USLCI 等结构化 LCA 数据包导入，走 CLI 转换、规范内容校验、证据审查和独立授权的 create/save/review。
 - `$source-evidence-dataset-development`：从 PDF、Word、URL、API、报告、数据库引用或科学文献进行 evidence-driven 数据新增或更新。
 - `$dataset-rls-maintenance`：在当前用户 RLS 可见范围内，对历史错误导入数据做清理、删除/退役、引用修复和 redo 计划；只编排 CLI maintenance plan 与 readback verification，不实现私有数据库访问。
 
@@ -136,7 +136,7 @@ export TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE=/absolute/path/to/approved-cli-
 export TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256='<approved-64-character-sha256>'
 node scripts/run-cli.mjs --runtime-info
 node scripts/run-cli.mjs auth status --json
-node lifecycleinventory-review/scripts/run-review.mjs --rows-file /absolute/path/rows.json --out-dir /absolute/path/qa
+node lifecycleinventory-review/scripts/run-review.mjs --profile process --input /absolute/path/process.json --json
 ```
 
 PowerShell 使用同名 `$env:TIANGONG_LCA_...` 变量。跨终端或进程调用时，由消费应用的启动配置持久提供这些值；不要求本地数据工作区，也不自动读取 `.env` 或搜索 PATH。各 Skill 的 `scripts/run-cli.mjs` 与普通 wrapper 复用同一选择。`--runtime-info` 只读显示实际身份和选择来源，不写额外报告，其观察结果不能自行批准资格。
@@ -157,7 +157,7 @@ node scripts/run-cli.mjs auth status --json
 
 只有自定义环境才需要完整匹配的 `TIANGONG_LCA_API_BASE_URL`、`TIANGONG_LCA_SUPABASE_PUBLISHABLE_KEY`、已注册的 `TIANGONG_LCA_OAUTH_CLIENT_ID` 及精确 callback；不完整配置不能混补 Production。每个 account/project/client 使用独立私有 `TIANGONG_LCA_SESSION_FILE`。批准的 headless 自动化必须显式配置目标 URL/key 和 `TIANGONG_LCA_AUTH_MODE=access-token`，再由 orchestrator 注入短期 `TIANGONG_LCA_ACCESS_TOKEN`；仅 token 不会默认指向 Production，也不得进入 argv、prompt、日志或产物。CLI 不再存在 legacy API-key 模式。
 
-三个 hybrid-search 技能目录可以独立安装：各自携带经过字节一致性校验的启动器和示例输入，不需要 Skills/CLI/Data Foundry checkout；认证仍完全由 CLI 负责。
+三个 hybrid-search 技能目录可以独立安装：各自携带经过字节一致性校验的启动器和显式查询说明，不需要 Skills/CLI/Data Foundry checkout；认证仍完全由 CLI 负责。
 
 ## 校验
 
@@ -169,16 +169,18 @@ node scripts/run-cli.mjs auth status --json
   ```bash
   pnpm validate
   ```
-- 若要联调与开发验证基线 CLI 0.1.24 发行版匹配的本地 checkout:
+- 验证已审查的 CLI 0.2.0 本地候选时，提供完整的三项配置:
   ```bash
   TIANGONG_LCA_CLI_DIR=/path/to/tiangong-lca-cli \
+  TIANGONG_LCA_CLI_CANDIDATE_FILE=/path/to/reviewed-candidate.json \
+  TIANGONG_LCA_CLI_CANDIDATE_SHA256='<approved-sha256>' \
   pnpm validate
   ```
 - 只校验本次变更的 skill:
   ```bash
-  pnpm validate lifecycleinventory-qa process-hybrid-search
+  pnpm validate lifecycleinventory-review process-hybrid-search
   ```
-- CI 会在 `.github/workflows/validate-skills.yml` 中 checkout 开发测试 CLI commit `89c71772ca1afcfc09705f8c27a9703c6bf8ccf6`（发布包 0.1.24），用 frozen pnpm lockfile 安装两个仓库并构建 CLI，然后运行同一套校验；Foundry 入口的 bootstrap 按它自己已认证的 0.1.15 发行锁与自带 CLI 0.1.24 测试。
+- CI 会在 `.github/workflows/validate-skills.yml` 中 checkout CLI 0.2.0 commit `955642482771a270fd49a199d1d7c86fcccc9ce2`，用 frozen pnpm lockfile 安装两个仓库并构建 CLI，根据已审查的固定源码和构建结果认证测试候选，然后运行同一套校验；Foundry 入口的 bootstrap 按它自己已认证的 0.1.15 发行锁与自带 CLI 0.1.24 测试。
 - 其他本地候选版本必须使用下述已评阅清单与独立摘要。验收还需要真实资格失败测试、独立安装包与嵌套 wrapper 传播测试，以及原调用方验证；生成清单或仅通过 fixture 测试不能完成验收。
 
 ## 执行说明
@@ -194,7 +196,7 @@ node scripts/run-cli.mjs auth status --json
 - 其他本地包版本必须提供下述已评阅 candidate 文件与外部给定摘要；显式本地选择失败不会静默回退已发布包
 - 本地 pre-push hook 先验证匹配发行版或候选证据；wrapper 在源码 mtime 要求时仍先执行 `pnpm install --frozen-lockfile` 再 `pnpm run build`，并在 dispatch 前复核候选身份
 - launcher 只用 argv 数组并固定 `shell: false`，因此带空格路径保持为单个参数，并原样保留子进程 exit/stdout/stderr
-- 对远端 process QA snapshot，优先使用 `tiangong-lca process list --json` 再配合 `qa process --rows-file ...`，不再鼓励临时 bridge 脚本
+- Process 审查通过 `dataset process list`/`get` 发现数据并读取精确的规范内容，再运行 `dataset process validate --input process.json`；语义审查由 Agent 完成
 - 对新迁移和后续重构的 skill，wrapper 入口优先直接使用原生 Node `.mjs`，不再新增 shell 兼容壳
 - skill wrapper 不应再打包业务 Python、MCP transport、私有 env parsing 或 shell shim
 - 远程 skill 必须使用 CLI OAuth status/login/doctor handoff，不得新增 API-key flag 或 bearer 示例
@@ -246,3 +248,7 @@ pnpm validate
 ## LCA 研究
 
 `lca-study` 提供冻结研究、情景比较及事实引用报告工作流，可独立复制安装，并复用上述配置好的已安装 CLI。所选服务须开放对应核心研究和报告能力。Skill 保留原始变更恢复身份，导出使用独立配置的信任锚。P3 通过已开放的 v4 命令支持精确修订评审、定稿和指定接收者分享；member/export 升级须显式选择 v4，并保留一次授权及 UNKNOWN 原键恢复边界。P2 报告仍是未审阅历史副本；签名或 actor 批准不代表当前访问权或独立科学认证。数据编制与发布仍属于各自工作流。
+
+活动 wrapper 使用 CLI 0.2.0 的 `dataset <type> <action>` 与 `review` 接口，不保留旧命令别名。Study 的 setup、prepare 和计算扩展需要核对所选运行时实际提供的能力。
+
+保留的旧版源码认证规则只是 launcher 的运行时选择机制，不表示新版 Skill 仍能使用旧命令；活动能力以当前 CLI 接口为准。

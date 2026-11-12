@@ -1,97 +1,23 @@
 ---
 name: lifecyclemodel-automated-builder
-description: Assemble native TianGong TIDAS lifecyclemodel `json_ordered` artifacts from existing local process-build runs through the unified TianGong CLI. Use when you already have `process-automated-builder` outputs and need the supported lifecyclemodel auto-build workflow.
+description: Develop an explicit Lifecycle Model from selected Process datasets and evidence using current CLI graph, validation and write operations. Use for agent-assisted model authoring; generation and provider decisions remain with the caller.
 ---
 
-# Lifecycle Model Automated Builder
+# Model authoring
 
-Use this skill when the source of truth is a set of existing local `process-automated-builder` run directories and the next step is to assemble a native lifecyclemodel artifact locally.
+Establish the functional quantity, boundary and explicit Process instances before authoring. Discover suitable data, read exact versions and inspect input/output reference identities and units. The agent chooses and explains provider connections; the CLI does not discover them automatically across the database.
 
-## Read First
-1. `references/workflow.md`
-2. `references/model-contract.md`
-3. `references/source-analysis.md`
+Read `dataset model contract`, author the canonical Model and supporting Process documents, inspect `dataset model graph --input graph-request.json`, and validate the content. The graph request contains `{ "content": <canonical Model> }`; validation takes the canonical document itself. Resolve actual connection/evidence problems; do not invent Process inventories or treat a graph image as numerical proof.
 
-## Guardrails
-- The canonical runtime path is `skill -> Node wrapper -> tiangong-lca CLI`.
-- Persistent build outputs must use an explicit `--out-dir`; this skill does not choose a default output root.
-- For repeatable runs, use an explicit output directory such as `/abs/path/artifacts/<case_slug>/...`.
-- The current canonical slices are:
-  - `tiangong-lca lifecyclemodel auto-build`
-  - `tiangong-lca lifecyclemodel validate-build`
-  - `tiangong-lca lifecyclemodel publish-build`
-- The supported workflow is CLI-based and local to your build inputs:
-  - no Python workflow
-  - no MCP transport
-  - no remote lifecyclemodel CRUD
-  - no reference-model discovery against KB / LLM services
-- The skill produces native `json_ordered` only. It does not emit `json_tg`, `rule_verification`, or resulting-process artifacts.
-- `validate-build` and `publish-build` now exist as dedicated CLI follow-up commands; do not reintroduce those stages inside the skill.
-- Only `local_runs[]` is executable today. Discovery hints may be recorded as deferred notes, but they are not executed inside this skill.
+The wrapper accepts current `dataset model <action>` suffixes. `build-resulting-process --input request.json --output projection.json` writes a result bundle containing generated Process candidates from the native request contract; it does not create or publish that candidate. Model calculation uses `prepare` and `calculate` as described by their current help and the Study workflow.
 
-## Workflow
-1. Prepare a manifest whose core input is `local_runs[]`.
-2. Pick an output directory, typically under a path such as `/abs/path/artifacts/<case_slug>/...`.
-3. Run `node scripts/run-lifecyclemodel-automated-builder.mjs build --input <manifest> --out-dir <dir>`.
-4. During assembly, preserve TianGong native model conventions from `tiangong-lca-next`:
-   - `lifeCycleModelInformation.quantitativeReference.referenceToReferenceProcess`
-   - `technology.processes.processInstance[*].referenceToProcess`
-   - `technology.processes.processInstance[*].connections.outputExchange`
-   - computed `@multiplicationFactor`
-   - a valid `referenceToResultingProcess` reference inside `json_ordered`
-5. Review the local outputs:
-   - `run-plan.json`
-   - `resolved-manifest.json`
-   - `selection/selection-brief.md`
-   - `discovery/reference-model-summary.json`
-   - `models/**/tidas_bundle/lifecyclemodels/*.json`
-   - `models/**/summary.json`
-   - `models/**/connections.json`
-   - `models/**/process-catalog.json`
-   - `reports/lifecyclemodel-auto-build-report.json`
-6. If the workflow later needs validation or publish handoff, call the dedicated CLI follow-up commands instead of rebuilding those paths inside the skill:
-   - `node scripts/run-lifecyclemodel-automated-builder.mjs validate --run-dir <dir>`
-   - `node scripts/run-lifecyclemodel-automated-builder.mjs publish --run-dir <dir>`
-7. If someone asks for remote discovery or AI-assisted model selection, add it as a native `tiangong-lca lifecyclemodel ...` capability first.
+Save or create only through an explicitly selected atomic write request, preserving actor/environment, exact identity and before-content where required. The old auto-build/run-directory/publication workflow is not a CLI operation; keep task goals, evidence, intermediate files and unfinished decisions in caller-owned notes. Registered Foundry tasks continue through their returned actions without replacing their runtime.
 
-## Commands
-```bash
-node lifecyclemodel-automated-builder/scripts/run-lifecyclemodel-automated-builder.mjs build \
-  --input lifecyclemodel-automated-builder/assets/example-request.json \
-  --out-dir /abs/path/artifacts/<case_slug>/lifecyclemodel-auto-build \
-  --dry-run
+## Runtime and authorization
 
-node lifecyclemodel-automated-builder/scripts/run-lifecyclemodel-automated-builder.mjs build \
-  --input /abs/path/request.json \
-  --out-dir /abs/path/artifacts/<case_slug>/lifecyclemodel-auto-build
+Use this package's `node scripts/run-cli.mjs` and the environment owner's qualified CLI selection. Inspect `--runtime-info` and current command `--help --json`; do not discover a sibling checkout, download a default version or reinterpret old request formats. Local validation and content processing do not require login. Before remote reads run `tiangong-lca auth status --json`; when login is required, hand `auth login` to a human in a trusted terminal. Never request a password, code or token. Use `auth doctor-auth --json` before authorized account-sensitive writes. Separate accounts with the caller's private `TIANGONG_LCA_SESSION_FILE`; never read its credentials in a Skill.
 
-node lifecyclemodel-automated-builder/scripts/run-lifecyclemodel-automated-builder.mjs build \
-  --input lifecyclemodel-automated-builder/assets/example-local-runs.json \
-  --out-dir /abs/path/artifacts/<case_slug>/lifecyclemodel-auto-build
-
-node lifecyclemodel-automated-builder/scripts/run-lifecyclemodel-automated-builder.mjs validate \
-  --run-dir /abs/path/artifacts/<case_slug>/lifecyclemodel-auto-build
-
-node lifecyclemodel-automated-builder/scripts/run-lifecyclemodel-automated-builder.mjs publish \
-  --run-dir /abs/path/artifacts/<case_slug>/lifecyclemodel-auto-build
-```
-
-## Troubleshooting
-- Local CLI override issues: set `TIANGONG_LCA_CLI_DIR` or pass `--cli-dir` only when you intentionally need an unpublished working tree.
-- Missing `--out-dir`: the wrapper requires an explicit output path such as `/abs/path/artifacts/<case_slug>/...`.
-- Missing `local_runs[]`: the current canonical slice only accepts local process-build runs.
-- Validation/publish follow-up: use the dedicated CLI subcommands against one existing auto-build run; they work from local build outputs and do not perform remote writes.
-- Validation failures on required model fields: inspect `references/model-contract.md`.
-- Topology disagreements: inspect `references/source-analysis.md` for native lifecycle model conventions.
-- If you need remote discovery or writes, add that capability to the native CLI instead of extending this skill with a separate runtime.
-
-## Bundled Resources
-- `scripts/run-lifecyclemodel-automated-builder.mjs`: native Node wrapper that delegates to `tiangong-lca lifecyclemodel ...`.
-- `assets/example-request.json`: minimal current-slice manifest using `local_runs[]`.
-- `assets/example-local-runs.json`: multi-run local assembly manifest example.
-- `references/workflow.md`: current CLI-backed workflow and deferred slices.
-- `references/source-analysis.md`: extracted conventions from `tiangong-lca-next`, `tidas-sdk`, and `tidas-tools`.
-- `references/model-contract.md`: native `json_ordered` fields required before validation or publish.
+Read the shared result envelope and actual `completeness`, validation layers and artifacts. A completed invocation may report invalid content. Missing/invisible records are not permission to create a replacement. `create` and `save` are distinct intentions; a failed save never becomes a create, and an unknown write uses its original request/intent recovery, never a new request or replay. Local files, queries, validation and candidate generation do not publish or submit review.
 
 ## CLI selection
 

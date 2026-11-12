@@ -1,133 +1,18 @@
 #!/usr/bin/env node
-import process from "node:process";
-import {
-  normalizeCliRuntimeArgs,
-  renderCliRuntimeHelp,
-  runTiangongCommand,
-} from "../../scripts/lib/cli-launcher.mjs";
-import { resolveFlowGovernanceCliArgv } from "./lib/cli-command-manifest.mjs";
-
-class UsageError extends Error {}
-
-const removedCommands = new Set([
-  "openclaw-entry",
-  "openclaw-full-run",
-  "run-governance",
-  "flow-dedup-candidates",
-  "export-openclaw-dedup-review-pack",
-  "export-openclaw-ref-review-pack",
-  "apply-openclaw-ref-decisions",
-  "export-openclaw-text-review-pack",
-  "export-openclaw-classification-review-pack",
-  "apply-openclaw-text-decisions",
-  "apply-openclaw-classification-decisions",
-  "validate-openclaw-text-decisions",
-  "validate-openclaw-classification-decisions",
-]);
-
-function fail(message) {
-  throw new UsageError(message);
-}
-
-function renderHelp() {
-  return `Usage:
-  node scripts/run-flow-governance-review.mjs <command> [args...]
-
-Wrapper options:
-  --cli-dir <dir>           Select an explicit development source tiangong-lca-cli repository path
-
-CLI-backed commands:
-  identity-preflight        Delegate to tiangong-lca flow identity-preflight
-  build-plan                Delegate to tiangong-lca flow build-plan validate|materialize
-  qa-flows              Delegate to tiangong-lca qa flow
-  flow-get                  Delegate to tiangong-lca flow get
-  flow-list                 Delegate to tiangong-lca flow list
-  materialize-db-flows      Delegate real-DB flow ref materialization to tiangong-lca flow fetch-rows
-  materialize-approved-decisions Delegate approved merge decisions to tiangong-lca flow materialize-decisions
-  remediate-flows           Delegate to tiangong-lca flow remediate
-  publish-version           Delegate to tiangong-lca flow publish-version
-  publish-reviewed-data     Delegate reviewed flow/process local publish preparation to tiangong-lca flow publish-reviewed-data
-  build-flow-alias-map      Delegate to tiangong-lca flow build-alias-map
-  scan-process-flow-refs    Delegate to tiangong-lca flow scan-process-flow-refs
-  plan-process-flow-repairs Delegate to tiangong-lca flow plan-process-flow-repairs
-  apply-process-flow-repairs Delegate to tiangong-lca flow apply-process-flow-repairs
-  regen-product             Delegate to tiangong-lca flow regen-product
-  validate-processes        Delegate to tiangong-lca flow validate-processes
-
-Notes:
-  - default runtime is ${renderCliRuntimeHelp()}
-  - no shell compatibility shim is kept; call this .mjs entrypoint directly
-  - the wrapper is now CLI-only; it no longer exposes any Python fallback path
-  - publish-reviewed-data now uses the CLI for both local preparation and commit-time process publish
-  - materialize-db-flows is the canonical bridge from real DB refs to local qa-input rows
-  - materialize-approved-decisions is the canonical bridge from approved merge decisions to canonical-map / rewrite-plan / seed artifacts
-  - removed OpenClaw / governance orchestration commands must be reintroduced as native tiangong-lca subcommands before use
-
-Examples:
-  node scripts/run-flow-governance-review.mjs identity-preflight --input /abs/path/flow-preflight.json --out-dir /abs/path/identity
-  node scripts/run-flow-governance-review.mjs build-plan validate --input /abs/path/flow-build-plan.json --out-dir /abs/path/build-plan
-  node scripts/run-flow-governance-review.mjs build-plan materialize --input /abs/path/flow-build-plan.json --out-dir /abs/path/build-plan
-  node scripts/run-flow-governance-review.mjs materialize-db-flows --refs-file /abs/path/flow-refs.json --out-dir /abs/path/materialized --fail-on-missing
-  node scripts/run-flow-governance-review.mjs materialize-approved-decisions --decision-file /abs/path/approved-decisions.json --flow-rows-file /abs/path/materialized/qa-input-rows.jsonl --out-dir /abs/path/decision-artifacts
-  node scripts/run-flow-governance-review.mjs qa-flows --rows-file /abs/path/flows.jsonl --out-dir /abs/path/qa
-  node scripts/run-flow-governance-review.mjs remediate-flows --input-file /abs/path/invalid-flows.jsonl --out-dir /abs/path/remediation
-  node scripts/run-flow-governance-review.mjs publish-version --input-file /abs/path/ready-flows.jsonl --out-dir /abs/path/publish --dry-run
-  node scripts/run-flow-governance-review.mjs publish-reviewed-data --flow-rows-file /abs/path/reviewed-flows.jsonl --out-dir /abs/path/publish-reviewed
-  node scripts/run-flow-governance-review.mjs build-flow-alias-map --old-flow-file /abs/path/old-flows.jsonl --new-flow-file /abs/path/new-flows.jsonl --out-dir /abs/path/alias-map
-  node scripts/run-flow-governance-review.mjs scan-process-flow-refs --processes-file /abs/path/processes.jsonl --scope-flow-file /abs/path/flows.jsonl --out-dir /abs/path/scan
-  node scripts/run-flow-governance-review.mjs plan-process-flow-repairs --processes-file /abs/path/processes.jsonl --scope-flow-file /abs/path/flows.jsonl --out-dir /abs/path/repair-plan
-  node scripts/run-flow-governance-review.mjs apply-process-flow-repairs --processes-file /abs/path/processes.jsonl --scope-flow-file /abs/path/flows.jsonl --out-dir /abs/path/repair-apply
-  node scripts/run-flow-governance-review.mjs regen-product --processes-file /abs/path/processes.jsonl --scope-flow-file /abs/path/flows.jsonl --out-dir /abs/path/regen --apply
-`.trim();
-}
-
-function runCliBackedCommand(command, runtime, forwardedArgs) {
-  const cliSubcommand = resolveFlowGovernanceCliArgv(command);
-  if (!cliSubcommand) {
-    fail(`Unsupported CLI-backed command: ${command}`);
-  }
-  return runTiangongCommand([...cliSubcommand, ...forwardedArgs], runtime);
-}
-
-function main() {
-  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
-  const command = args[0];
-  const forwardedArgs = args.slice(1);
-
-  if (
-    !command ||
-    command === "help" ||
-    command === "-h" ||
-    command === "--help"
-  ) {
-    console.log(renderHelp());
-    process.exit(0);
-  }
-
-  if (resolveFlowGovernanceCliArgv(command)) {
-    process.exit(runCliBackedCommand(command, runtime, forwardedArgs));
-  }
-
-  if (removedCommands.has(command)) {
-    fail(
-      `Command '${command}' was removed with the legacy Python workflow. Reintroduce it as a native tiangong-lca CLI command before use.`,
-    );
-  }
-
-  fail(`Unknown command: ${command}`);
-}
-
+import process from 'node:process';
+import { normalizeCliRuntimeArgs, runTiangongCommand } from '../../scripts/lib/cli-launcher.mjs';
+import { resolveFlowGovernanceCliArgv, flowGovernanceCliCommandEntries } from './lib/cli-command-manifest.mjs';
 try {
-  main();
-} catch (error) {
-  if (error instanceof UsageError) {
-    console.error(`Error: ${error.message}`);
-    console.error("");
-    console.error(renderHelp());
-    process.exit(2);
+  const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
+  if (!args.length || ['--help', '-h'].includes(args[0])) {
+    console.log('Flow operations: ' + flowGovernanceCliCommandEntries.map(v => v.wrapperCommand).join(', '));
+    console.log('Each operation delegates to dataset flow <action>. Use <action> --help for current inputs. Review decisions and repair sequencing belong to the caller.');
+  } else {
+    const command = resolveFlowGovernanceCliArgv(args[0]);
+    if (!command) throw new Error('Unsupported action. Use a current atomic action; specialized repair workflows are not provided.');
+    process.exitCode = runTiangongCommand([...command, ...args.slice(1)], runtime);
   }
-
-  const message = error instanceof Error ? error.message : String(error);
-  console.error(`Error: ${message}`);
-  process.exit(1);
+} catch (error) {
+  console.error(`Error: ${error.message}`);
+  process.exitCode = 2;
 }

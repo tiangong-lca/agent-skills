@@ -10,7 +10,10 @@ The script counts rows from remote `processes` after applying:
 
 Default:
 - scope = `visible`
-- state codes = `0,100`
+- state codes = unrestricted within the selected visibility scope unless explicitly supplied
+- groupBy = state; maxRows = 10000
+
+The result describes observed rows. Check completeness/truncation before treating it as a total; explicit grouping supports state/classification, not arbitrary fields.
 
 ## Core Metrics
 

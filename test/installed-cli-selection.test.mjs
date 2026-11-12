@@ -105,19 +105,54 @@ test('changed qualification, owner drift, missing installation and invalid setup
   }
 });
 
-test('copied skills and direct entry consume real installed CLI 0.1.28 from one environment', {timeout:240_000}, () => {
+test('migrated wrappers forward native atomic arguments once and preserve UNKNOWN', () => {
+  const f=fixture();
+  try {
+    const cases = [
+      ['flow-hybrid-search/scripts/run-flow-hybrid-search.mjs', ['--query','water use','--scope','public','--state','100'], ['dataset','flow','search']],
+      ['process-hybrid-search/scripts/run-process-hybrid-search.mjs', ['--query','electricity','--scope','public','--state','100'], ['dataset','process','search']],
+      ['lifecyclemodel-hybrid-search/scripts/run-lifecyclemodel-hybrid-search.mjs', ['--query','battery'], ['dataset','model','search']],
+      ['current-account-dataset-review/scripts/run-current-account-dataset-review.mjs', ['process','get','--id','id','--version','01.00.000'], ['dataset']],
+      ['flow-governance-review/scripts/run-flow-governance-review.mjs', ['patch','--input','explicit patch.json'], ['dataset','flow']],
+      ['process-automated-builder/scripts/run-process-automated-builder.mjs', ['save','--input','save.json'], ['dataset','process']],
+      ['lifecyclemodel-automated-builder/scripts/run-lifecyclemodel-automated-builder.mjs', ['graph','--input','model.json'], ['dataset','model']],
+      ['lifecyclemodel-recursive-orchestrator/scripts/run-lifecyclemodel-recursive-orchestrator.mjs', ['validate','--input','model.json'], ['dataset','model']],
+      ['lifecyclemodel-resulting-process-builder/scripts/run-lifecyclemodel-resulting-process-builder.mjs', ['--input','projection.json'], ['dataset','model','build-resulting-process']],
+      ['process-scope-statistics/scripts/run-process-scope-statistics.mjs', ['--scope','current-user'], ['dataset','process','statistics']],
+      ['process-dedup-review/scripts/run-process-dedup-review.mjs', ['--input','comparison.json'], ['dataset','process','diff']],
+      ['lifecycleinventory-review/scripts/run-remote-process-review.mjs', ['get','--id','id','--version','01.00.000'], ['dataset','process']],
+      ['tiangong-lca-remote-ops/scripts/update-process-references.mjs', ['--input','patch.json'], ['dataset','process','patch']],
+      ['tiangong-lca-remote-ops/scripts/verify-process-rows.mjs', ['--input','canonical.json'], ['dataset','process','validate']],
+      ['lca-publish-executor/scripts/run-lca-publish-executor.mjs', ['submit','--input','review.json'], ['review']],
+    ];
+    for(const [relative,args,prefix] of cases) {
+      const result=run(path.join(root,relative),args,f.env,f.dir);
+      assert.equal(result.status,17,relative+': '+result.stderr);
+      assert.deepEqual(JSON.parse(result.stdout),{args:[...prefix,...args],status:'UNKNOWN',originalAttempt:'keep-me'},relative);
+      assert.equal(result.stderr,'owner diagnostic\n');
+    }
+    assert.equal(readFileSync(f.env.CALL_LOG,'utf8'),'called\n'.repeat(cases.length));
+    const bad=run(path.join(root,'lifecycleinventory-review/scripts/run-review.mjs'),['--profile','lifecyclemodel','--input','old.json'],f.env,f.dir);
+    assert.notEqual(bad.status,0);
+    const retired=run(path.join(root,'flow-governance-review/scripts/run-flow-governance-review.mjs'),['rewrite','--input','old.json'],f.env,f.dir);
+    assert.notEqual(retired.status,0);
+    assert.equal(readFileSync(f.env.CALL_LOG,'utf8'),'called\n'.repeat(cases.length));
+  } finally {rmSync(f.dir,{recursive:true,force:true});}
+});
+
+test('copied skills and direct entry consume real installed CLI 0.2.0 from one environment', {timeout:240_000}, () => {
   const dir=mkdtempSync(path.join(tmpdir(),'skills-public-installed-'));
   try {
     const env=cleanEnv();
     writeFileSync(path.join(dir,'package.json'),'{"private":true}');
-    const installed=spawnSync(process.platform==='win32'?'pnpm.exe':'pnpm',['add','--ignore-scripts','--save-exact','@tiangong-lca/cli@0.1.28'],{cwd:dir,env,shell:false,encoding:'utf8',timeout:180_000});
+    const installed=spawnSync(process.platform==='win32'?'pnpm.exe':'pnpm',['add','--ignore-scripts','--save-exact','@tiangong-lca/cli@0.2.0'],{cwd:dir,env,shell:false,encoding:'utf8',timeout:180_000});
     assert.ifError(installed.error);assert.equal(installed.status,0,installed.stderr);
     const installation=realpathSync(path.join(dir,'node_modules','@tiangong-lca','cli'));
     assert.equal(existsSync(path.join(installation,'.git')),false);assert.equal(existsSync(path.join(installation,'src')),false);
     // Exact published package identity fixed by this regression, separate from the consumer observation.
     // The Node identity is supplied by the test host, not copied from the CLI descriptor.
     const file=path.join(dir,'test-release-expectation.json');
-    writeFileSync(file,JSON.stringify({schema:'tiangong-lca.cli-runtime-expectation.v1',package_version:'0.1.28',platform:`${process.platform}-${process.arch}`,content_sha256:'b2bfbe2b34b9db305dcd881a2a13d761a4ecddea2cc88113e6c54b4a940f66be',node_version:process.versions.node,node_sha256:hash(readFileSync(process.execPath))}));
+    writeFileSync(file,JSON.stringify({schema:'tiangong-lca.cli-runtime-expectation.v1',package_version:'0.2.0',platform:`${process.platform}-${process.arch}`,content_sha256:'ba9215ad29c6a3737035fbc92a8a074892be3c329f048d30285a88f9938d5188',node_version:process.versions.node,node_sha256:hash(readFileSync(process.execPath))}));
     Object.assign(env,fields(installation,file,hash(readFileSync(file))));
     // Empty PATH proves ordinary dispatch cannot install/build or look up Git/pnpm.
     for (const key of Object.keys(env)) if (key.toLowerCase() === 'path') delete env[key];
@@ -127,39 +162,69 @@ test('copied skills and direct entry consume real installed CLI 0.1.28 from one 
     const direct=path.join(dir,'scripts','run-cli.mjs');
     const info=run(direct,['--runtime-info'],env,dir);
     assert.equal(info.status,0,info.stderr);const observed=JSON.parse(info.stdout);
-    assert.equal(observed.runtime.package.version,'0.1.28');assert.equal(observed.selection.source,'environment');
+    assert.equal(observed.runtime.package.version,'0.2.0');assert.equal(observed.selection.source,'environment');
     const qa=path.join(dir,'lifecycleinventory-review','scripts','run-review.mjs');
     const wrappedHelp=run(qa,['--profile','process','--help'],env,dir);
-    const directHelp=run(direct,['qa','process','--help'],env,dir);
+    const directHelp=run(direct,['dataset','process','validate','--help'],env,dir);
     assert.equal(wrappedHelp.status,0,wrappedHelp.stderr);assert.equal(wrappedHelp.stdout,directHelp.stdout);assert.equal(wrappedHelp.stderr,directHelp.stderr);
-    const input=path.join(dir,'frozen-rows.json');
-    const frozen=JSON.stringify({rows:[{id:'test-process',version:'01.00.000',process:{processDataSet:{
-      processInformation:{dataSetInformation:{name:{baseName:[{'@xml:lang':'en','#text':'Synthetic water treatment'}]}},quantitativeReference:{functionalUnitOrOther:'1 kg treated water'},geography:{mixAndLocationTypes:'CN'},time:'2025'},
-      modellingAndValidation:{LCIMethodAndAllocation:{typeOfDataSet:'Unit process, single operation'}},
-      administrativeInformation:{publicationAndOwnership:{'common:dataSetVersion':'01.00.000'}},
-      exchanges:{exchange:[{exchangeDirection:'Input',meanAmount:1,commonComment:'[tg_io_kind_tag=product] [tg_io_uom_tag=kg] water',referenceToFlowDataSet:{'@refObjectId':'synthetic-in'}},{exchangeDirection:'Output',meanAmount:1,commonComment:'[tg_io_kind_tag=product] [tg_io_uom_tag=kg] water',referenceToFlowDataSet:{'@refObjectId':'synthetic-out'}}]}
-    }}}]});
+    const input=path.join(dir,'flow.json');
+    const frozen=readFileSync(path.join(root,'flow-governance-review/assets/example-flow.json'),'utf8');
     writeFileSync(input,frozen);
-    const args=['--rows-file',input,'--out-dir',path.join(dir,'qa-output'),'--json'];
-    const wrapped=run(qa,args,env,dir);const native=run(direct,['qa','process',...args],env,dir);
+    const args=['--input',input,'--json'];
+    const wrapped=run(qa,['--profile','flow',...args],env,dir);
+    const native=run(direct,['dataset','flow','validate',...args],env,dir);
     assert.equal(wrapped.status,0,wrapped.stderr);assert.equal(wrapped.status,native.status);assert.equal(wrapped.stderr,native.stderr);
-    const normalize=(text)=>{const report=JSON.parse(text);delete report.generated_at_utc;return report;};
-    assert.equal(JSON.parse(wrapped.stdout).process_count,1);
-    assert.deepEqual(normalize(wrapped.stdout),normalize(native.stdout));
+    assert.equal(JSON.parse(wrapped.stdout).data.validation.status,'passed');
+    const normalized=(text)=>{const value=JSON.parse(text); assert.ok(value.context.observation.time); delete value.context.observation.time; return value;};
+    assert.deepEqual(normalized(wrapped.stdout),normalized(native.stdout));
+    assert.equal(readFileSync(input,'utf8'),frozen);
+    const projectionName='lifecyclemodel-resulting-process-builder';
+    cpSync(path.join(root,projectionName),path.join(dir,projectionName),{recursive:true});
+    const projection=run(path.join(dir,projectionName,'scripts/run-lifecyclemodel-resulting-process-builder.mjs'),
+      ['--input',path.join(dir,projectionName,'assets/example-request.json'),'--json'],env,dir);
+    assert.equal(projection.status,0,projection.stderr||projection.stdout);
+    const generated=JSON.parse(projection.stdout);
+    assert.equal(generated.data.qualification.status,'qualified');
+    assert.equal(generated.data.projectedProcessCount,1);
+    assert.equal(generated.data.bundle.projected_processes[0].json_ordered.processDataSet.processInformation.dataSetInformation['common:UUID'],'88888888-8888-4888-8888-888888888888');
+    const graphRequest=path.join(dir,'graph-request.json');
+    writeFileSync(graphRequest,JSON.stringify({content:JSON.parse(readFileSync(path.join(dir,projectionName,'assets/example-model.json')))}));
+    const graph=run(direct,['dataset','model','graph','--input',graphRequest,'--json'],env,dir);
+    assert.equal(graph.status,0,graph.stderr||graph.stdout);
+    assert.equal(JSON.parse(graph.stdout).data.graphs.length,1);
+    const translatedSource=JSON.parse(frozen);
+    const names=translatedSource.flowDataSet.flowInformation.dataSetInformation.name;
+    names.baseName=[names.baseName];
+    const translationInput=path.join(dir,'translations.json');
+    const common={content:translatedSource,sourceLanguage:'en',targetLanguage:'zh'};
+    writeFileSync(translationInput,JSON.stringify(common));
+    const extracted=run(direct,['dataset','flow','translations','extract','--input',translationInput,'--json'],env,dir);
+    assert.equal(extracted.status,0,extracted.stderr);
+    const extraction=JSON.parse(extracted.stdout).data;
+    assert.equal(extraction.units.length,1);
+    writeFileSync(translationInput,JSON.stringify({...common,sourceDigest:extraction.sourceDigest,translations:[{path:extraction.units[0].path,sourceText:extraction.units[0].sourceText,text:'测试流',basis:'Synthetic English test name translated to Chinese.'}]}));
+    const translatedFile=path.join(dir,'applied.json');
+    const applied=run(direct,['dataset','flow','translations','apply','--input',translationInput,'--output',translatedFile,'--json'],env,dir);
+    assert.equal(applied.status,0,applied.stderr||applied.stdout);
+    const translated=JSON.parse(readFileSync(translatedFile));
+    assert.equal(translated.content.flowDataSet.flowInformation.dataSetInformation.name.baseName[1]['#text'],'测试流');
+    assert.equal(translated.changes.length,1);
     assert.equal(readFileSync(input,'utf8'),frozen);
     for(const entity of ['flow','process','lifecyclemodel']) {
       const name=`${entity}-hybrid-search`;cpSync(path.join(root,name),path.join(dir,name),{recursive:true});
       for(const lib of ['cli-launcher.mjs','cli-development.mjs','cli-installed.mjs'])assert.equal(readFileSync(path.join(dir,name,'scripts','lib',lib),'utf8'),readFileSync(path.join(root,'scripts','lib',lib),'utf8'));
       const wrapper=path.join(dir,name,'scripts',`run-${name}.mjs`);
-      const result=run(wrapper,['--dry-run','--json'],env,dir);
-      assert.equal(result.status,0,result.stderr);assert.equal(JSON.parse(result.stdout).dryRun,true);
-      const planned=JSON.parse(result.stdout).request;
-      assert.equal(planned.url,`https://qgzvkongdjqiiamzbbts.supabase.co/functions/v1/${entity}_hybrid_search`);
-      assert.equal(planned.headers['x-region'],'us-east-1');
-      const custom=run(wrapper,['--dry-run','--json','--base-url','https://custom.supabase.co'],env,dir);
-      assert.equal(custom.status,2,custom.stderr || custom.stdout);
+      const type=entity==='lifecyclemodel'?'model':entity;
+      const result=run(wrapper,['--help'],env,dir);
+      const nativeHelp=run(direct,['dataset',type,'search','--help'],env,dir);
+      assert.equal(result.status,0,result.stderr);assert.equal(result.stdout,nativeHelp.stdout);
+      for(const legacy of [['--dry-run'],['--input','old.json'],['--base-url','https://custom.invalid']]) {
+        const rejected=run(wrapper,['--query','water',...legacy,'--json'],env,dir);
+        assert.notEqual(rejected.status,0);
+        assert.match(rejected.stdout+rejected.stderr,/unknown|unexpected|unsupported/i);
+      }
       const localInfo=run(path.join(dir,name,'scripts','run-cli.mjs'),['--runtime-info'],env,dir);
-      assert.equal(localInfo.status,0,localInfo.stderr);assert.equal(JSON.parse(localInfo.stdout).runtime.package.version,'0.1.28');
+      assert.equal(localInfo.status,0,localInfo.stderr);assert.equal(JSON.parse(localInfo.stdout).runtime.package.version,'0.2.0');
     }
   } finally {rmSync(dir,{recursive:true,force:true});}
 });

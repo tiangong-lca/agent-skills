@@ -1,4 +1,4 @@
 interface:
-  display_name: "TIDAS Bilingual Transcreation"
-  short_description: "Post-import reviewed Chinese/English TIDAS translations through CLI extract/apply/validate"
-  default_prompt: "Use $tidas-bilingual-transcreation only for an explicit post-import language-completion task: review TIDAS translation units, write high-quality trans-reviewed JSONL, apply it with the TianGong CLI, and validate bilingual rows with evidence artifacts."
+  display_name: "Tidas Bilingual Transcreation"
+  short_description: "Use current typed CLI operations with explicit evidence"
+  default_prompt: "Use $tidas-bilingual-transcreation through the environment-selected CLI and read current help before constructing inputs. Preserve source meaning, actual validation scope, separate local processing from create/save/review, and keep managed Foundry tasks on their original returned actions. Do not call retired generic Dataset or production workflow commands."
