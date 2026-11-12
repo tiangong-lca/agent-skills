@@ -4,7 +4,7 @@ The Skill owns research meaning and content selection. The CLI owns deterministi
 
 1. Select the Model and specific Run the report describes. Read their actual content/results through supported CLI operations; preserve the functional quantity, boundary, units, method, assumptions and unresolved questions. Do not silently combine a newer model with older results.
 2. Compose editable `report.json`. Only the renderer’s `title` is structurally required; research completeness remains a semantic responsibility. Typical sections cover goal/scope, data/evidence and assumptions. Add explicit model nodes/connections, actual result values, sources, interpretation and limitations where available.
-3. Supply requested language content as plain text strings or `{ "en": "...", "zh": "..." }`. The CLI displays but never translates it. Preserve meaning across languages, and share numerical values, units and identities. Missing translation remains visibly labeled; do not call a partly translated report complete bilingual delivery.
+3. Supply requested language content as plain text strings or `{ "en": "...", "zh": "..." }`. The CLI displays one language at a time, with a Chinese/English switch; it never translates content. Preserve meaning across languages, and share numerical values, units and identities. Missing translation remains visibly labeled; do not call a partly translated report complete bilingual delivery.
 4. Invoke the atomic render:
 
    ```bash
@@ -15,7 +15,7 @@ The Skill owns research meaning and content selection. The CLI owns deterministi
 
 ## JSON content
 
-- `title`, optional `subtitle`, and `language` (`en`, `zh` or `bilingual`). Text is plain text, not executable HTML or a Markdown document.
+- `title`, optional `subtitle`, and `language` (`en` or `zh`, default `zh`). Text is plain text, not executable HTML or a Markdown document.
 - `sections`: `{title, body?, sources?, table?: {columns, rows}}`. Table cells are finite numbers or text. Preserve source locations and original denominators in narrative/table content.
 - `model`: `{nodes, edges}` is a presentation projection, not the raw canonical Model object. Map explicitly selected instances and connections from current CLI graph/content results. Nodes use `{id,label,kind?,details?,inputs?,outputs?,sources?}`; kind is foreground/background, inputs/outputs are descriptive text lists. Edges use `{id,from,to,label,amount?,unit?,details?}`. IDs are unique within each collection and used for local links only. Do not infer provider edges or expand aggregate background inventories.
 - `results`: `{label,value,unit,method?}` uses actual selected Run outputs; identify the method/Run in `method` and explain scope in prose. The renderer does not derive LCIA or per-node contributions from totals.

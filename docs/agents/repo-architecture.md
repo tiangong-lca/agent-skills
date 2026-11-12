@@ -37,8 +37,8 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: "c83aa1a79617e63bc5f6e2bc065064813d5fd48e"
-lastReviewedNote: "Skills #150: reviewed seventh-step report JSON composition and CLI rendering, bilingual/input fidelity, offline HTML/browser PDF and separate hosted report authority."
+lastReviewedCommit: "29207734be2a02673dc5461b1ef3597cc2a8960f"
+lastReviewedNote: "Skills #150: reviewed report language selection: one language at a time, default Chinese, translation remains caller-owned; existing runtime/hosted protocols unchanged."
 related:
   - AGENTS.md
   - .docpact/config.yaml
