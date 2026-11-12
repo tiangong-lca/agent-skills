@@ -1,4 +1,4 @@
 interface:
   display_name: "Process Dataset Search"
   short_description: "Find and inspect explicit process dataset candidates"
-  default_prompt: "Use $process-hybrid-search with the configured CLI's dataset process search/get operations. Choose scope explicitly, preserve exact candidate versions, inspect completeness and distinguish a proposed proxy from an adopted reference. Never silently discard unsupported legacy filters or switch installations."
+  default_prompt: "Call tiangong-lca directly from PATH; check required command help and install through official guidance if missing. Use $process-hybrid-search with the installed CLI's dataset process search/get operations. Choose scope explicitly, preserve exact candidate versions, inspect completeness and distinguish a proposed proxy from an adopted reference. Never silently discard unsupported legacy filters or switch installations."

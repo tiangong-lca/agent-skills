@@ -1,6 +1,6 @@
 # Explicit Model calculation
 
-Use the package's `node scripts/run-cli.mjs` launcher for the following CLI arguments. Read help from the qualified installation before using a new capability; source changes are not proof that an installed release supports it.
+Call `tiangong-lca` directly with the following CLI arguments. Read help from the installed command before using a new capability; source changes are not proof that an installed release supports it.
 
 ## Background input
 
@@ -10,7 +10,7 @@ Discover state `100` Process candidates using supported search flags, inspect ex
 
 Read `setup model-calculation --help --json`. The environment owner can install an explicitly trusted local runtime package with `setup model-calculation --install <package-directory> --json` on macOS ARM64, Linux glibc x64/ARM64 or Windows x64 with a qualified host-matching package. It installs the engine, native dependencies and complete LCIA methods together, verifies readiness, then saves reusable configuration. No caller-maintained hashes belong in research inputs. Public download availability and qualification on other platforms must be checked separately; do not invent an available release or silently compile a sibling Worker checkout.
 
-With existing engine and factor-cache locations, `setup model-calculation --engine <executable> --static-cache <directory> --json` verifies and saves them. Use `--check` to inspect without modifying configuration. Installation/configuration needs no login, database or queue and grants no remote permissions. Keep the selected CLI's own qualification separate from Model engine installation.
+With existing engine and factor-cache locations, `setup model-calculation --engine <executable> --static-cache <directory> --json` verifies and saves them. Use `--check` to inspect without modifying configuration. Installation/configuration needs no login, database or queue and grants no remote permissions. CLI installation and Model engine installation are separate steps.
 
 Read `dataset model prepare --help --json` for its request. Select the local Model file, supporting Process/Flow/property/unit documents, explicit complete background LCI files, methods, functional amount and any declared cutoffs. Enable remote dependency lookup only when intended. Preparation resolves required data; it does not calculate, add providers, rewrite the Model or save datasets.
 

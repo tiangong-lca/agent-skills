@@ -1,4 +1,4 @@
 interface:
   display_name: 'Process duplicate review'
   short_description: 'Compare explicitly selected Process candidates and explain whether they represent the same'
-  default_prompt: 'Use $process-dedup-review with the qualified CLI 0.2.0 atomic interfaces. Compare explicitly selected Process candidates and explain whether they represent the same scientific object. Use for duplicate review without automatic merging, deletion or reference replacement. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'
+  default_prompt: 'Use $process-dedup-review with the installed CLI 0.2.0 atomic interfaces. Compare explicitly selected Process candidates and explain whether they represent the same scientific object. Use for duplicate review without automatic merging, deletion or reference replacement. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

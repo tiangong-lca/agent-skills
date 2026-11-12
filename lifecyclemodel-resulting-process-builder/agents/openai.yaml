@@ -1,4 +1,4 @@
 interface:
   display_name: 'Generate a resulting Process'
   short_description: 'Generate a resulting Process candidate from an explicit Model using the current CLI aggreg'
-  default_prompt: 'Use $lifecyclemodel-resulting-process-builder with the qualified CLI 0.2.0 atomic interfaces. Generate a resulting Process candidate from an explicit Model using the current CLI aggregation operation, then validate it and perform a separate authorized create or save. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'
+  default_prompt: 'Use $lifecyclemodel-resulting-process-builder with the installed CLI 0.2.0 atomic interfaces. Generate a resulting Process candidate from an explicit Model using the current CLI aggregation operation, then validate it and perform a separate authorized create or save. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

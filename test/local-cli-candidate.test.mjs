@@ -305,7 +305,7 @@ test('a qualified explicit candidate is accepted without selecting a default ins
   assert.throws(() => buildTiangongInvocation(['--help'], {
     cliCandidateFile: fixture.cliCandidateFile,
     cliCandidateSha256: fixture.cliCandidateSha256,
-  }), /No CLI installation configured/);
+  }), /requires --cli-dir/);
   let prepared = false;
   const status = runTiangongCommand(['--help'], candidateOptions(fixture, {
     buildSpawnImpl: () => { prepared = true; return { status: 0, stdout: '', stderr: '' }; },

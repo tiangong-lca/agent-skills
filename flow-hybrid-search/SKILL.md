@@ -1,11 +1,11 @@
 ---
 name: flow-hybrid-search
-description: Find and compare TianGong flow datasets through the configured CLI, select an explicit search scope and inspect exact candidate versions. Use for dataset discovery and choosing suitable modeling references.
+description: Find and compare TianGong flow datasets through the installed CLI, select an explicit search scope and inspect exact candidate versions. Use for dataset discovery and choosing suitable modeling references.
 ---
 
 # Flow dataset search
 
-Use `node scripts/run-flow-hybrid-search.mjs` for `tiangong-lca dataset flow search`, or the bundled `scripts/run-cli.mjs` for other atomic operations. Read `--help --json` from the configured CLI before using its options. The wrapper forwards current flags without supplying a default query, translating legacy JSON filters, downloading a CLI or retrying an operation.
+Use `node scripts/run-flow-hybrid-search.mjs` for `tiangong-lca dataset flow search`, or the bundled `scripts/run-cli.mjs` for other atomic operations. Read `--help --json` from the installed CLI before using its options. The wrapper forwards current flags without supplying a default query, translating legacy JSON filters, downloading a CLI or retrying an operation.
 
 1. Run `tiangong-lca auth status --json` through the launcher before remote reads. If login is required, ask the human user to run `auth login` in a trusted terminal. Never collect a password or token.
 2. State the research selection criteria and query. Use `--scope public` for published background discovery; the default is `current-user`. Where supported, use `--state 100`. A matching name is a candidate, not an approved substitute.
@@ -28,6 +28,6 @@ Read `references/env.md` for runtime selection, `references/request-response.md`
 
 ## CLI selection
 
-Use `node scripts/run-cli.mjs` for direct CLI calls so they share this skill wrapper's runtime selection. A consumer may configure `TIANGONG_LCA_CLI_INSTALLATION`, `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE` and `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256` once in its launch environment. These select an already installed and independently qualified CLI through its public runtime API; normal calls need no per-invocation overrides, Git checkout, pnpm or build. Inspect actual identity and selection source with `node scripts/run-cli.mjs --runtime-info`. Invalid configured evidence fails without falling back.
+Call `tiangong-lca` directly. Read the needed command’s `--help --json` before constructing inputs. Optional Node wrappers use the same PATH command; `--cli-command <executable>` selects a custom path. If unavailable, follow the official CLI installation guidance. Existing managed tasks continue through their owner-returned actions.
 
-Without an installed selection, execution stops with CLI setup guidance; Skills never downloads or chooses a CLI version. `--cli-dir` is an explicit development-source path. CLI versions and release locks belong to the installation owner, while Skills depend on the public commands and capabilities they use. Continue existing managed tasks through their original owner-returned actions; do not replace their runtime or replay UNKNOWN operations with this standalone entry.
+If `tiangong-lca` is unavailable, follow its official installation instructions. Source development and controlled runtime settings are optional environment choices; ordinary use requires no identity file or digest.

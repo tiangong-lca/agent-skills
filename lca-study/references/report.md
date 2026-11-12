@@ -1,6 +1,6 @@
 # Compose and render a research report
 
-The Skill owns research meaning and content selection. The CLI owns deterministic JSON-to-HTML rendering. Use the configured `node scripts/run-cli.mjs report render --help --json` to discover the actual input contract before composing a report; an installed CLI without that capability requires a qualified compatible installation, not a private renderer or fallback to hosted report creation.
+The Skill owns research meaning and content selection. The CLI owns deterministic JSON-to-HTML rendering. Use `tiangong-lca report render --help --json` to discover the actual input contract before composing a report; an installed CLI without that capability requires a compatible installation, not a private renderer or fallback to hosted report creation.
 
 1. Select the Model and specific Run the report describes. Read their actual content/results through supported CLI operations; preserve the functional quantity, boundary, units, method, assumptions and unresolved questions. Do not silently combine a newer model with older results.
 2. Compose editable `report.json`. Only the renderer’s `title` is structurally required; research completeness remains a semantic responsibility. Typical sections cover goal/scope, data/evidence and assumptions. Add explicit model nodes/connections, actual result values, sources, interpretation and limitations where available.
@@ -8,7 +8,7 @@ The Skill owns research meaning and content selection. The CLI owns deterministi
 4. Invoke the atomic render:
 
    ```bash
-   node scripts/run-cli.mjs report render --input report.json --output report.html --json
+   tiangong-lca report render --input report.json --output report.html --json
    ```
 
 5. Inspect the returned HTML artifact. Check titles, text, numeric values and units, clickable node/connection/source details, language switching and actual limitations. PDF is produced through the report’s browser Print / Save as PDF control, using the selected language. The print view retains all rows and details even after table filtering. Say “HTML with PDF printing” unless an actual PDF file has been exported and checked.

@@ -53,59 +53,42 @@ together, including the bundled `scripts/lib/` files. Reading or copying only
 `SKILL.md` does not install the executable package. If the host needs a session
 reload to discover skills, retain the installed path and next action for resume.
 
-## 3. Select and configure the CLI
+## 3. Install and check the CLI
 
 Use the [official CLI installation guidance](https://github.com/tiangong-lca/cli#readme)
 and its [published releases](https://github.com/tiangong-lca/cli/releases).
-The installation owner selects a compatible published release and supplies its
-qualified installed package and independent runtime expectation. Follow that
-release's installation procedure when these artifacts are available. A merged
-source change or version number alone is not proof of an available compatible
-release. Do not replace an existing installation or select a different runtime
-implicitly during research.
-
-Configure these values once in the Agent's launch environment, using absolute
-paths supplied by the installation owner:
-
-- `TIANGONG_LCA_CLI_INSTALLATION`: installed CLI package directory.
-- `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE`: approved CLI runtime expectation.
-- `TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256`: independently approved digest of
-  that file.
-
-These are installation configuration, not fields in the user's research brief or
-Model. The [CLI runtime contract](https://github.com/tiangong-lca/cli/blob/main/docs/agents/runtime-distribution-contract.md)
-owns their meaning. Do not generate approval by copying the same installation's
-observed identity. If the release or environment owner cannot supply the required
-installation evidence, report the missing artifact and continue goal definition
-and evidence intake; the command path is not ready yet.
-
-From the installed `lca-study` directory, using its configured Node executable:
+Reuse an existing compatible installation. Make `tiangong-lca` available on the
+Agent's PATH, then inspect the capabilities needed for this study:
 
 ```sh
-node scripts/run-cli.mjs --runtime-info
-node scripts/run-cli.mjs dataset process search --help --json
-node scripts/run-cli.mjs dataset process get-result --help --json
-node scripts/run-cli.mjs dataset model prepare --help --json
-node scripts/run-cli.mjs dataset model calculate --help --json
-node scripts/run-cli.mjs calculation result --help --json
-node scripts/run-cli.mjs report render --help --json
+tiangong-lca --help
+tiangong-lca dataset process search --help --json
+tiangong-lca dataset process get-result --help --json
+tiangong-lca dataset model prepare --help --json
+tiangong-lca dataset model calculate --help --json
+tiangong-lca calculation result --help --json
+tiangong-lca report render --help --json
 ```
 
-Use absolute script paths when calling from the research directory or when paths
-contain spaces. Persist configuration through the host's supported launch settings
-so it survives later tool calls. Help checks establish command availability, not
-successful computation. Missing commands require a compatible installation; keep
-the completed research work and identify the unavailable capability.
+No installation directory, runtime expectation file or hash is required for
+ordinary Skill use. The CLI owns runtime compatibility; the installer owns
+package integrity. Missing commands need a compatible published CLI. Help checks
+establish availability, not successful computation. If a required release or
+native package is unavailable, preserve the research work and name that blocker.
+
+The optional `node scripts/run-cli.mjs` wrapper calls the same PATH command.
+For a custom location use `--cli-command /absolute/path/to/tiangong-lca`;
+quote paths containing spaces. Existing managed tasks retain the commands
+returned by their owner.
 
 ## 4. Prepare local calculation and remote discovery
 
-For a local Model, read `setup model-calculation --help --json` through the same
-launcher. Obtain a trusted, host-matching Model runtime package from the owning
+For a local Model, read `setup model-calculation --help --json` from the installed CLI. Obtain a trusted, host-matching Model runtime package from the owning
 release or environment provider. Then use:
 
 ```sh
-node scripts/run-cli.mjs setup model-calculation --install /absolute/path/to/model-runtime-package --json
-node scripts/run-cli.mjs setup model-calculation --check --json
+tiangong-lca setup model-calculation --install /absolute/path/to/model-runtime-package --json
+tiangong-lca setup model-calculation --check --json
 ```
 
 The package includes the engine, native dependencies and complete LCIA method
@@ -116,8 +99,8 @@ state that calculation is pending; do not invent a download URL, silently build
 a sibling Worker repository or switch to online computation. Online Models use
 their supported online service; changing execution location is an explicit choice.
 
-Before online background discovery, run `auth status --json` through the launcher.
-If login is required, give the user the exact selected CLI's `auth login` command
+Before online background discovery, run `auth status --json` directly.
+If login is required, give the user the installed CLI’s `auth login` command
 to run in a trusted terminal, then recheck status. Do not request or read passwords,
 authorization codes or tokens. Official Production configuration comes with the
 CLI; no dashboard setup is required. Use `auth doctor-auth --json` before

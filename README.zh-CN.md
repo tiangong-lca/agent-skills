@@ -21,8 +21,8 @@ checkPaths:
   - "*/SKILL.md"
   - "*/scripts/**"
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: "46cba692746fd6c8c711517525f2b82f2cde4691"
-lastReviewedNote: "Reviewed merge of current Main: retain hosted V2-V6 recipes and Windows controls alongside local Model research, typed CLI 0.2.0 wrappers and first-use setup."
+lastReviewedCommit: "bb8edfb632333cc22a96894a16c85a2296e39408"
+lastReviewedNote: "Default ordinary Skills to public tiangong-lca on PATH; retain explicit controlled runtimes, source development and managed task semantics."
 ---
 
 # 天工 LCA Skills
@@ -126,31 +126,26 @@ npx skills add https://github.com/tiangong-lca/agent-skills --skill foundry-tida
 - `$source-evidence-dataset-development`：从 PDF、Word、URL、API、报告、数据库引用或科学文献进行 evidence-driven 数据新增或更新。
 - `$dataset-rls-maintenance`：在当前用户 RLS 可见范围内，对历史错误导入数据做清理、删除/退役、引用修复和 redo 计划；只编排 CLI maintenance plan 与 readback verification，不实现私有数据库访问。
 
-## 统一使用已配置的 CLI 入口
+## 直接调用 CLI
 
-对已经安装并独立验证的正式 CLI，只需在消费环境配置一次安装目录、CLI 既有公开运行时身份文件及其独立核准的 SHA-256：
+按[官方说明](https://github.com/tiangong-lca/cli#readme)安装 CLI，确保 Agent 的 PATH 中有 `tiangong-lca`，即可开始：
 
 ```sh
-export TIANGONG_LCA_CLI_INSTALLATION=/absolute/path/to/installed/cli
-export TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE=/absolute/path/to/approved-cli-expectation.json
-export TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256='<approved-64-character-sha256>'
-node scripts/run-cli.mjs --runtime-info
-node scripts/run-cli.mjs auth status --json
-node lifecycleinventory-review/scripts/run-review.mjs --profile process --input /absolute/path/process.json --json
+tiangong-lca --help
+tiangong-lca auth status --json
+tiangong-lca dataset process validate --input /absolute/path/process.json --json
 ```
 
-PowerShell 使用同名 `$env:TIANGONG_LCA_...` 变量。跨终端或进程调用时，由消费应用的启动配置持久提供这些值；不要求本地数据工作区，也不自动读取 `.env` 或搜索 PATH。各 Skill 的 `scripts/run-cli.mjs` 与普通 wrapper 复用同一选择。`--runtime-info` 只读显示实际身份和选择来源，不写额外报告，其观察结果不能自行批准资格。
+普通 Skill 不需要安装目录、运行时身份文件或 SHA-256 环境变量。使用所需命令的 `--help --json` 检查能力；缺少命令时按官方流程更新 CLI。安装完整性属于安装过程，CLI 自己检查运行环境兼容性。
 
-使用该身份文件已核准的 Node 可执行文件启动 wrapper。正式调用不需要 Git、源码、pnpm，不安装或构建。公开身份检查由 CLI 负责，Skills 不绑定内部 schema 或构建布局；配置或资格漂移时停止，不静默回退。安装来源和传递依赖的完整资格仍由安装/环境所有者负责，不能用公开 `cli-package` 身份观察替代。
-
-未配置时停止执行并提示完成 CLI 配置。Skill 依赖 CLI 的公开能力，不绑定具体包版本；版本选择与发行锁由安装环境负责。Skill 不会安装默认版本或 latest。已移除的 `--published-cli` 和 `TIANGONG_LCA_CLI_MODE=published` 会明确报错。`--help` 可离线查看配置指引；CLI 原生命令帮助需要先配置入口。`--cli-dir` 仍是源码候选开发路径。显式 `--cli-installation <absolute-dir>` 必须同时提供对应的 `--cli-runtime-expectation-file` 和 `--cli-runtime-expectation-sha256`。已有任务继续使用原 owner 返回的固定入口和 UNKNOWN 恢复动作，不能被这个独立调用默认覆盖。
+保留的 Node wrapper 默认调用同一 PATH 命令。非标准安装位置可选用 `--cli-command <executable>` 或 `TIANGONG_LCA_CLI_COMMAND`，支持路径空格。wrapper 不自动安装、构建或重试业务请求，并保留原始输出和退出码。源码开发和严格运行时锁定见[开发与受控运行说明](docs/agents/repo-architecture.md#explicit-runtime-selection)。已有托管任务继续执行 owner 返回的命令。
 
 ## 远程认证
 
 远程 skill 统一使用 CLI 管理的 Supabase OAuth session。官方 Production 不需要 public 环境变量、Dashboard 或额外索取 client ID；公开 URL/key/client/callback profile 由 CLI 唯一维护，Skills 不复制。先运行：
 
 ```bash
-node scripts/run-cli.mjs auth status --json
+tiangong-lca auth status --json
 ```
 
 若结果是 `login-required`，停止 agent workflow，把可信终端交给人类运行 `tiangong-lca auth login`。skill/agent 不得索取用户名、密码、authorization code、access token、refresh token 或旧编码 API key。账号敏感读取和 commit 前运行 `tiangong-lca auth doctor-auth --json`。
@@ -189,7 +184,7 @@ node scripts/run-cli.mjs auth status --json
 
 当前约定：
 
-- 普通 Skill 使用统一配置的已安装 CLI；缺少配置时停止，不下载包、不搜索 PATH 或 sibling 目录
+- 普通 Skill 直接调用 PATH 中的 `tiangong-lca`；未安装时提示官方安装方式，不自动下载或重试业务请求
 - 源码开发执行通过 `--cli-dir` / `TIANGONG_LCA_CLI_DIR` 显式启用
 - 直接调用和嵌套 wrapper 传播同一安装入口；已移除的 published 选择会明确报错
 - 匹配发行版的本地 checkout 仍只需要 `--cli-dir`，且必须是带精确 Node/pnpm engines、v9 `pnpm-lock.yaml` 和已发布 TIDAS source manifest（spec 0.2.3）的 `@tiangong-lca/cli@0.1.24`
@@ -253,9 +248,9 @@ pnpm validate
 请阅读 https://raw.githubusercontent.com/tiangong-lca/agent-skills/main/lca-study/references/getting-started.md，按说明完成安装和配置，然后引导我开始一项 LCA 研究。
 ```
 
-指南覆盖 Skill 安装、合格 CLI 配置、本地引擎检查、必要时的人类登录，以及第一个研究问题；缺少发行物时明确说明，不把源码可用当作安装已就绪。
+指南覆盖 Skill 安装、CLI 安装和命令检查、本地引擎检查、必要时的人类登录，以及第一个研究问题；缺少发行物时明确说明，不把源码可用当作安装已就绪。
 
-`lca-study` 引导目标定义、资料收集与提取、显式前景／背景 Model 构建、计算和报告，可独立复制安装，并复用上述配置好的已安装 CLI。本地报告由 Skill 组织可编辑 JSON，调用 `report render`，由 CLI 生成内嵌模型、支持语言切换和浏览器打印 PDF 的自包含 HTML。本地研究无需创建线上 Study，也无需配置签名导出。
+`lca-study` 引导目标定义、资料收集与提取、显式前景／背景 Model 构建、计算和报告，可独立复制安装，并直接调用已安装的 `tiangong-lca`。本地报告由 Skill 组织可编辑 JSON，调用 `report render`，由 CLI 生成内嵌模型、支持语言切换和浏览器打印 PDF 的自包含 HTML。本地研究无需创建线上 Study，也无需配置签名导出。
 
 可选的线上 Study、情景比较、评审定稿和指定接收者分享使用所选服务已开放的命令，以及独立配置的导出信任锚。这些路径保留原始变更恢复身份、一次授权及 UNKNOWN 原键恢复边界。P2 报告仍是未审阅历史副本；签名或 actor 批准不代表当前访问权或独立科学认证。数据编制与发布仍属于各自工作流。
 

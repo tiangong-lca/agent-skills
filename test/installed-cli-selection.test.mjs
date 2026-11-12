@@ -154,7 +154,7 @@ test('copied skills and direct entry consume real installed CLI 0.2.0 from one e
     const file=path.join(dir,'test-release-expectation.json');
     writeFileSync(file,JSON.stringify({schema:'tiangong-lca.cli-runtime-expectation.v1',package_version:'0.2.0',platform:`${process.platform}-${process.arch}`,content_sha256:'ba9215ad29c6a3737035fbc92a8a074892be3c329f048d30285a88f9938d5188',node_version:process.versions.node,node_sha256:hash(readFileSync(process.execPath))}));
     Object.assign(env,fields(installation,file,hash(readFileSync(file))));
-    // Empty PATH proves ordinary dispatch cannot install/build or look up Git/pnpm.
+    // Empty PATH proves explicitly locked dispatch cannot install/build or look up Git/pnpm.
     for (const key of Object.keys(env)) if (key.toLowerCase() === 'path') delete env[key];
     env.PATH='';
     cpSync(path.join(root,'scripts'),path.join(dir,'scripts'),{recursive:true});
@@ -166,6 +166,14 @@ test('copied skills and direct entry consume real installed CLI 0.2.0 from one e
     const qa=path.join(dir,'lifecycleinventory-review','scripts','run-review.mjs');
     const wrappedHelp=run(qa,['--profile','process','--help'],env,dir);
     const directHelp=run(direct,['dataset','process','validate','--help'],env,dir);
+    // Real package-manager entry, no expectation or source environment.
+    const commandEnv={...env};
+    for(const key of Object.keys(commandEnv)) if(key.startsWith('TIANGONG_LCA_CLI_')) delete commandEnv[key];
+    commandEnv.PATH=[path.join(dir,'node_modules','.bin'),path.dirname(process.execPath),...(process.platform==='win32'?[]:['/usr/bin','/bin'])].join(path.delimiter);
+    const commandHelp=run(direct,['dataset','process','validate','--help'],commandEnv,dir);
+    assert.equal(commandHelp.status,0,commandHelp.stderr);
+    assert.equal(commandHelp.stdout,directHelp.stdout);
+    assert.equal(commandHelp.stderr,directHelp.stderr);
     assert.equal(wrappedHelp.status,0,wrappedHelp.stderr);assert.equal(wrappedHelp.stdout,directHelp.stdout);assert.equal(wrappedHelp.stderr,directHelp.stderr);
     const input=path.join(dir,'flow.json');
     const frozen=readFileSync(path.join(root,'flow-governance-review/assets/example-flow.json'),'utf8');
@@ -212,7 +220,7 @@ test('copied skills and direct entry consume real installed CLI 0.2.0 from one e
     assert.equal(readFileSync(input,'utf8'),frozen);
     for(const entity of ['flow','process','lifecyclemodel']) {
       const name=`${entity}-hybrid-search`;cpSync(path.join(root,name),path.join(dir,name),{recursive:true});
-      for(const lib of ['cli-launcher.mjs','cli-development.mjs','cli-installed.mjs'])assert.equal(readFileSync(path.join(dir,name,'scripts','lib',lib),'utf8'),readFileSync(path.join(root,'scripts','lib',lib),'utf8'));
+      for(const lib of ['cli-launcher.mjs','cli-command.mjs','cli-development.mjs','cli-installed.mjs'])assert.equal(readFileSync(path.join(dir,name,'scripts','lib',lib),'utf8'),readFileSync(path.join(root,'scripts','lib',lib),'utf8'));
       const wrapper=path.join(dir,name,'scripts',`run-${name}.mjs`);
       const type=entity==='lifecyclemodel'?'model':entity;
       const result=run(wrapper,['--help'],env,dir);
@@ -280,10 +288,10 @@ test('copied Study package preserves configured owner commands and UNKNOWN witho
     const empty = {...cleanEnv(), PATH: ''};
     const missing = run(entry, ['study', 'capabilities', '--json'], empty, f.dir);
     assert.notEqual(missing.status, 0);
-    assert.match(missing.stderr, /No CLI installation configured/);
+    assert.match(missing.stderr, /tiangong-lca was not found/);
     const help = run(entry, ['--help'], empty, f.dir);
     assert.equal(help.status, 0, help.stderr);
-    assert.match(help.stdout, /TIANGONG_LCA_CLI_INSTALLATION/);
+    assert.match(help.stdout, /tiangong-lca/);
   } finally { rmSync(f.dir, {recursive:true, force:true}); }
 });
 
@@ -324,7 +332,7 @@ test('copied Study forwards V5 argv and preserves canonical input bytes and orig
   for(const args of commands){const observed=run(path.join(copied,'scripts','run-cli.mjs'),args,f.env,f.dir);assert.equal(observed.status,17,observed.stderr);assert.equal(observed.stderr,'owner diagnostic\n');assert.deepEqual(JSON.parse(observed.stdout),{args,status:'UNKNOWN',originalAttempt:'keep-me'});assert.equal(readFileSync(file,'utf8'),original);}
   assert.equal(readFileSync(f.env.CALL_LOG,'utf8'),'called\n'.repeat(commands.length));
   for(const name of ['src','.git','dist','node_modules'])assert.equal(existsSync(path.join(f.installation,name)),false);
-  for(const lib of ['cli-launcher.mjs','cli-installed.mjs','cli-development.mjs'])assert.deepEqual(readFileSync(path.join(copied,'scripts','lib',lib)),readFileSync(path.join(root,'scripts','lib',lib)));
+  for(const lib of ['cli-launcher.mjs','cli-command.mjs','cli-installed.mjs','cli-development.mjs'])assert.deepEqual(readFileSync(path.join(copied,'scripts','lib',lib)),readFileSync(path.join(root,'scripts','lib',lib)));
  }finally{rmSync(f.dir,{recursive:true,force:true});}
 });
 
@@ -370,7 +378,7 @@ test('copied Study V6 preserves method command selection, exact evidence and UNK
     const refused = run(entry, commands[3], f.env, f.dir);
     assert.equal(refused.status, 1);
     assert.equal(readFileSync(f.env.CALL_LOG, 'utf8'), 'called\n'.repeat(commands.length));
-    for (const lib of ['cli-launcher.mjs','cli-installed.mjs','cli-development.mjs']) {
+    for (const lib of ['cli-launcher.mjs','cli-command.mjs','cli-installed.mjs','cli-development.mjs']) {
       assert.deepEqual(readFileSync(path.join(copied,'scripts','lib',lib)),readFileSync(path.join(root,'scripts','lib',lib)));
     }
   } finally { rmSync(f.dir, {recursive:true,force:true}); }

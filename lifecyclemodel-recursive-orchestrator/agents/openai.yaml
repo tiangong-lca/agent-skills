@@ -1,4 +1,4 @@
 interface:
   display_name: 'Multi-level Model authoring'
   short_description: 'Organize evidence-led multi-level Model authoring from exact Process and Model references'
-  default_prompt: 'Use $lifecyclemodel-recursive-orchestrator with the qualified CLI 0.2.0 atomic interfaces. Organize evidence-led multi-level Model authoring from exact Process and Model references. Use for decomposing a modeling task and resolving explicit dependencies through current atomic CLI operations. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'
+  default_prompt: 'Use $lifecyclemodel-recursive-orchestrator with the installed CLI 0.2.0 atomic interfaces. Organize evidence-led multi-level Model authoring from exact Process and Model references. Use for decomposing a modeling task and resolving explicit dependencies through current atomic CLI operations. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

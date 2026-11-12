@@ -1,4 +1,4 @@
 interface:
   display_name: "Model Dataset Search"
   short_description: "Find and inspect explicit model dataset candidates"
-  default_prompt: "Use $lifecyclemodel-hybrid-search with the configured CLI's dataset model search/get operations. Choose scope explicitly, preserve exact candidate versions, inspect completeness and distinguish a proposed proxy from an adopted reference. Never silently discard unsupported legacy filters or switch installations."
+  default_prompt: "Call tiangong-lca directly from PATH; check required command help and install through official guidance if missing. Use $lifecyclemodel-hybrid-search with the installed CLI's dataset model search/get operations. Choose scope explicitly, preserve exact candidate versions, inspect completeness and distinguish a proposed proxy from an adopted reference. Never silently discard unsupported legacy filters or switch installations."

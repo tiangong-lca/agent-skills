@@ -1,4 +1,4 @@
 interface:
   display_name: "Flow Dataset Search"
   short_description: "Find and inspect explicit flow dataset candidates"
-  default_prompt: "Use $flow-hybrid-search with the configured CLI's dataset flow search/get operations. Choose scope explicitly, preserve exact candidate versions, inspect completeness and distinguish a proposed proxy from an adopted reference. Never silently discard unsupported legacy filters or switch installations."
+  default_prompt: "Call tiangong-lca directly from PATH; check required command help and install through official guidance if missing. Use $flow-hybrid-search with the installed CLI's dataset flow search/get operations. Choose scope explicitly, preserve exact candidate versions, inspect completeness and distinguish a proposed proxy from an adopted reference. Never silently discard unsupported legacy filters or switch installations."

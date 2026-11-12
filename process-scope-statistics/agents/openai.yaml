@@ -1,4 +1,4 @@
 interface:
   display_name: 'Process scope statistics'
   short_description: 'Count and summarize a clearly selected Process dataset scope through current CLI statistic'
-  default_prompt: 'Use $process-scope-statistics with the qualified CLI 0.2.0 atomic interfaces. Count and summarize a clearly selected Process dataset scope through current CLI statistics. Use for state or classification distributions and honest reporting of bounded scans. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'
+  default_prompt: 'Use $process-scope-statistics with the installed CLI 0.2.0 atomic interfaces. Count and summarize a clearly selected Process dataset scope through current CLI statistics. Use for state or classification distributions and honest reporting of bounded scans. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

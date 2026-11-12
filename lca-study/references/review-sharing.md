@@ -53,13 +53,13 @@ If content changes, create a new ReportRevision through the P2 `study report cre
 For a finalized owner export, prepare `{exportId}` and run:
 
 ```sh
-node scripts/run-cli.mjs study export download --api-version 4 --input export-request.json --output-dir new-export-directory --anchors trusted-anchors.json --expected selected-export.json --json
+tiangong-lca study export download --api-version 4 --input export-request.json --output-dir new-export-directory --anchors trusted-anchors.json --expected selected-export.json --json
 ```
 
 For a named share, prepare `{shareId}` and run:
 
 ```sh
-node scripts/run-cli.mjs study share download --input share-request.json --output-dir new-share-directory --anchors trusted-anchors.json --expected selected-export.json --json
+tiangong-lca study share download --input share-request.json --output-dir new-share-directory --anchors trusted-anchors.json --expected selected-export.json --json
 ```
 
 The environment owner supplies independent issuer/renderer trust anchors. The independently selected expected tuple is `{issuerId,exportId,studyId,reportRevisionId,reportContentHash}`; do not take the report's own key as trust. CLI checks the authorized resource descriptor, signature, exact report/finalization/projection binding and same pinned renderer before publishing HTML/projection/manifest/receipt together. Do not bypass failure with raw URLs, source/model/facts downloads or hand-rendered HTML. Keep each verified package in its own new directory.

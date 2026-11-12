@@ -1,4 +1,4 @@
 interface:
   display_name: 'Inventory review'
   short_description: 'Review canonical Process, Flow or Model data with current CLI validation and evidence-led '
-  default_prompt: 'Use $lifecycleinventory-review with the qualified CLI 0.2.0 atomic interfaces. Review canonical Process, Flow or Model data with current CLI validation and evidence-led scientific interpretation. Use for local inventory checks or reviewing explicitly selected remote versions. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'
+  default_prompt: 'Use $lifecycleinventory-review with the installed CLI 0.2.0 atomic interfaces. Review canonical Process, Flow or Model data with current CLI validation and evidence-led scientific interpretation. Use for local inventory checks or reviewing explicitly selected remote versions. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

@@ -1,4 +1,4 @@
 interface:
   display_name: 'Flow governance review'
   short_description: 'Inspect Flow identity, content and references using public rules and current CLI validatio'
-  default_prompt: 'Use $flow-governance-review with the qualified CLI 0.2.0 atomic interfaces. Inspect Flow identity, content and references using public rules and current CLI validation. Use for evidence-led Flow governance and explicit repair proposals without automatic merging or specialized repair execution. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'
+  default_prompt: 'Use $flow-governance-review with the installed CLI 0.2.0 atomic interfaces. Inspect Flow identity, content and references using public rules and current CLI validation. Use for evidence-led Flow governance and explicit repair proposals without automatic merging or specialized repair execution. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

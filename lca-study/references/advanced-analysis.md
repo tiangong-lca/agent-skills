@@ -9,7 +9,7 @@ Read `study --help`, then `study capabilities --api-version 5 --json`. V5 uses s
 Select one actual completed Run whose StudyRevision and Scenario are frozen. Retain its issued Study/Run/preparation/input/model/calculation and source/method references. Fetch its current authorized parameter catalog:
 
 ```sh
-node scripts/run-cli.mjs study analysis parameters --api-version 5 --input baseline-selector.json --json
+tiangong-lca study analysis parameters --api-version 5 --input baseline-selector.json --json
 ```
 
 `baseline-selector.json` contains `{studyId,baselineRunId}`. The result identifies exact non-reference exchange amount paths, baseline amounts, Flow/direction, unit and support identities from that frozen input. Copy those issued selectors and canonical baseline strings. Do not choose paths from a newer model, alter a reference exchange, infer a parameter by a display name or supply raw source documents. Catalog visibility is not permission for later execution or redistribution.
@@ -28,9 +28,9 @@ Ranges, distributions, dependence and sample budgets require the intended scient
 ## Run and recover the exact analysis
 
 ```sh
-node scripts/run-cli.mjs study analysis request --api-version 5 --input advanced-request.json --state-dir private-original-state --json
-node scripts/run-cli.mjs study analysis get --api-version 5 --input analysis-selector.json --json
-node scripts/run-cli.mjs study analysis task wait --api-version 5 --input analysis-task.json --json
+tiangong-lca study analysis request --api-version 5 --input advanced-request.json --state-dir private-original-state --json
+tiangong-lca study analysis get --api-version 5 --input analysis-selector.json --json
+tiangong-lca study analysis task wait --api-version 5 --input analysis-task.json --json
 ```
 
 Read input is `{analysisId}`. Task input is `{studyId,resource:{type:"analysis",id:analysisId}}`; get/wait/cancel select that same typed resource, and cancellation also carries the authorized reason. A submit or bounded `waiting:true` result is not completion. Do not create Scenario revisions or fake Run IDs for analysis-local evaluations.
@@ -44,10 +44,10 @@ Read authorized facts through the returned exact descriptor using `study artifac
 V5 reports use `templateId:"lca.study-report.v2"` and `content.schemaVersion:"lca.study-report-draft.v2"`. Author with one real baseline `runIds` entry and the exact completed advanced `analysisIds` bound to it. Claims select the issued facts.v2 bundle and exact Worker catalog `factId`, canonical value or null, unit and `display:{style:"exact"}`. Keep parameter, endpoint, statistic and unit identities intact; do not reinterpret a dimensionless relative delta as the Method’s physical unit.
 
 ```sh
-node scripts/run-cli.mjs study report create --api-version 5 --input advanced-report.json --state-dir private-original-state --json
-node scripts/run-cli.mjs study report freeze --api-version 5 --input fresh-report-cas.json --state-dir private-original-state --json
-node scripts/run-cli.mjs study actions --api-version 5 --input report-resource.json --json
-node scripts/run-cli.mjs study report current --api-version 5 --input report-selector.json --json
+tiangong-lca study report create --api-version 5 --input advanced-report.json --state-dir private-original-state --json
+tiangong-lca study report freeze --api-version 5 --input fresh-report-cas.json --state-dir private-original-state --json
+tiangong-lca study actions --api-version 5 --input report-resource.json --json
+tiangong-lca study report current --api-version 5 --input report-selector.json --json
 ```
 
 Create/save/get/freeze/resources retain the installed command shapes from the P2 recipes, with explicit V5 fields and fresh server CAS/hash. The producer supplies complete settings, execution limits, counts, frozen provenance, coverage and limitations; author prose cannot suppress them. Undefined numeric values remain null with exact `reasonCodes`; complete or partial characterization coverage can coexist with an undefined zero-baseline ratio. Unknown factors are never a measured zero. Do not change coverage or erase a reason to make a table render.
@@ -57,10 +57,10 @@ Use explicit `--api-version 5` for report-scoped comments, review/delegation, cu
 A V5 export request supplies the exact frozen report/hash, currently eligible `finalizationId`, fresh `expectedReviewStateHash`, `rendererVersion:"2.0.0"` and `viewModelVersion:"lca.study-report-view.v2"`. It has no legacy unfinalized export shortcut. The detached package is manifest.v3/bundle.v3 and includes exact signed HTML, projection, finalization and renderer identity. Do not relabel a P2/P3 package or substitute its old renderer.
 
 ```sh
-node scripts/run-cli.mjs study export request --api-version 5 --input finalized-export-request.json --state-dir private-original-state --json
-node scripts/run-cli.mjs study export download --api-version 5 --input export-selector.json --output-dir new-export-directory --anchors trusted-anchors.json --expected selected-export.json --json
-node scripts/run-cli.mjs study share download --api-version 5 --input share-selector.json --output-dir new-share-directory --anchors trusted-anchors.json --expected selected-export.json --json
-node scripts/run-cli.mjs study export verify --api-version 5 --directory new-export-directory --anchors trusted-anchors.json --expected selected-export.json --json
+tiangong-lca study export request --api-version 5 --input finalized-export-request.json --state-dir private-original-state --json
+tiangong-lca study export download --api-version 5 --input export-selector.json --output-dir new-export-directory --anchors trusted-anchors.json --expected selected-export.json --json
+tiangong-lca study share download --api-version 5 --input share-selector.json --output-dir new-share-directory --anchors trusted-anchors.json --expected selected-export.json --json
+tiangong-lca study export verify --api-version 5 --directory new-export-directory --anchors trusted-anchors.json --expected selected-export.json --json
 ```
 
 Download selectors are `{exportId}` or `{shareId}`. The environment owner supplies independent issuer/renderer anchors and the independently selected `{issuerId,exportId,studyId,reportRevisionId,reportContentHash}` tuple. The installed CLI owns signature, complete file inventory, projection/finalization and exact renderer reproduction checks. Keep HTML, projection, manifest and receipt together. The report cannot supply its own trusted key, script or import path.

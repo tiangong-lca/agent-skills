@@ -1,4 +1,4 @@
 interface:
   display_name: 'Current-account dataset review'
   short_description: 'Review current-account datasets and apply explicit, evidence-supported repairs through typ'
-  default_prompt: 'Use $current-account-dataset-review with the qualified CLI 0.2.0 atomic interfaces. Review current-account datasets and apply explicit, evidence-supported repairs through typed CLI operations. Use for inspecting owned drafts, references and changes before separate saves. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'
+  default_prompt: 'Use $current-account-dataset-review with the installed CLI 0.2.0 atomic interfaces. Review current-account datasets and apply explicit, evidence-supported repairs through typed CLI operations. Use for inspecting owned drafts, references and changes before separate saves. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

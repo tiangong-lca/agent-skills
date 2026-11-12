@@ -1,4 +1,4 @@
 interface:
   display_name: 'Dataset review submission'
   short_description: 'Prepare validated datasets for explicitly authorized review submission and distinguish dra'
-  default_prompt: 'Use $lca-publish-executor with the qualified CLI 0.2.0 atomic interfaces. Prepare validated datasets for explicitly authorized review submission and distinguish draft persistence, review and data product publication. Use when a user asks to submit or continue dataset review. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'
+  default_prompt: 'Use $lca-publish-executor with the installed CLI 0.2.0 atomic interfaces. Prepare validated datasets for explicitly authorized review submission and distinguish draft persistence, review and data product publication. Use when a user asks to submit or continue dataset review. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'

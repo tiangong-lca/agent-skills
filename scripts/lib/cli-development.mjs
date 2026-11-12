@@ -6,7 +6,7 @@ import process from 'node:process';
 
 export const expectedNodeVersion = '24.19.0';
 export const expectedPnpmVersion = '11.24.0';
-export const missingCliMessage = 'No CLI installation configured. Ask the installation owner to configure TIANGONG_LCA_CLI_INSTALLATION, TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_FILE and TIANGONG_LCA_CLI_RUNTIME_EXPECTATION_SHA256. Skills does not install or select a CLI version. For source development, explicitly use --cli-dir.';
+export const missingCliMessage = 'tiangong-lca was not found. Install the CLI using https://github.com/tiangong-lca/cli#readme and make it available on PATH, or pass --cli-command /absolute/path/to/tiangong-lca. Then check tiangong-lca --help. No installation or retry was attempted.';
 
 const expectedCliPackageName = '@tiangong-lca/cli';
 const expectedCliPackageVersion = '0.1.24';
