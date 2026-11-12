@@ -21,8 +21,8 @@ checkPaths:
   - "*/SKILL.md"
   - "*/scripts/**"
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 0c085debe0f92f1f887eb805c22771a63e730d5b
-lastReviewedNote: "Reviewed the Study first-use reference and bilingual entry prompts; qualified CLI selection, native package availability and human login remain explicit."
+lastReviewedCommit: "46cba692746fd6c8c711517525f2b82f2cde4691"
+lastReviewedNote: "Reviewed merge of current Main: retain hosted V2-V6 recipes and Windows controls alongside local Model research, typed CLI 0.2.0 wrappers and first-use setup."
 ---
 
 # Tiangong LCA Skills
@@ -261,3 +261,5 @@ The guide covers Skill installation, qualified CLI configuration, local engine r
 Install `lca-study` to guide goal definition, evidence intake/extraction, explicit foreground/background Model construction, calculation and reporting. It is independently copyable and uses the configured installed CLI above. For local reporting the Skill composes editable JSON and calls `report render`; the CLI generates a self-contained HTML report with an embedded model, language switching and browser PDF printing. Local research requires neither a hosted Study nor signed-export configuration.
 
 Optional hosted Study, scenario comparison, review/finalization and named sharing use the selected service’s admitted commands and independently configured export trust anchors. These paths preserve original mutation recovery, one-use delegation and UNKNOWN recovery boundaries. P2 exports remain unreviewed historical copies; neither a signature nor actor approval proves current access or independent scientific certification. Dataset authoring and publication remain separate workflows.
+
+For a calculation-only request, reuse the selected Model and return its actual results without requiring a report. Hosted V2 calculation and optional V3 analysis/reporting, V4 review/sharing, V5 sensitivity/uncertainty and V6 method assessment remain available through the [hosted reference](lca-study/references/hosted-study.md), subject to installed commands and service admission.

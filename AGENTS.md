@@ -44,8 +44,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 0c085debe0f92f1f887eb805c22771a63e730d5b
-lastReviewedNote: "Reviewed the Study first-use reference and bilingual entry prompts; qualified CLI selection, native package availability and human login remain explicit."
+lastReviewedCommit: "46cba692746fd6c8c711517525f2b82f2cde4691"
+lastReviewedNote: "Reviewed merge of current Main: retain hosted V2-V6 recipes and Windows controls alongside local Model research, typed CLI 0.2.0 wrappers and first-use setup."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
@@ -72,6 +72,8 @@ Load docs in this order:
 7. `scripts/validate-skills.mjs` only when validation behavior itself is part of the task
 
 Do not start by inferring behavior from chat history or one skill directory alone.
+
+For hosted calculation projects, `lca-study` remains the installed skill ID and `study` remains the CLI command. An explicitly requested admitted V2 calculation ends at its result and producer-reported coverage. Local research uses the Model commands and normal sparse LCIA applicability. Route optional analyses, reports, review, sharing and industry method assessment through their own capability checks.
 
 ## Repo Ownership
 
@@ -163,3 +165,5 @@ The `pre-push` hook runs `scripts/docpact-gate.sh`, which delegates CLI lookup t
 `foundry-tidas-import` is the ordinary TianGong Foundry entry. Its instructions consume the public task protocol and current structured actions; the internal authoring role stays on demand. Its bundled bootstrap scripts and adjacent final lock select independently qualified Foundry 0.1.15 (release source `0ab6b54513acccfe3253ea583b4f6b2e678c0485`), with its own bundled CLI 0.1.24 independently bound by Foundry provenance, separate from the environment-selected wrapper CLI. The four-platform copied-entry test must prove actual installation and task operation before delivery; source validation alone does not establish installability.
 
 The retained `external-dataset-curated-import` and `source-evidence-dataset-development` skills support independent CLI workflows. Within a registered public Foundry task they act as domain helpers over current work items and supplied actions; they return selected input files and cannot manually advance queues, checkpoints, registered artifacts or attempts. Their paired agent prompts preserve this boundary.
+
+The Study P4 reference uses explicit V5 installed commands for separately admitted OAT sensitivity and bounded uncertainty. Skills owns the workflow instructions only; it does not sample, calculate, choose scientific settings, rebuild signatures or expand role/source authority. Existing P2/P3 defaults and bundled launcher bytes remain unchanged.

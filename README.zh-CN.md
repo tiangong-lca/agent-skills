@@ -21,8 +21,8 @@ checkPaths:
   - "*/SKILL.md"
   - "*/scripts/**"
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 0c085debe0f92f1f887eb805c22771a63e730d5b
-lastReviewedNote: "Reviewed the Study first-use reference and bilingual entry prompts; qualified CLI selection, native package availability and human login remain explicit."
+lastReviewedCommit: "46cba692746fd6c8c711517525f2b82f2cde4691"
+lastReviewedNote: "Reviewed merge of current Main: retain hosted V2-V6 recipes and Windows controls alongside local Model research, typed CLI 0.2.0 wrappers and first-use setup."
 ---
 
 # 天工 LCA Skills
@@ -262,3 +262,5 @@ pnpm validate
 活动 wrapper 使用 CLI 0.2.0 的 `dataset <type> <action>` 与 `review` 接口，不保留旧命令别名。Study 的 setup、prepare 和计算扩展需要核对所选运行时实际提供的能力。
 
 保留的旧版源码认证规则只是 launcher 的运行时选择机制，不表示新版 Skill 仍能使用旧命令；活动能力以当前 CLI 接口为准。
+
+仅请求计算时，复用所选 Model 并返回实际结果，不强制生成报告。[线上计算参考](lca-study/references/hosted-study.md)保留 V2 计算及按需使用的 V3 分析／报告、V4 审核／分享、V5 敏感性／不确定性和 V6 方法评估；执行前核对安装命令及服务准入。

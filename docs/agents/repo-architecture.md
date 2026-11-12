@@ -37,8 +37,8 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: 0c085debe0f92f1f887eb805c22771a63e730d5b
-lastReviewedNote: "Reviewed the Study first-use reference and bilingual entry prompts; qualified CLI selection, native package availability and human login remain explicit."
+lastReviewedCommit: "46cba692746fd6c8c711517525f2b82f2cde4691"
+lastReviewedNote: "Reviewed merge of current Main: retain hosted V2-V6 recipes and Windows controls alongside local Model research, typed CLI 0.2.0 wrappers and first-use setup."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -94,7 +94,9 @@ The thin installed adapter passes the approved existing CLI expectation bytes th
 
 `--runtime-info` on the direct entry returns the native descriptor plus selection source and expectation digest without executing a business operation. It creates no report files or registry. Existing task continuations retain their original owner's runtime; the independent environment default cannot change original managed commands or authorize UNKNOWN replay.
 
-The copied Study and three hybrid packages bundle all three library modules plus `scripts/run-cli.mjs` byte-for-byte. Other repository-backed skills expose a three-line `scripts/run-cli.mjs` delegator to the same repository entry, matching their existing wrapper packaging boundary.
+The copied LCA Calculation package (`lca-study`) and three hybrid packages bundle all three library modules plus `scripts/run-cli.mjs` byte-for-byte. Other repository-backed skills expose a three-line `scripts/run-cli.mjs` delegator to the same repository entry, matching their existing wrapper packaging boundary.
+
+The hosted calculation reference guides an explicitly requested admitted V2 run to its result and producer-reported coverage. The existing `study` command and Study request fields identify the calculation project on the wire. Optional V3–V6 workflows depend on the user's request and their own capability checks; their report, review and professional qualification requirements do not control the V2 path.
 
 ### Explicit local candidate boundary
 
@@ -151,3 +153,7 @@ Active wrappers call typed `dataset flow|process|model` actions and `review`. Se
 Local Study reporting uses a seventh workflow step: the Skill composes a lightweight report JSON from selected evidence/Model/Run content and calls CLI `report render`. HTML/SVG/browser/print code belongs to CLI. A research report does not require hosted Study registration, approval or caller-maintained hashes. Existing signed exports retain their service-owned contracts.
 
 The Study first-use entry lives in `lca-study/references/getting-started.md`. It guides installation/configuration and then hands off to the research Skill. The one-line README prompts point there. This reference owns no installer or runtime qualification mechanism; package readiness and unavailable release artifacts remain explicit.
+
+`lca-study/references/advanced-analysis.md` holds conditional V5 OAT/uncertainty and view2/export3 recipes. It consumes only installed public CLI commands; canonical values, configuration hashes, scientific execution, role policy, journals and artifact verification remain with their existing owners. The copied launcher graph is unchanged.
+
+`lca-study/references/method-assessment.md` holds conditional V6 recorded-evidence, same-Study method assessment and method-report/view3/export4 guidance. The installed owner schemas supply exact configuration and source bindings. Twenty requirements, twenty-five categories and fifty-eight facts remain explicit, including unavailable N/W and false qualification flags. The Skill owns neither method arithmetic nor professional approval; runtime selection, CLI protocol/recovery and current source/review/disclosure authority remain unchanged.

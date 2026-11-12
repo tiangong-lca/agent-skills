@@ -64,7 +64,7 @@
         },
         {
             "name": "lca-study",
-            "description": "LCA research, revision-bound report review and scoped sharing through a configured installed CLI.",
+            "description": "LCA research and Model calculation through a configured CLI, with optional hosted analysis, report review and named sharing.",
             "source": "./",
             "strict": false,
             "skills": [
