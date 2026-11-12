@@ -37,8 +37,8 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: fc46a3df63e584f7a5a9f0c5b489d8afa43a696d
-lastReviewedNote: "Skills #150: migrated active wrappers and guidance to CLI 0.2.0 atomic contracts, preserved managed Foundry/runtime boundaries and reviewed installed/native validation coverage."
+lastReviewedCommit: "c83aa1a79617e63bc5f6e2bc065064813d5fd48e"
+lastReviewedNote: "Skills #150: reviewed seventh-step report JSON composition and CLI rendering, bilingual/input fidelity, offline HTML/browser PDF and separate hosted report authority."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -136,7 +136,7 @@ The retained `external-dataset-curated-import` and `source-evidence-dataset-deve
 
 ## LCA Study workflow
 
-`lca-study` orchestrates the public core v2 and reporting v3 Study commands through a copied byte-identical installed-runtime launcher. Its operation recipes describe owner-issued references, exact claim values and recovery; they contain no numerical algorithms, database adapters or local task engine. The package requires current server capabilities and independently configured export anchors. P2 reports remain unreviewed; review/share and advanced profiles need their own qualified public contracts.
+For optional hosted research, `lca-study` orchestrates the public core v2 and reporting v3 Study commands through a copied byte-identical installed-runtime launcher. Its operation recipes describe owner-issued references, exact claim values and recovery; they contain no numerical algorithms, database adapters or local task engine. These hosted paths require current server capabilities and independently configured export anchors. P2 reports remain unreviewed; review/share and advanced profiles need their own qualified public contracts.
 
 For Study qualification against an explicitly configured local service, the CLI-owned `tiangong.cli-loopback-auth-doctor.v1` output is a separate live diagnostic. The Skill checks its intended current tuple and actor; it does not promote that result into a canonical Production identity receipt or claim historical callback binding. Ordinary hosted doctor/identity behavior stays CLI-owned.
 
@@ -147,3 +147,5 @@ The `lca-study` entry guides research from goals and evidence through explicit f
 ## Atomic skill workflows
 
 Active wrappers call typed `dataset flow|process|model` actions and `review`. Searches use explicit queries/scopes, validation accepts one canonical document, and patches/diffs consume native request envelopes. Scientific authoring, dedup decisions and workflow order belong to Skills; retired automatic builders, QA directories, queues and repair aliases are not CLI capabilities. Existing Foundry tasks keep their owner-returned actions and independent runtime.
+
+Local Study reporting uses a seventh workflow step: the Skill composes a lightweight report JSON from selected evidence/Model/Run content and calls CLI `report render`. HTML/SVG/browser/print code belongs to CLI. A research report does not require hosted Study registration, approval or caller-maintained hashes. Existing signed exports retain their service-owned contracts.

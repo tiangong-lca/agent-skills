@@ -44,8 +44,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: fc46a3df63e584f7a5a9f0c5b489d8afa43a696d
-lastReviewedNote: "Skills #150: migrated active wrappers and guidance to CLI 0.2.0 atomic contracts, preserved managed Foundry/runtime boundaries and reviewed installed/native validation coverage."
+lastReviewedCommit: "c83aa1a79617e63bc5f6e2bc065064813d5fd48e"
+lastReviewedNote: "Skills #150: reviewed seventh-step report JSON composition and CLI rendering, bilingual/input fidelity, offline HTML/browser PDF and separate hosted report authority."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

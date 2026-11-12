@@ -37,8 +37,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-12
-lastReviewedCommit: fc46a3df63e584f7a5a9f0c5b489d8afa43a696d
-lastReviewedNote: "Skills #150: migrated active wrappers and guidance to CLI 0.2.0 atomic contracts, preserved managed Foundry/runtime boundaries and reviewed installed/native validation coverage."
+lastReviewedCommit: "c83aa1a79617e63bc5f6e2bc065064813d5fd48e"
+lastReviewedNote: "Skills #150: reviewed seventh-step report JSON composition and CLI rendering, bilingual/input fidelity, offline HTML/browser PDF and separate hosted report authority."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -144,3 +144,5 @@ For the P3 Study extension, copied-wrapper tests preserve explicit v4 argv and o
 Study research changes must review representative cases: product-only goals, conflicting denominators, missing critical data, explicit state-100 background selection, complete aggregate LCI without double expansion, normal sparse LCIA applicability, and an installed CLI lacking new commands. Verify current command help and preserve existing hosted recovery and disclosure behavior. Instruction review is separate from autonomous Agent scenario evaluation; synthetic wrapper tests do not prove scientific modeling or hosted service completion.
 
 The CI test source is fixed in the workflow and qualification script. Only after frozen installation and build does the script inspect that exact source and bind its ephemeral inventory for the validation job. This is a reviewed test policy, not approval for production data. Public installed regressions independently fix the package content identity.
+
+Report guidance requires current `report render --help --json` capability checks, copied-wrapper argv/no-replay tests and an actual installed or reviewed source-candidate render. Inspect bilingual content and graph/result/source fidelity; browser/PDF qualification belongs to CLI. Do not claim autonomous scientific report correctness from a wrapper test.
