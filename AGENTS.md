@@ -43,9 +43,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-12
-lastReviewedCommit: "bb8edfb632333cc22a96894a16c85a2296e39408"
-lastReviewedNote: "Default ordinary Skills to public tiangong-lca on PATH; retain explicit controlled runtimes, source development and managed task semantics."
+lastReviewedAt: 2026-11-13
+lastReviewedCommit: 6ffa4641cbb24233b06ce439710267129ceb4476
+lastReviewedNote: "Reviewed signed Model connection guidance and bounded port/amount/coefficient diagnostics; existing calculation, runtime selection and delivery contracts remain unchanged."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

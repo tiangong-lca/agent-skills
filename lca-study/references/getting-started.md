@@ -5,6 +5,11 @@ Skill, CLI or local calculation environment. Complete the available setup, verif
 what actually works, then continue with [LCA Study](../SKILL.md). Reuse an existing
 qualified installation; do not reinstall it just because a new study starts.
 
+Before the first setup reply, use the user’s explicit language preference or the
+language of their conversation: Chinese or English, one at a time. The language
+of this guide and command output does not override that choice. Carry it through
+installation updates and intake; switch on request.
+
 ## One prompt for the user
 
 ```text
@@ -57,7 +62,16 @@ reload to discover skills, retain the installed path and next action for resume.
 
 Use the [official CLI installation guidance](https://github.com/tiangong-lca/cli#readme)
 and its [published releases](https://github.com/tiangong-lca/cli/releases).
-Reuse an existing compatible installation. Make `tiangong-lca` available on the
+Check the installed version with `tiangong-lca --version` and the latest stable
+version using the official release source or `npm view @tiangong-lca/cli dist-tags.latest`.
+Recommend upgrading when a newer stable CLI is available. If the current CLI has
+the required capabilities, research can continue; an unavailable version lookup
+is not a blocker. Upgrade through the official installation guidance when required
+commands are missing, respecting any explicit environment-owner constraints. Check
+once at setup or a new study, not before every command. Do not turn the observed
+version into a project pin or add runtime expectation files.
+
+Make `tiangong-lca` available on the
 Agent's PATH, then inspect the capabilities needed for this study:
 
 ```sh
@@ -75,6 +89,13 @@ ordinary Skill use. The CLI owns runtime compatibility; the installer owns
 package integrity. Missing commands need a compatible published CLI. Help checks
 establish availability, not successful computation. If a required release or
 native package is unavailable, preserve the research work and name that blocker.
+
+Use the currently installed complete Skill package. If an older installation
+asks for runtime expectation variables, update that Skill rather than reconstructing
+its obsolete environment setup. Inspect the actual selected package when multiple
+Agent installations exist; retain user customizations when replacing a package.
+Node compatibility belongs to the CLI installer/launcher, not a Skill-owned exact
+Node pin. Do not source an old project runtime script for ordinary research.
 
 The optional `node scripts/run-cli.mjs` wrapper calls the same PATH command.
 For a custom location use `--cli-command /absolute/path/to/tiangong-lca`;
@@ -112,10 +133,13 @@ Briefly report the installed Skill location, actual CLI selection, local engine
 readiness and remote login state, plus any precise remaining blocker. Do not
 describe a help check as an end-to-end study or claim a calculation was performed.
 
-Read [LCA Study](../SKILL.md) and continue from the user's existing evidence. When
-starting from nothing, ask what product or service they want to assess, what the
-study should answer, and what materials they can provide. Establish the functional
-unit and boundary through that conversation. Proceed through evidence intake,
-foreground modeling, explicit background selection, actual calculation and an
-interactive HTML report with PDF printing. Do not create a dummy online Study,
-publish datasets or fabricate a numerical result to prove setup succeeded.
+Read [LCA Study](../SKILL.md) and continue from the user's existing evidence. If
+the product or intended question is unknown, clarify those in business language;
+reuse answers already given. Follow [guided intake](evidence-intake.md) to suggest
+a few product-specific records, explain their purpose and where the user might
+find them. Establish a provisional functional unit and boundary through that
+conversation. If no materials have arrived, preserve the specific material request
+and resume point while completing independent preparation. Calculation and report
+steps are not a mandate to invent data or run a proxy demonstration before intake.
+Do not create a dummy online Study, publish datasets or fabricate a numerical
+result to prove setup succeeded.

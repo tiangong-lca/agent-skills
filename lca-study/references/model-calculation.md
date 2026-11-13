@@ -6,6 +6,8 @@ Call `tiangong-lca` directly with the following CLI arguments. Read help from th
 
 Discover state `100` Process candidates using supported search flags, inspect exact selected versions, then use `dataset process results --help --json` and `dataset process get-result --help --json` to select and download a complete `--kind lci` artifact. Full result retrieval belongs to CLI, including its HDF5 channel and pagination. Do not query a private reader or database directly. A Process can be discoverable while its usable result is absent; report that distinction and select another justified background or request evidence.
 
+Read [background modeling](background-modeling.md) before building a new connection or a proxy/conversion. Keep each background's published reference quantity intact; connect its output to a matching input on the foreground or intermediate Process. Do not rewrite a background reference ID to make a link pass.
+
 ## Local environment and run
 
 Read `setup model-calculation --help --json`. The environment owner can install an explicitly trusted local runtime package with `setup model-calculation --install <package-directory> --json` on macOS ARM64, Linux glibc x64/ARM64 or Windows x64 with a qualified host-matching package. It installs the engine, native dependencies and complete LCIA methods together, verifies readiness, then saves reusable configuration. No caller-maintained hashes belong in research inputs. Public download availability and qualification on other platforms must be checked separately; do not invent an available release or silently compile a sibling Worker checkout.
@@ -31,3 +33,9 @@ An online Model is intended to use the online engine. Check the installed comman
 For supported remote jobs retain the original acceptance/task identity, poll actual status and use owner-returned recovery actions. Submission is not completion. A transport failure is not permission to resubmit. Existing hosted Study work follows [its dedicated reference](hosted-study.md).
 
 Interpret LCIA against the selected complete method. A Flow without a defined factor makes no contribution to that method; this is normal sparse applicability, not a coverage warning or an incomplete score. Invalid method assets and incomplete data acquisition remain errors. Preserve signed historical artifacts and distinguish their recorded diagnostics from current interpretation. Compare Runs only after checking functional unit, boundary, background selections, methods and changed assumptions. Do not claim sensitivity or uncertainty capabilities beyond the installed engine's actual support.
+
+## Resolve an input failure
+
+Read the returned error before changing the research design. For port/reference errors, compare the named instance, exchange direction, signed amount/coefficient, Flow identity/version, units and selected source/result. For a sign conflict, compare both ports: Input contributes minus its amount and Output contributes its amount; nonzero coefficients must be opposite. Preserve original signs instead of forcing a connection. Use an explicit exchange ID when identical Flow ports are ambiguous. Check quantities separately from identity: the background's published normalization can differ from the source Process's original exchange amount. Correct known input mistakes through the public command contract, then use a new Run. Keep a minimal failed input and diagnostic if the contradiction remains. Do not infer a solver limitation from an unconnected instance or a reversed/mismatched edge.
+
+The [synthetic proxy case](../assets/proxy-example/README.md) supplies ordinary Process documents and an independent numeric expectation. It is a modeling example, not a substitute for company data or an automatic setup calculation.
