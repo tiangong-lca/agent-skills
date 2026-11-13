@@ -44,8 +44,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-13
-lastReviewedCommit: 169fe0071fa81200ad05b3c90ca464f6348cbdd4
-lastReviewedNote: "Skills #152: reviewed language-first Study replies and guided material intake; launcher and ownership contracts remain unchanged."
+lastReviewedCommit: 6ffa4641cbb24233b06ce439710267129ceb4476
+lastReviewedNote: "Reviewed signed Model connection guidance and bounded port/amount/coefficient diagnostics; existing calculation, runtime selection and delivery contracts remain unchanged."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md

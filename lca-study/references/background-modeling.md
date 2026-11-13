@@ -8,6 +8,28 @@ For each selected exact Process version, read its quantitative reference and the
 
 Use matching ports for a direct connection. Resolve multiple exchanges of the same Flow with the supported explicit exchange selectors. A similar label is only a discovery hint. Different identity, physical meaning, unit or reference basis needs a modeling decision before connection. An unknown or contradictory reference basis needs clarification or another suitable candidate; a conversion coefficient cannot supply missing meaning.
 
+## Check signed balance before connecting
+
+Two different checks apply. The selected Process and its published LCI must agree on reference Flow/version and direction; the published quantity supplies the normalization basis. Across a connection, the two ports must have matching Flow/version and supported units, but **opposite nonzero signed coefficients**. Direction labels alone are insufficient:
+
+```text
+Input coefficient  = -amount
+Output coefficient = +amount
+```
+
+| Modeled exchange | Balancing reference exchange | Coefficients | Connection |
+| --- | --- | --- | --- |
+| Material demand: Input +2 | Supply: Output +1 | -2 and +1 | Opposite; ordinary supply. |
+| Waste release: Output +2 | Treatment: Input +1 | +2 and -1 | Opposite; treatment reference. |
+| Output +2 | Output -1 | +2 and -1 | Opposite despite identical direction labels. |
+| Input +2 | Output -1 | -2 and -1 | Same sign; cannot balance. |
+
+These are numerical examples, not evidence that a real substitution is appropriate. Reference quantities must be finite and nonzero. Reference normalization uses the absolute magnitude while retaining its sign; it does not turn negative quantities into positive supplies. A zero demand has no nonzero balance requirement, but a zero reference remains invalid. Preserve original amounts, directions and inventory signs. Do not take absolute values, reverse directions or negate values simply to pass a connection check.
+
+The Model source contract uses `connections.outputExchange` and `downstreamProcess` as connection fields. Without explicit exchange selectors, the compiler looks for an Output port on the supplying instance and an Input port on the dependent instance. For treatment inputs, signed outputs or ambiguous matching ports, select the actual exchanges with `@exchangeId` on both sides, keeping the declared Flow/version exact. An explicit selector identifies the port; it does not bypass balance, reference or unit checks. Read the current CLI/Model contract when constructing the connection.
+
+On `study_connection_direction_mismatch`, inspect both named instances/exchanges, directions, amounts and coefficients. Correct a demonstrated input mistake or choose a genuinely suitable process. If meaning is unresolved, retain the question; do not infer that the solver lacks multiple-instance support or change a quantity's sign by guesswork.
+
 ## Use an ordinary Process for an explicit adaptation
 
 When a justified relationship exists, insert an ordinary Process between the selected background and the foreground demand:
@@ -17,7 +39,7 @@ Background output B → adaptation Process input B
 Adaptation Process output A → foreground input A
 ```
 
-Each edge still matches the exact Flow/version, direction and supported unit basis. A and B can be different because the relationship is expressed inside the intermediate Process's exchanges. No special proxy entity, automatic matching rule or solver mode is needed.
+Each edge still matches the exact Flow/version and supported unit basis and balances opposite nonzero signed coefficients. The diagram above illustrates ordinary positive-quantity material supply; treatment and negative-quantity cases follow the same signed rule. A and B can be different because the relationship is expressed inside the intermediate Process's exchanges. No special proxy entity, automatic matching rule or solver mode is needed.
 
 Distinguish three decisions in the Process description and research brief:
 
