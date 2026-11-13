@@ -36,9 +36,9 @@ checkPaths:
   - scripts/sync-tidas-public-rules.mjs
   - package.json
   - pnpm-lock.yaml
-lastReviewedAt: 2026-11-12
-lastReviewedCommit: "bb8edfb632333cc22a96894a16c85a2296e39408"
-lastReviewedNote: "Default ordinary Skills to public tiangong-lca on PATH; retain explicit controlled runtimes, source development and managed task semantics."
+lastReviewedAt: 2026-11-13
+lastReviewedCommit: 3aba03fbcdd6d661641755557d382abc1f92a075
+lastReviewedNote: "Skills #152: reviewed evidence-led Study guidance, ordinary Process adaptations and stable CLI upgrade advice; launcher contracts remain unchanged."
 related:
   - AGENTS.md
   - .docpact/config.yaml

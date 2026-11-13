@@ -25,3 +25,11 @@ The Skill owns research meaning and content selection. The CLI owns deterministi
 Keep uncertainty explicit and facts separate from assumptions. A report may describe an uncalculated model, but label that state and omit fabricated results. The user may edit report JSON and render a separate new file without hashes, revision approvals or redoing scientific work. Existing output replacement requires explicit `--force`; never overwrite input. Rendering does not modify the Model or its Run.
 
 Hosted report review, formal finalization, signed exports and named sharing use [their existing service protocol](hosted-study.md) only when requested. A local HTML/PDF is a presentation of supplied research content, not proof of review or scientific certification.
+
+## Keep the current report consistent
+
+Show every modeled proxy/conversion as a visible node with its input/output ratio, rationale and material differences. Use the existing foreground node kind with an informative label/details; this is a local modeling assumption, not a claim that a public supplier performs that conversion. Physical transformation nodes also describe their additional inputs, losses and emissions.
+
+When a numerical basis or interpretation is corrected, reconcile the current brief, evidence/assumption tables and report JSON, then render the updated HTML. Retain earlier Runs as historical evidence; mark withdrawn claims in history and omit them from current results. Check all language variants and per-item/per-mass conversions against the selected Run's reference basis. Regenerating HTML alone does not repair stale JSON or prose.
+
+For a report intended for sharing, keep personal filesystem paths, account information, credentials and internal execution details out of the content. Use document titles, page/sheet locators and disclosure-appropriate source links. Private evidence locations remain in the working inventory.

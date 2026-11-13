@@ -1,0 +1,472 @@
+{
+  "model": {
+    "content": {
+      "lifeCycleModelDataSet": {
+        "lifeCycleModelInformation": {
+          "dataSetInformation": {
+            "common:UUID": "00000000-0000-4000-8000-000000000001"
+          },
+          "quantitativeReference": {
+            "referenceToReferenceProcess": "1"
+          },
+          "technology": {
+            "processes": {
+              "processInstance": [
+                {
+                  "@dataSetInternalID": "1",
+                  "referenceToProcess": {
+                    "@refObjectId": "00000000-0000-4000-8000-000000000002",
+                    "@version": "01.00.000"
+                  },
+                  "connections": {
+                    "outputExchange": []
+                  }
+                },
+                {
+                  "@dataSetInternalID": "2",
+                  "referenceToProcess": {
+                    "@refObjectId": "00000000-0000-4000-8000-000000000003",
+                    "@version": "01.00.000"
+                  },
+                  "connections": {
+                    "outputExchange": [
+                      {
+                        "@flowUUID": "00000000-0000-4000-8000-000000000006",
+                        "@version": "01.00.000",
+                        "downstreamProcess": {
+                          "@id": "1",
+                          "@flowUUID": "00000000-0000-4000-8000-000000000006",
+                          "@version": "01.00.000"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "@dataSetInternalID": "3",
+                  "referenceToProcess": {
+                    "@refObjectId": "00000000-0000-4000-8000-000000000004",
+                    "@version": "01.00.000"
+                  },
+                  "connections": {
+                    "outputExchange": [
+                      {
+                        "@flowUUID": "00000000-0000-4000-8000-000000000007",
+                        "@version": "01.00.000",
+                        "downstreamProcess": {
+                          "@id": "2",
+                          "@flowUUID": "00000000-0000-4000-8000-000000000007",
+                          "@version": "01.00.000"
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "administrativeInformation": {
+          "publicationAndOwnership": {
+            "common:dataSetVersion": "01.00.000"
+          }
+        }
+      }
+    }
+  },
+  "datasets": [
+    {
+      "content": {
+        "processDataSet": {
+          "processInformation": {
+            "dataSetInformation": {
+              "common:UUID": "00000000-0000-4000-8000-000000000002"
+            },
+            "quantitativeReference": {
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "administrativeInformation": {
+            "publicationAndOwnership": {
+              "common:dataSetVersion": "01.00.000"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "00000000-0000-4000-8000-000000000005",
+                  "@version": "01.00.000"
+                },
+                "exchangeDirection": "Output",
+                "resultingAmount": 1
+              },
+              {
+                "@dataSetInternalID": "1",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "00000000-0000-4000-8000-000000000006",
+                  "@version": "01.00.000"
+                },
+                "exchangeDirection": "Input",
+                "resultingAmount": 2
+              },
+              {
+                "@dataSetInternalID": "2",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "08a91e70-3ddc-11dd-9c13-0050c2490048",
+                  "@version": "03.00.004"
+                },
+                "exchangeDirection": "Output",
+                "resultingAmount": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "content": {
+        "processDataSet": {
+          "processInformation": {
+            "dataSetInformation": {
+              "common:UUID": "00000000-0000-4000-8000-000000000003"
+            },
+            "quantitativeReference": {
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "administrativeInformation": {
+            "publicationAndOwnership": {
+              "common:dataSetVersion": "01.00.000"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "00000000-0000-4000-8000-000000000006",
+                  "@version": "01.00.000"
+                },
+                "exchangeDirection": "Output",
+                "resultingAmount": 1
+              },
+              {
+                "@dataSetInternalID": "1",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "00000000-0000-4000-8000-000000000007",
+                  "@version": "01.00.000"
+                },
+                "exchangeDirection": "Input",
+                "resultingAmount": 1.5
+              },
+              {
+                "@dataSetInternalID": "2",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "08a91e70-3ddc-11dd-9c13-0050c2490048",
+                  "@version": "03.00.004"
+                },
+                "exchangeDirection": "Output",
+                "resultingAmount": 2
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "content": {
+        "processDataSet": {
+          "processInformation": {
+            "dataSetInformation": {
+              "common:UUID": "00000000-0000-4000-8000-000000000004"
+            },
+            "quantitativeReference": {
+              "referenceToReferenceFlow": "0"
+            }
+          },
+          "administrativeInformation": {
+            "publicationAndOwnership": {
+              "common:dataSetVersion": "01.00.000"
+            }
+          },
+          "exchanges": {
+            "exchange": [
+              {
+                "@dataSetInternalID": "0",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "00000000-0000-4000-8000-000000000007",
+                  "@version": "01.00.000"
+                },
+                "exchangeDirection": "Output",
+                "resultingAmount": 1
+              },
+              {
+                "@dataSetInternalID": "1",
+                "referenceToFlowDataSet": {
+                  "@refObjectId": "08a91e70-3ddc-11dd-9c13-0050c2490048",
+                  "@version": "03.00.004"
+                },
+                "exchangeDirection": "Output",
+                "resultingAmount": 999
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "content": {
+        "flowDataSet": {
+          "flowInformation": {
+            "dataSetInformation": {
+              "common:UUID": "00000000-0000-4000-8000-000000000005"
+            },
+            "quantitativeReference": {
+              "referenceToReferenceFlowProperty": "0"
+            }
+          },
+          "administrativeInformation": {
+            "publicationAndOwnership": {
+              "common:dataSetVersion": "01.00.000"
+            }
+          },
+          "flowProperties": {
+            "flowProperty": {
+              "@dataSetInternalID": "0",
+              "meanValue": "1",
+              "referenceToFlowPropertyDataSet": {
+                "@refObjectId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+                "@version": "03.00.003"
+              }
+            }
+          },
+          "modellingAndValidation": {
+            "LCIMethod": {
+              "typeOfDataSet": "Product flow"
+            }
+          }
+        }
+      }
+    },
+    {
+      "content": {
+        "flowDataSet": {
+          "flowInformation": {
+            "dataSetInformation": {
+              "common:UUID": "00000000-0000-4000-8000-000000000006"
+            },
+            "quantitativeReference": {
+              "referenceToReferenceFlowProperty": "0"
+            }
+          },
+          "administrativeInformation": {
+            "publicationAndOwnership": {
+              "common:dataSetVersion": "01.00.000"
+            }
+          },
+          "flowProperties": {
+            "flowProperty": {
+              "@dataSetInternalID": "0",
+              "meanValue": "1",
+              "referenceToFlowPropertyDataSet": {
+                "@refObjectId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+                "@version": "03.00.003"
+              }
+            }
+          },
+          "modellingAndValidation": {
+            "LCIMethod": {
+              "typeOfDataSet": "Product flow"
+            }
+          }
+        }
+      }
+    },
+    {
+      "content": {
+        "flowDataSet": {
+          "flowInformation": {
+            "dataSetInformation": {
+              "common:UUID": "00000000-0000-4000-8000-000000000007"
+            },
+            "quantitativeReference": {
+              "referenceToReferenceFlowProperty": "0"
+            }
+          },
+          "administrativeInformation": {
+            "publicationAndOwnership": {
+              "common:dataSetVersion": "01.00.000"
+            }
+          },
+          "flowProperties": {
+            "flowProperty": {
+              "@dataSetInternalID": "0",
+              "meanValue": "1",
+              "referenceToFlowPropertyDataSet": {
+                "@refObjectId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+                "@version": "03.00.003"
+              }
+            }
+          },
+          "modellingAndValidation": {
+            "LCIMethod": {
+              "typeOfDataSet": "Product flow"
+            }
+          }
+        }
+      }
+    },
+    {
+      "content": {
+        "flowDataSet": {
+          "flowInformation": {
+            "dataSetInformation": {
+              "common:UUID": "08a91e70-3ddc-11dd-9c13-0050c2490048"
+            },
+            "quantitativeReference": {
+              "referenceToReferenceFlowProperty": "0"
+            }
+          },
+          "administrativeInformation": {
+            "publicationAndOwnership": {
+              "common:dataSetVersion": "03.00.004"
+            }
+          },
+          "flowProperties": {
+            "flowProperty": {
+              "@dataSetInternalID": "0",
+              "meanValue": "1",
+              "referenceToFlowPropertyDataSet": {
+                "@refObjectId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+                "@version": "03.00.003"
+              }
+            }
+          },
+          "modellingAndValidation": {
+            "LCIMethod": {
+              "typeOfDataSet": "Elementary flow"
+            }
+          }
+        }
+      }
+    },
+    {
+      "content": {
+        "flowPropertyDataSet": {
+          "flowPropertiesInformation": {
+            "dataSetInformation": {
+              "common:UUID": "93a60a56-a3c8-11da-a746-0800200b9a66"
+            },
+            "quantitativeReference": {
+              "referenceToReferenceUnitGroup": {
+                "@refObjectId": "93a60a57-a4c8-11da-a746-0800200c9a66",
+                "@version": "03.00.003"
+              }
+            }
+          },
+          "administrativeInformation": {
+            "publicationAndOwnership": {
+              "common:dataSetVersion": "03.00.003"
+            }
+          }
+        }
+      }
+    },
+    {
+      "content": {
+        "unitGroupDataSet": {
+          "unitGroupInformation": {
+            "dataSetInformation": {
+              "common:UUID": "93a60a57-a4c8-11da-a746-0800200c9a66"
+            },
+            "quantitativeReference": {
+              "referenceToReferenceUnit": "0"
+            }
+          },
+          "administrativeInformation": {
+            "publicationAndOwnership": {
+              "common:dataSetVersion": "03.00.003"
+            }
+          },
+          "units": {
+            "unit": {
+              "@dataSetInternalID": "0",
+              "name": "kg",
+              "meanValue": "1"
+            }
+          }
+        }
+      }
+    }
+  ],
+  "backgrounds": [
+    {
+      "content": {
+        "schemaVersion": 1,
+        "source": {
+          "id": "00000000-0000-4000-8000-000000000004",
+          "version": "01.00.000"
+        },
+        "kind": "lci",
+        "complete": true,
+        "result": {
+          "uuid": "00000000-0000-4000-8000-000000000008",
+          "version": "01.00.000"
+        },
+        "publication": {
+          "publicationId": "synthetic-example"
+        },
+        "data": {
+          "result": {
+            "uuid": "00000000-0000-4000-8000-000000000008",
+            "version": "01.00.000",
+            "quantitativeReference": {
+              "flowId": "00000000-0000-4000-8000-000000000007",
+              "flowVersion": "01.00.000",
+              "direction": "Output",
+              "unit": {
+                "flowPropertyId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+                "flowPropertyVersion": "03.00.003",
+                "unitGroupId": "93a60a57-a4c8-11da-a746-0800200c9a66",
+                "unitGroupVersion": "03.00.003",
+                "internalId": "0",
+                "name": "kg"
+              },
+              "value": 2,
+              "amountField": "resultingAmount"
+            }
+          },
+          "items": [
+            {
+              "key": {
+                "flowId": "08a91e70-3ddc-11dd-9c13-0050c2490048",
+                "flowVersion": "03.00.004",
+                "direction": "Output",
+                "unit": {
+                  "flowPropertyId": "93a60a56-a3c8-11da-a746-0800200b9a66",
+                  "flowPropertyVersion": "03.00.003",
+                  "unitGroupId": "93a60a57-a4c8-11da-a746-0800200c9a66",
+                  "unitGroupVersion": "03.00.003",
+                  "internalId": "0",
+                  "name": "kg"
+                }
+              },
+              "amount": 6
+            }
+          ],
+          "nonzeroCount": 1
+        }
+      }
+    }
+  ],
+  "methods": [
+    {
+      "id": "6209b35f-9447-40b5-b68c-a1099e3674a0",
+      "version": "01.00.000"
+    }
+  ],
+  "amount": 1,
+  "allowRemoteLookup": false
+}
