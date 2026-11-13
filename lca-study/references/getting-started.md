@@ -5,6 +5,11 @@ Skill, CLI or local calculation environment. Complete the available setup, verif
 what actually works, then continue with [LCA Study](../SKILL.md). Reuse an existing
 qualified installation; do not reinstall it just because a new study starts.
 
+Before the first setup reply, use the user’s explicit language preference or the
+language of their conversation: Chinese or English, one at a time. The language
+of this guide and command output does not override that choice. Carry it through
+installation updates and intake; switch on request.
+
 ## One prompt for the user
 
 ```text
@@ -128,11 +133,13 @@ Briefly report the installed Skill location, actual CLI selection, local engine
 readiness and remote login state, plus any precise remaining blocker. Do not
 describe a help check as an end-to-end study or claim a calculation was performed.
 
-Read [LCA Study](../SKILL.md) and continue from the user's existing evidence. When
-starting from nothing, ask what product or service they want to assess, what the
-study should answer, and what materials they can provide. Establish the functional
-unit and boundary through that conversation. Continue with the evidence-supported next step. If no materials have arrived,
-ask for a few available files and wait at that handoff while completing independent
-preparation. The remaining modeling, calculation and report steps are not a mandate
-to invent data or run a proxy demonstration before intake. Do not create a dummy online Study,
-publish datasets or fabricate a numerical result to prove setup succeeded.
+Read [LCA Study](../SKILL.md) and continue from the user's existing evidence. If
+the product or intended question is unknown, clarify those in business language;
+reuse answers already given. Follow [guided intake](evidence-intake.md) to suggest
+a few product-specific records, explain their purpose and where the user might
+find them. Establish a provisional functional unit and boundary through that
+conversation. If no materials have arrived, preserve the specific material request
+and resume point while completing independent preparation. Calculation and report
+steps are not a mandate to invent data or run a proxy demonstration before intake.
+Do not create a dummy online Study, publish datasets or fabricate a numerical
+result to prove setup succeeded.

@@ -4,7 +4,7 @@ The Skill owns research meaning and content selection. The CLI owns deterministi
 
 1. Select the Model and specific Run the report describes. Read their actual content/results through supported CLI operations; preserve the functional quantity, boundary, units, method, assumptions and unresolved questions. Do not silently combine a newer model with older results.
 2. Compose editable `report.json`. Only the renderer’s `title` is structurally required; research completeness remains a semantic responsibility. Typical sections cover goal/scope, data/evidence and assumptions. Add explicit model nodes/connections, actual result values, sources, interpretation and limitations where available.
-3. Supply requested language content as plain text strings or `{ "en": "...", "zh": "..." }`. The CLI displays one language at a time, with a Chinese/English switch; it never translates content. Preserve meaning across languages, and share numerical values, units and identities. Missing translation remains visibly labeled; do not call a partly translated report complete bilingual delivery.
+3. Set `language` explicitly to the chosen conversation language (`zh` or `en`) unless the user requests a different report language; do not rely on the renderer’s default for English users. Supply requested language content as plain text strings or `{ "en": "...", "zh": "..." }`. The CLI displays one language at a time, with a Chinese/English switch; it never translates content. Preserve meaning across languages, and share numerical values, units and identities. Missing translation remains visibly labeled; do not call a partly translated report complete bilingual delivery.
 4. Invoke the atomic render:
 
    ```bash
