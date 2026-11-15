@@ -108,7 +108,7 @@ Consuming projects should record the resolved upstream ref and command in task a
 
 ## TianGong Foundry
 
-Use `$foundry-tidas-import` as the ordinary entry for external dataset packages, source-evidence development and continuing an existing Foundry task. It selects the qualified runtime through its bundled bootstrap and keeps task outputs in a separate writable workspace.
+Use `$foundry-tidas-import` as the ordinary entry for external dataset packages, source-evidence development and continuing an existing Foundry task. It uses the managed runtime selected by the installation environment and keeps task outputs in a separate writable workspace.
 
 ```bash
 npx skills add https://github.com/tiangong-lca/agent-skills --skill foundry-tidas-import
@@ -116,7 +116,7 @@ npx skills add https://github.com/tiangong-lca/agent-skills --skill foundry-tida
 
 The `lca-foundry-workflows` marketplace package lists this entry first. `foundry-tidas-authoring` is an internal role loaded only for a current semantic work item; it is not a second task entry. The ordinary entry can use the runtime's work-item instructions when that internal role is not installed.
 
-The complete entry bundles the final release lock for [Foundry 0.1.15](https://github.com/tiangong-lca/foundry/releases/tag/foundry-runtime-v0.1.15) (release source `0ab6b54513acccfe3253ea583b4f6b2e678c0485`), with its bundled CLI 0.1.24, Node 24.19.0 and TIDAS 0.3.3. Its public runtime is qualified for macOS arm64, Linux x64/arm64 and Windows x64. This release supports bound task briefs, immediate human questions, persistent user answers, scoped semantic decision adoption and an honest partial recap. The shared wrappers and hybrid-search packages use the environment-selected installed CLI; keep the Foundry entry's own bootstrap scripts/lock separate from those active wrappers, and never read one owner's CLI version as the other's. Keep the bundled scripts and adjacent lock together when installing or copying the entry. Installation and login do not grant permission to write data; continue the task's current authorization and recovery actions.
+The ordinary entry uses the environment-configured managed `tiangong-foundry` through `scripts/run-foundry.mjs`. Follow [runtime setup](foundry-tidas-import/references/runtime-setup.md) for installation, manifest selection and read-only capability discovery. Deployment can adopt a compatible successor without changing skill files. Existing tasks continue their returned commands and exact runtime bindings. Retained bootstrap assets provide a fixed historical standalone-install compatibility path; current installation assets are maintained by Foundry releases.
 
 ### Specialized workflows
 
