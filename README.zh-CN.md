@@ -108,7 +108,7 @@ npx skills update --project --yes
 
 ## TianGong Foundry
 
-外部数据包导入、源证据数据开发和继续已有 Foundry 任务，统一使用 `$foundry-tidas-import` 作为日常入口。它通过随包 bootstrap 选择合格运行时，将任务输出放在独立可写工作区。
+外部数据包导入、源证据数据开发和继续已有 Foundry 任务，统一使用 `$foundry-tidas-import` 作为日常入口。它使用安装环境选择的托管运行时，将任务输出放在独立可写工作区。
 
 ```bash
 npx skills add https://github.com/tiangong-lca/agent-skills --skill foundry-tidas-import
@@ -116,7 +116,7 @@ npx skills add https://github.com/tiangong-lca/agent-skills --skill foundry-tida
 
 `lca-foundry-workflows` marketplace 包首先列出此入口。`foundry-tidas-authoring` 仅在当前语义工作项需要时加载，是内部角色；日常入口也能直接使用运行时提供的工作项说明，无须依赖另一个已安装技能目录。
 
-完整入口随包提供 [Foundry 0.1.15](https://github.com/tiangong-lca/foundry/releases/tag/foundry-runtime-v0.1.15)（release source `0ab6b54513acccfe3253ea583b4f6b2e678c0485`）的最终发行锁，其中自带 CLI 0.1.24、Node 24.19.0 和 TIDAS 0.3.3。公开运行时已通过 macOS arm64、Linux x64/arm64 和 Windows x64 验证。此版本支持绑定任务简介、即时人类提问、持久保存原话、按范围采用语义决定及如实呈现部分完成回顾。共享 wrapper 与 hybrid-search 包使用环境统一配置的已安装 CLI；Foundry 入口自己的 bootstrap 脚本/lock 与活动 wrapper 相互独立，两个 owner 的 CLI 版本不得互相套用。安装或复制入口时，保持随包脚本与相邻 lock 完整。安装、登录不授予数据写入权限；继续执行任务当前的授权与恢复动作。
+日常入口通过 `scripts/run-foundry.mjs` 调用环境配置的托管 `tiangong-foundry`。安装、发行清单选择和只读能力查询见[运行环境配置](foundry-tidas-import/references/runtime-setup.md)。部署环境可以采用兼容后继版本，同一份 skill 继续使用。已有任务通过其返回命令按原运行组合恢复。保留的 bootstrap 资产用于历史固定版本的独立安装兼容路径，当前安装资产由 Foundry 发行维护。
 
 ### 专项工作流
 

@@ -1,6 +1,6 @@
 # Public task workflow
 
-The examples below show public Foundry arguments. Execute them through the qualified managed entry selected for this skill; a similarly named executable on ambient PATH is not runtime selection evidence. Keep returned executable/argv/cwd fields intact when continuing an action.
+The examples below show public Foundry arguments. Execute them through `node scripts/run-foundry.mjs`, using the environment-configured managed entry described in [runtime setup](runtime-setup.md). Inspect its selected identity and protocols with `runtime describe --json`. Keep returned executable/argv/cwd fields intact when continuing an action.
 
 ## Initialize or inspect
 
@@ -14,7 +14,7 @@ Initialization and doctor do not log in, grant writes or create business records
 
 ## Start with selected evidence
 
-For the currently distributed Foundry 0.1.15, write a JSON spec in the user workspace with exactly these base fields:
+For a runtime supporting `tiangong-foundry.task-start.v1`, write a JSON spec in the user workspace with exactly these base fields:
 
 | Field | Selection |
 | --- | --- |
@@ -28,7 +28,7 @@ For the currently distributed Foundry 0.1.15, write a JSON spec in the user work
 | `account_intent` | `null` for local preparation without an account, or the intended `project_ref`, `user_id`, `session_reference` (path or `null`) and optional `account_mode` (`ordinary` or `production-test`). No credential contents. |
 | `preparation` | Normally `null`, so Foundry drives the full workflow. Use a selected cleanup preparation only when that is the intended local operation. |
 
-The qualified 0.1.15 runtime accepts an optional inline `brief` in the same `tiangong-foundry.task-start.v1` spec. When present, supply all seven keys: `original_request` is bounded raw user wording or `null` when the request is represented only in external caller evidence; `goal` is a nonempty string; `intended_use` and `scope` are strings or `null`; `deliverables`, `user_constraints` and `ai_assumptions` are string arrays that may be empty. Omit the entire `brief` for legacy tasks. Derive it from the original request and selected material, retaining their provenance and marking inferences as AI assumptions. Never make the user restate information already present.
+The task-start contract accepts an optional inline `brief` in the same `tiangong-foundry.task-start.v1` spec. When present, supply all seven keys: `original_request` is bounded raw user wording or `null` when the request is represented only in external caller evidence; `goal` is a nonempty string; `intended_use` and `scope` are strings or `null`; `deliverables`, `user_constraints` and `ai_assumptions` are string arrays that may be empty. Omit the entire `brief` for legacy tasks. Derive it from the original request and selected material, retaining their provenance and marking inferences as AI assumptions. Never make the user restate information already present.
 
 Select account intent before starting work that needs remote identity checks or writes; do not guess it from an unrelated logged-in session. Paths in the spec resolve against the explicit workspace. Foundry captures input bytes and binds revisions; editing files in a registered task is not how to select changed inputs.
 
@@ -55,7 +55,7 @@ For a qualified runtime that exposes the new public contract, select a `tiangong
 | Answer | `question_id`, `decision_id`, `raw_answer`, `adopted_decision`, `disposition`, `evidence_sha256`, `supersedes_decision_id`. Retain the person's actual words in `raw_answer`; state the executable interpretation separately. The first answer uses `null` for `supersedes_decision_id`; a later correction for the same question must name the current prior `decision_id`. `disposition` is `decided` or `investigate`; only `investigate` may use `adopted_decision: null` and it keeps the unresolved fact open. |
 | Assumption | `id`, `dataset_type`, `statement`, `impact`, `evidence_sha256`, `supersedes`; a qualified object-scoped runtime also accepts `object_scope`. Mark the conclusion as AI-made, with affected scope and consequences; use null scope or predecessor only where appropriate. |
 
-Every event's `evidence_sha256` is an array of current registered source/artifact hashes (or `[]` when none is relevant), never an invented citation. Keep event fields and optional/null values exactly as the selected runtime's public schema requires. Submit the descriptor as its own current action, not as a semantic decision file or a write grant. The adjacent 0.1.15 release lock qualifies this interaction contract for type-wide and object-scoped events. Do not place a general answer in `--semantic-input`, edit indexed artifacts, infer a private flag from source code, or rely on chat history for cross-process recovery. After a registered reply, inspect the new current result and confirm that the answer is active and reaches the affected work item before claiming the blocker resolved. “Investigate first” keeps the missing fact open.
+Every event's `evidence_sha256` is an array of current registered source/artifact hashes (or `[]` when none is relevant), never an invented citation. Keep event fields and optional/null values exactly as the selected runtime's public schema requires. Submit the descriptor as its own current action, not as a semantic decision file or a write grant. Confirm type-wide and object-scoped event support from the selected runtime schema. Do not place a general answer in `--semantic-input`, edit indexed artifacts, infer a private flag from source code, or rely on chat history for cross-process recovery. After a registered reply, inspect the new current result and confirm that the answer is active and reaches the affected work item before claiming the blocker resolved. “Investigate first” keeps the missing fact open.
 
 When the selected public runtime supports it, use `object_scope: { "entity_id": "<current UUID>", "version": "<current version>", "row_sha256": "<canonical current row SHA-256>" }` for a question or assumption about one registered row. Take all three values from that row in the current indexed `foundry-rows.json` set and its verified file; a caller-supplied ID, an older row or a guessed hash is not enough. Hash the entire parsed registered row, including outer ID, version and `json` payload: recursively sort object keys in JavaScript `Object.keys(...).sort()` order, preserve array order, serialize with `JSON.stringify` without whitespace or newline, then SHA-256 the UTF-8 bytes. Keep `dataset_type` concrete. Omit `object_scope` only when the evidence or decision really applies to the whole task/type, or when an exact row cannot be established; explain the broader scope in the human-facing question.
 
@@ -77,7 +77,7 @@ The descriptor selected by `--semantic-input` contains `schema`, `task_id`, `act
 - `sha256`: the SHA-256 of that file's actual bytes.
 - `decision_ids`: exactly the currently applicable `decision_id`s for this work item. Use `[]` or omit this field only when none apply; a decided answer from another scope or an obsolete decision is not applicable.
 
-Use each owner's generated template and required full-context evidence. The authoring role returns applicable decision IDs with its file; the invoking workflow places them in that file's submission descriptor rather than adding unsupported fields to the data file. Foundry verifies the current interaction binding and exact decision set, then records actual adoption as `adopted_decisions` in `semantic-result`. Select one owner per row type, then reassess before another owner uses the changed rows. Do not insert illustrative or historical hashes. A rejected proposal leaves the current rows unchanged and retains diagnostics. The distributed 0.1.15 lock qualifies these semantic interaction fields; follow the selected runtime's verified schema.
+Use each owner's generated template and required full-context evidence. The authoring role returns applicable decision IDs with its file; the invoking workflow places them in that file's submission descriptor rather than adding unsupported fields to the data file. Foundry verifies the current interaction binding and exact decision set, then records actual adoption as `adopted_decisions` in `semantic-result`. Select one owner per row type, then reassess before another owner uses the changed rows. Do not insert illustrative or historical hashes. A rejected proposal leaves the current rows unchanged and retains diagnostics. Follow the selected runtime's verified schema for these semantic interaction fields.
 
 ```text
 tiangong-foundry task resume --workspace <absolute-workspace> --task <task-id> --actor <actor-id> --semantic-input <descriptor-file> --json
