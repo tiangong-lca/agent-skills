@@ -30,7 +30,8 @@ test('copied Foundry skill follows environment upgrades and preserves one native
   const pathEntry = path.join(temporary, 'path-entry.mjs');
   fs.writeFileSync(pathEntry, `#!${process.execPath}\nprocess.stdout.write(JSON.stringify(process.argv.slice(2)));\n`, { mode: 0o755 });
   if (process.platform === 'win32') {
-    fs.writeFileSync(path.join(temporary, 'tiangong-foundry.cmd'), '@"%~dp0node.exe" "%~dp0path-entry.mjs" %*\r\n');
+    // npm's cmd-shim separates the directory variable from the relative bin path.
+    fs.writeFileSync(path.join(temporary, 'tiangong-foundry.cmd'), 'SETLOCAL\r\nSET dp0=%~dp0\r\n@"node" "%dp0%\\path-entry.mjs" %*\r\n');
   } else {
     fs.renameSync(pathEntry, path.join(temporary, 'tiangong-foundry'));
   }
