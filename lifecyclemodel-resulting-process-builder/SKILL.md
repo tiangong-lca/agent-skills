@@ -14,7 +14,8 @@ For an authorized remote save, use `dataset model result-group`. For an existing
 - `verified` confirms the original commit and current complete readback.
 - `committed_readback_unverified` confirms the original commit and leaves current state unverified. Inspect the saved group before further edits.
 - `unknown` leaves commit status unknown. Follow the native recovery input or next action for the original operation.
-- A conflict or validation failure needs a fresh inspect or corrected inputs. Preserve the user's edits while resolving it.
+- `draft_validation_failed` means the CLI stopped before dispatch. Use the member diagnostics to correct the inputs.
+- A conflict needs a fresh inspect. Preserve the user's edits while resolving it.
 
 Review submission and publication keep their separate native actions and receipts. Use actual returned Foundry continuation actions for managed tasks.
 
