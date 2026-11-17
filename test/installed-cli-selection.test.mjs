@@ -132,11 +132,14 @@ test('migrated wrappers forward native atomic arguments once and preserve UNKNOW
       assert.equal(result.stderr,'owner diagnostic\n');
     }
     assert.equal(readFileSync(f.env.CALL_LOG,'utf8'),'called\n'.repeat(cases.length));
+    const group=run(path.join(root,'lifecyclemodel-resulting-process-builder/scripts/run-lifecyclemodel-resulting-process-builder.mjs'),['--result-group','--input','original-attempt.json','--json'],f.env,f.dir);
+    assert.equal(group.status,17);
+    assert.deepEqual(JSON.parse(group.stdout),{args:['dataset','model','result-group','--input','original-attempt.json','--json'],status:'UNKNOWN',originalAttempt:'keep-me'});
     const bad=run(path.join(root,'lifecycleinventory-review/scripts/run-review.mjs'),['--profile','lifecyclemodel','--input','old.json'],f.env,f.dir);
     assert.notEqual(bad.status,0);
     const retired=run(path.join(root,'flow-governance-review/scripts/run-flow-governance-review.mjs'),['rewrite','--input','old.json'],f.env,f.dir);
     assert.notEqual(retired.status,0);
-    assert.equal(readFileSync(f.env.CALL_LOG,'utf8'),'called\n'.repeat(cases.length));
+    assert.equal(readFileSync(f.env.CALL_LOG,'utf8'),'called\n'.repeat(cases.length+1));
   } finally {rmSync(f.dir,{recursive:true,force:true});}
 });
 

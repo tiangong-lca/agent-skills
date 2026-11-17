@@ -1,5 +1,3 @@
-# Resulting Process interpretation
+# Projection contract
 
-The CLI-owned generator determines numerical aggregation, reference quantity, allocation and source-instance/exchange provenance from the explicit request. The Skill must not reproduce its algorithm or invent a missing completeness guarantee. Inspect the returned candidate and diagnostics against the intended boundary. Keep generated identifiers, scientific units and sources intact unless an evidence-supported edit is separately validated.
-
-Generation does not save, submit review or publish; each is a separate supported operation and authorization. It does not expose a compatibility schema for old production-directory projections.
+`build-resulting-process` returns a local candidate for its requested scope. `all-subproducts` requests all native results, including applicable allocated providers. The artifact identifies the expected and emitted members and their qualification. `result-group` provides the separate inspect, save and recovery operations. Review and publication use their own native commands.
