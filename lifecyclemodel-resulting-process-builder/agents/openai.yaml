@@ -1,4 +1,4 @@
 interface:
-  display_name: 'Generate a resulting Process'
-  short_description: 'Generate a resulting Process candidate from an explicit Model using the current CLI aggreg'
-  default_prompt: 'Use $lifecyclemodel-resulting-process-builder with the installed CLI 0.2.0 atomic interfaces. Generate a resulting Process candidate from an explicit Model using the current CLI aggregation operation, then validate it and perform a separate authorized create or save. Preserve explicit scope, exact source evidence, distinct create/save/review effects and original-request recovery. Read current help rather than translating legacy flags.'
+  display_name: 'Generate Model result groups'
+  short_description: 'Generate, inspect and save Model result groups using installed CLI commands.'
+  default_prompt: 'Use $lifecyclemodel-resulting-process-builder. Check the installed CLI help, generate a local candidate when requested, and use the native result-group operation for authorized group saves. Report the CLI receipt and complete readback separately. Use the original recovery input when the outcome is unknown.'

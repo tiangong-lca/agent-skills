@@ -5,8 +5,10 @@ import { normalizeCliRuntimeArgs, runTiangongCommand } from "../../scripts/lib/c
 // Forward current atomic CLI arguments without translating inputs or retrying effects.
 try {
   const { args, ...runtime } = normalizeCliRuntimeArgs(process.argv.slice(2));
-  const command = ["dataset", "model", "build-resulting-process"];
-  process.exitCode = runTiangongCommand([...command, ...(args.length ? args : ['--help'])], runtime);
+  const group = args[0] === '--result-group';
+  const nativeArgs = group ? args.slice(1) : args;
+  const command = ['dataset', 'model', group ? 'result-group' : 'build-resulting-process'];
+  process.exitCode = runTiangongCommand([...command, ...(nativeArgs.length ? nativeArgs : ['--help'])], runtime);
 } catch (error) {
   console.error(`Error: ${error.message}`);
   process.exitCode = 2;

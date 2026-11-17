@@ -1,5 +1,3 @@
-# Resulting Process ownership
+# Integration
 
-CLI owns `dataset model build-resulting-process` (alias `aggregate`), including numerical aggregation and its result envelope. The Skill selects explicit source data, interprets findings and routes a reviewed candidate to a separate native create/save request. It neither adds a publish envelope nor owns relation persistence.
-
-Platform owns editing and presentation. Worker owns Model calculation. A resulting Process candidate and a Model LCIA Run are distinct artifacts; neither a local file nor a successful generation publishes data.
+The CLI owns numerical generation, exact resulting Process identities, save plans and readback. Its result-group command uses the authenticated service for atomic persistence and original-operation recovery. The wrapper selects the installed runtime and forwards commands. Foundry and review flows continue through their own returned actions and evidence.

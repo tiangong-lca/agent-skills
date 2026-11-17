@@ -1,3 +1,3 @@
-# Candidate generation workflow
+# Projection workflow
 
-Read the installed generation contract; gather explicit inputs; generate a new candidate file; inspect diagnostics/provenance; validate; compare with an existing target when relevant; then use a separate authorized Process create or save. Read back confirmed effects. Unknown write outcomes require original-request recovery and never automatic generation or submission replay.
+Preview locally with the explicit Model and exact input sets. For a remote update, start from an inspected Model group and carry that baseline into the native save request. Verify the CLI's reported generation qualification, intended scope and complete group readback. Report original commit and current readback evidence separately when they differ.

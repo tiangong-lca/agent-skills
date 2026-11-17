@@ -36,8 +36,8 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-12
-lastReviewedCommit: "bb8edfb632333cc22a96894a16c85a2296e39408"
+lastReviewedAt: 2026-11-17
+lastReviewedCommit: d5fd53450de085c2bef1d073a7fb6d42cae5b930
 lastReviewedNote: "Default ordinary Skills to public tiangong-lca on PATH; retain explicit controlled runtimes, source development and managed task semantics."
 related:
   - AGENTS.md
