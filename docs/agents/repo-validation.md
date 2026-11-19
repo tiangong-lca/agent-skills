@@ -37,7 +37,7 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 3fc8d7f6f39eda34bd344db194c76503e56c83ea
+lastReviewedCommit: 332a4f4649f40f4fd7140af1c00f2c6acac9e499
 lastReviewedNote: "Skills #159 reviewed explicit CLI-managed Foundry dispatch, caller CWD and local-operation boundaries, and task-scoped source/license admission. Runtime qualification, original attempts and write authorization remain owner-controlled."
 related:
   - AGENTS.md
@@ -187,3 +187,5 @@ Study instruction evaluation uses [representative prompts](../../test/fixtures/s
 Skills #159 extends copied-entry tests to the explicit CLI-managed mode with no Foundry PATH command. The regression binds exact runtime exec argv, manifest/digest/cache selection, caller CWD, a caller-relative file read, one native UNKNOWN/nonzero dispatch and pre-dispatch refusal of invalid configuration or unavailable discovery. The ordinary command regression reads a caller-relative local validation input with one dispatch and fails if authentication is attempted. These synthetic owners verify the adapter boundary; installed managed CLI/Foundry behavior and release/protocol qualification require their own owner evidence.
 
 Review the import, curated-import and source-development instructions against an allowed scoped unit process, a restricted local-comparison background with supporting objects, unresolved mass-only scientific evidence and a project-specific geographic requirement. Check that local-only status reaches Process/Flow/Source/Model handoffs, unclear permission stays unresolved, and approved material still follows native validation and explicit write authorization.
+
+The public-task reference also covers protocol-detected interaction/semantic draft preparation. Check its draft examples against the selected runtime's published schemas, the returned `prepared_task_input.value` handoff, ordered question/answer registration and separate semantic/approval stages. A 0.1.19 task retains the original strict descriptor path. Scientific repair guidance requires its own exposed protocol and current task-start lane, trusted deployment diagnostic and public owner contract. A default upgrade cannot replace an existing task's runtime or attempts.

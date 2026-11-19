@@ -48,6 +48,8 @@ Unknown values stay unknown. `annualSupplyOrProductionVolume` is written only fr
 
 Submit decision or patch files through the current `--semantic-input` contract described in the reference. Foundry validates their evidence, context and hashes, applies them deterministically, and reassesses the resulting rows. Do not edit registered source/final rows, reports or task indexes to make a gate pass.
 
+When the selected runtime explicitly exposes the interaction/semantic draft protocols, use the reference's `task prepare-input` workflow to derive current bindings from indexed evidence. A question followed by an already supplied answer can share one ordered interaction submission. Keep semantic work and approval on their separate current actions. Older runtimes retain their strict descriptors and original task bindings.
+
 When a current interaction state exists, bind the semantic descriptor to its indexed SHA-256 and include exactly the applicable decision IDs for each submitted work item. Use the IDs returned with the authoring files; do not infer adoption from a chat answer or add unsupported fields to the decision/patch file. Confirm the accepted semantic result records the adopted decisions. Confirm this interaction-aware contract, including object scope, from the selected installed runtime's current actions and schema for each task.
 
 ## Select reference evidence

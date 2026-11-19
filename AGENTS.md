@@ -44,7 +44,7 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 3fc8d7f6f39eda34bd344db194c76503e56c83ea
+lastReviewedCommit: 332a4f4649f40f4fd7140af1c00f2c6acac9e499
 lastReviewedNote: "Skills #159 reviewed explicit CLI-managed Foundry dispatch, caller CWD and local-operation boundaries, and task-scoped source/license admission. Runtime qualification, original attempts and write authorization remain owner-controlled."
 related:
   - .docpact/config.yaml
