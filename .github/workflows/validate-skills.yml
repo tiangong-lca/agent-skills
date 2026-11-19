@@ -77,7 +77,7 @@ jobs:
           path: .ci/tiangong-lca-cli
 
       - name: Set up pnpm 11.24.0 and Node 24.19.0
-        uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
+        uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
           version: 11.24.0
           runtime: node@24.19.0
@@ -128,7 +128,7 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
       - name: Set up exact Node toolchain
-        uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
+        uses: pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2
         with:
           version: 11.24.0
           runtime: node@24.19.0
