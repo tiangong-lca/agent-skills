@@ -37,8 +37,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 332a4f4649f40f4fd7140af1c00f2c6acac9e499
-lastReviewedNote: "Skills #159 reviewed explicit CLI-managed Foundry dispatch, caller CWD and local-operation boundaries, and task-scoped source/license admission. Runtime qualification, original attempts and write authorization remain owner-controlled."
+lastReviewedCommit: 8ebdd74b4dfc69faa1ad36b0686221c967095162
+lastReviewedNote: "Skills #159 reviewed CLI-managed Foundry dispatch, caller CWD, scoped source/license admission and protocol-detected input preparation. Skills #160 reviewed pnpm/setup 3.1.2 and both validation/diagnostic invocations. Fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, caches, original attempts and owner-controlled write authorization are preserved."
 related:
   - AGENTS.md
   - .docpact/config.yaml
