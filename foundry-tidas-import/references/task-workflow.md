@@ -1,6 +1,6 @@
 # Public task workflow
 
-The examples below show public Foundry arguments. Execute them through `node scripts/run-foundry.mjs`, using the environment-configured managed entry described in [runtime setup](runtime-setup.md). Inspect its selected identity and protocols with `runtime describe --json`. Keep returned executable/argv/cwd fields intact when continuing an action.
+The examples below show public Foundry arguments. Execute them through `node scripts/run-foundry.mjs`, using the environment-configured managed entry described in [runtime setup](runtime-setup.md). For the public installed entry, inspect selected identity and protocols with `runtime describe --json`. CLI-only deployments follow the setup reference's verified release/protocol evidence and managed doctor procedure. Keep returned executable/argv/cwd fields intact when continuing an action.
 
 ## Initialize or inspect
 
@@ -41,13 +41,71 @@ One resume advances one registered stage. Conversion, context, rows, assessment,
 
 ## Human decisions and recovery
 
+### Prepare current inputs when the runtime exposes drafts
+
+Check the selected public installed entry before using draft preparation.
+
+```text
+node scripts/run-foundry.mjs runtime describe --json --require-protocol tiangong-foundry.interaction-draft.v1 --require-protocol tiangong-foundry.semantic-draft.v1
+```
+
+Use `task prepare-input` only when that result explicitly confirms the required draft protocol. For CLI-only deployment, obtain the matching verified release/protocol evidence through the setup reference. Foundry 0.1.19 retains the strict interaction/semantic descriptors described below. An existing task keeps its original runtime and returned actions when the environment's default changes.
+
+For an actual question and reply already supplied by the user, an interaction draft can contain the question followed by its answer in one ordered `events` array. Use the real question, original reply and applicable scope. This example records a task-wide report selection.
+
+```json
+{
+  "schema": "tiangong-foundry.interaction-draft.v1",
+  "events": [
+    {
+      "kind": "question",
+      "id": "report-edition",
+      "dataset_type": null,
+      "missing": "The report edition to use for this task",
+      "impact": "Source selection for the requested dataset development",
+      "recommendation": "Use the supplied report edition confirmed by the user",
+      "ask": "Which supplied report edition should this task use?",
+      "choices": [],
+      "evidence_files": [],
+      "supersedes": null
+    },
+    {
+      "kind": "answer",
+      "question_id": "report-edition",
+      "decision_id": "use-report-2020",
+      "supersedes_decision_id": null,
+      "raw_answer": "Use the supplied 2020 report.",
+      "adopted_decision": "Use the supplied 2020 report as this task's source edition.",
+      "disposition": "decided",
+      "evidence_files": []
+    }
+  ]
+}
+```
+
+Select relevant registered source/artifact paths in `evidence_files`. For a single current object, add `object_scope: {"entity_id": "<current UUID>", "version": "<current version>"}` to its question or assumption and keep `dataset_type` concrete. Foundry derives the current row hash, evidence hashes and interaction-state CAS binding from indexed task evidence. An unrelated, ambiguous or stale object remains blocked.
+
+```text
+node scripts/run-foundry.mjs task prepare-input --workspace <absolute-workspace> --task <task-id> --actor <actor-id> --kind interaction --input <absolute-interaction-draft.json> --json
+```
+
+Save the returned `artifacts` item with role `prepared_task_input` using its exact `value` as the strict descriptor file. Submit that file with the existing interaction action.
+
+```text
+node scripts/run-foundry.mjs task resume --workspace <absolute-workspace> --task <task-id> --actor <actor-id> --interaction-input <absolute-prepared-interaction.json> --json
+```
+
+Preparation reads current state and produces the descriptor. Submission registers the ordered question/answer events atomically and exposes the recorded `decision_id`. Inspect the resulting active decision and work-item scope before semantic work. Each submission still selects one input kind. Semantic changes, approval and later stages follow their own current actions.
+
 Read the whole current result and its registered question, brief, decision and assessment artifacts when supplied. A `human` action may need a missing source or a person's choice; technical errors require diagnosis through current actions. Surface a real human decision promptly, even when other assessment work remains. Say what is missing, which result is affected, the recommended next step, and the exact answer needed. Offer a small number of choices when useful and accept free text, supplied evidence, or “unknown; investigate first.” Name the affected object in familiar terms, with its exact ID and evidence available for inspection; do not make a person decode a row hash to answer. Keep the original answer and the interpreted decision separate, with provenance and object/evidence scope. An unanswered recommendation does not close a blocker. A partial assessment cannot authorize finalization, and independent current actions may still advance while a question is pending.
 
 For example: “The source gives one electricity total for products A and B, so their separate electricity use cannot yet be calculated. Do you have separate meter readings for this period? You can provide them, describe another documented split, or say ‘I don't know; investigate first.’” Include any decision-critical limit on a proposed split in the default question, and leave the underlying row, report and citations available for inspection. Do not ask the person to infer a method from an internal error code.
 
 When the current queue report names missing Flow or other references, translate the blocker into the affected data object and why it prevents the requested result. Retain the complete indexed missing-reference IDs and source paths in the followable evidence, even if the first sentence uses familiar names. Investigate whether the source package or an approved reference supplies them before asking a person to choose; a missing reference is not itself permission to invent or restore one. If a source record is used only as a read-only interaction test, describe that result as runtime qualification. A separate request to repair the record still needs its own source evidence, data-owner change and validation.
 
-For a qualified runtime that exposes the new public contract, select a `tiangong-foundry.interaction-input.v1` JSON descriptor through `task resume --interaction-input <descriptor-file>`. It contains exactly `schema`, `task_id`, `actor_id`, `expected_state_sha256` and ordered `events`. Each event has a `kind` of `question`, `answer` or `assumption`, plus the fields below. Use `expected_state_sha256: null` for the first interaction, before a state artifact exists. Later use the SHA-256 of the current indexed `interaction-state.json` artifact; a stale digest is a conflict to inspect, not a reason to overwrite task state.
+### Strict interaction descriptors for older runtimes
+
+A runtime exposing `tiangong-foundry.interaction-input.v1` without draft preparation, including 0.1.19, selects a strict JSON descriptor through `task resume --interaction-input <descriptor-file>`. It contains exactly `schema`, `task_id`, `actor_id`, `expected_state_sha256` and ordered `events`. Each event has a `kind` of `question`, `answer` or `assumption`, plus the fields below. Use `expected_state_sha256: null` for the first interaction, before a state artifact exists. Later use the SHA-256 of the current indexed `interaction-state.json` artifact; a stale digest is a conflict to inspect, not a reason to overwrite task state.
 
 | Event | Required fields and selection |
 | --- | --- |
@@ -68,6 +126,32 @@ tiangong-foundry task resume --workspace <absolute-workspace> --task <task-id> -
 When a goal, principle or source changes, register the correction through the current public action, preserve the superseded decision and follow the returned reassessment scope. Recheck dependent outputs; broaden the review if the dependency boundary is uncertain. Keep original attempts and required readback for any prior write. Resume/status should show the current brief and active decisions, so questions already answered under unchanged evidence are not repeated.
 
 ## Submit current semantic work
+
+When the selected runtime explicitly exposes `tiangong-foundry.semantic-draft.v1`, prepare the submission from the current work-item path and the produced file.
+
+```json
+{
+  "schema": "tiangong-foundry.semantic-draft.v1",
+  "submissions": [
+    {
+      "kind": "patch",
+      "authoring_task": "/absolute/current-work-item/task.json",
+      "file": "/absolute/current-work-item/patch.json",
+      "decision_ids": ["use-report-2020"]
+    }
+  ]
+}
+```
+
+Use the actual current indexed authoring task, produced file and applicable decision IDs. An empty `decision_ids` array applies only when that work item has none. Foundry derives the current assessment, interaction, work-item and file digests and verifies the actual decision scope.
+
+```text
+node scripts/run-foundry.mjs task prepare-input --workspace <absolute-workspace> --task <task-id> --actor <actor-id> --kind semantic --input <absolute-semantic-draft.json> --json
+```
+
+Save the exact `prepared_task_input` artifact's `value`, then submit it through `task resume --semantic-input <absolute-prepared-semantic.json>`. A stale-state rejection requires a fresh current input preparation. The selected runtime continues to own reassessment, validation and authorization. Runtimes exposing only `tiangong-foundry.semantic-input.v1`, including 0.1.19, use the strict descriptor below through their original entry.
+
+### Strict semantic descriptors for older runtimes
 
 The descriptor selected by `--semantic-input` contains `schema`, `task_id`, `actor_id`, `assessment_sha256` and `submissions`, plus optional `interaction_sha256` for the qualified interaction-aware runtime. Use schema `tiangong-foundry.semantic-input.v1`; take the assessment digest from the current registered artifact. When a current interaction state exists, `interaction_sha256` is required and must equal the SHA-256 of the current indexed `interaction-state.json` artifact. Omit it when no interaction state exists. Each submission contains the four base fields below and may also contain `decision_ids`:
 
@@ -112,6 +196,8 @@ tiangong-foundry task resume --workspace <absolute-workspace> --task <task-id> -
 Do not combine this option with semantic input, authorization input or an explicit cleanup preparation. Empty paths are invalid, including through the JavaScript facade. Foundry snapshots selected QA/review bytes, retains the original intent, and derives only its review-file locators toward those snapshots. A changed selection invalidates prior finalization; changed rows require current evidence. Prepared, consumed and completed scopes retain their original selection. Let Foundry re-finalize and verify; do not modify indexed snapshots or proof reports.
 
 ## Select native execution intent with approval
+
+Use an existing-draft scientific revision only after the selected runtime explicitly exposes `tiangong-foundry.scientific-repair.v1` and its current task-start schema admits `existing-owner-draft-scientific`. Consume that runtime's public repair contract, complete before/candidate/source review, trusted Worker diagnostic and current census evidence. The deployment owner supplies the trusted Worker installation and its independent digest. Respect the host's native-execution limits. An unavailable diagnostic leaves repair blocked. Follow the selected runtime's approval and original-attempt readback actions. [Foundry public repair contract](https://github.com/tiangong-lca/foundry/blob/main/docs/public-runtime-contract.md#existing-owner-draft-metadata-repair)
 
 For `input_kind=final_rows` and a Flow, Process or Source scope, the current `tiangong-foundry.authorization-input.v1` descriptor may include `execution_contract: { "file": "...", "sha256": "..." }`. The selected file must be the qualified CLI's `dataset-save-draft-execution-contract.v1` insert-only contract for the exact ordered final rows, desired payload digests, intended project/account and owner draft state `0`. Other types and prepared-row approval cannot use this field. Keep the raw file hash distinct from the CLI's canonical contract digest.
 

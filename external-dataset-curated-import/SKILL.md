@@ -19,6 +19,8 @@ Advance the task only through its supplied structured `next_actions`, preserving
 
 Independent conversion and validation do not authorize persistence. Keep managed and independent execution contexts separate.
 
+Before conversion or assessment can lead to a remote handoff, record source/license permissions, the declared research boundary, geography/time requirements and destination. Mark each selected package and derivative local-only or eligible for the requested remote scope. Restricted commercial derivatives, ELCD/RER background permitted only for local comparison, and mass-only placeholders with unresolved mandatory evidence stay in local conversion, validation and calculation comparison when the applicable task policy requires that limit. Carry the same disposition to supporting Process, Flow, Source and Model objects. Do not create remote drafts or prepare write authorization for a local-only scope. Apply a China-specific project rule using actual geographic evidence for the selected unit process. Resolve unclear permission or scope before any remote write handoff.
+
 ## Independent import sequence
 
 1. Establish input format, source/license, scope, intended use and actor/account constraints. Preserve original files. Source facts and conversion assumptions remain distinct.
@@ -30,4 +32,4 @@ Independent conversion and validation do not authorize persistence. Keep managed
 
 For field-level evidence or scientific judgment use the relevant domain Skill and public rules. Source-language imports do not require bilingual completion; apply translations only when requested. Keep unknown quantities unknown and never fabricate inventory to pass a gate.
 
-Run `tiangong-lca auth status --json` before remote work; hand `auth login` to the human in a trusted terminal when required. Never collect a password or token. `auth doctor-auth --json` precedes account-sensitive writes. Call the installed `tiangong-lca` command directly; inspect command help and use official installation guidance if missing. In managed Foundry tasks, return selected input files through the owner's actual actions instead of independently advancing task state.
+Run `tiangong-lca auth status --json` before remote work; hand `auth login` to the human in a trusted terminal when required. Never collect a password or token. `auth doctor-auth --json` precedes account-sensitive writes. Call the installed `tiangong-lca` command directly or the environment's configured `run-cli.mjs` entry; inspect command help and use official installation guidance if missing. Resolve file arguments to absolute paths from the intended caller directory before an outer controlled host changes CWD. The shared launcher preserves CWD and arguments. Local conversion, extraction and validation have no Skill-added remote auth or identity-receipt preflight. In managed Foundry tasks, return selected input files through the owner's actual actions instead of independently advancing task state.

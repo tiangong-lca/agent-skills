@@ -17,7 +17,7 @@ Retain the supplied task, actor, assessment, work-item and context hashes. A mis
 
 ## Author the requested artifact
 
-Use the work item's template and output path. Read [semantic work](references/semantic-work.md) for the relevant decision type and evidence rules.
+Use the work item's template and output path. Preserve its declared path base, or return absolute file paths resolved from that base, so the invoking workflow can submit files across a controlled host's CWD boundary. Read [semantic work](references/semantic-work.md) for the relevant decision type and evidence rules.
 
 - **Identity:** compare the actual candidates and entity context; preserve exact canonical IDs and versions for reuse. Do not replace identity work with field patches.
 - **Classification/location:** choose a valid supplied code and retain the task-specific context binding and target path.

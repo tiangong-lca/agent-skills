@@ -37,8 +37,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 304d862f2f248bac424b78d7c90072330905916a
-lastReviewedNote: "Skills #160: reviewed pnpm/setup 3.1.2 and both exact validation/diagnostic invocations; fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, cache inputs and runtime/business boundaries remain unchanged."
+lastReviewedCommit: 8ebdd74b4dfc69faa1ad36b0686221c967095162
+lastReviewedNote: "Skills #159 reviewed CLI-managed Foundry dispatch, caller CWD, scoped source/license admission and protocol-detected input preparation. Skills #160 reviewed pnpm/setup 3.1.2 and both validation/diagnostic invocations. Fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, caches, original attempts and owner-controlled write authorization are preserved."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -183,3 +183,9 @@ Study instruction evaluation uses [representative prompts](../../test/fixtures/s
 ## Foundry environment selection
 
 `test/foundry-installed-entry.test.mjs` copies the complete skill, removes its historical bootstrap lock, and invokes two environment-selected entries through the same copied launcher. It verifies unchanged Unicode/shell-metacharacter argv, one dispatch, native UNKNOWN/exit/stderr preservation, missing-command guidance and the byte-identical shared command adapter. Installed Foundry package and actual managed-runtime checks remain owned by Foundry. The existing fixed-release bootstrap tests retain historical installation/returned-action coverage and cannot substitute for the environment-selection test.
+
+Skills #159 extends copied-entry tests to the explicit CLI-managed mode with no Foundry PATH command. The regression binds exact runtime exec argv, manifest/digest/cache selection, caller CWD, a caller-relative file read, one native UNKNOWN/nonzero dispatch and pre-dispatch refusal of invalid configuration or unavailable discovery. The ordinary command regression reads a caller-relative local validation input with one dispatch and fails if authentication is attempted. These synthetic owners verify the adapter boundary; installed managed CLI/Foundry behavior and release/protocol qualification require their own owner evidence.
+
+Review the import, curated-import and source-development instructions against an allowed scoped unit process, a restricted local-comparison background with supporting objects, unresolved mass-only scientific evidence and a project-specific geographic requirement. Check that local-only status reaches Process/Flow/Source/Model handoffs, unclear permission stays unresolved, and approved material still follows native validation and explicit write authorization.
+
+The public-task reference also covers protocol-detected interaction/semantic draft preparation. Check its draft examples against the selected runtime's published schemas, the returned `prepared_task_input.value` handoff, ordered question/answer registration and separate semantic/approval stages. A 0.1.19 task retains the original strict descriptor path. Scientific repair guidance requires its own exposed protocol and current task-start lane, trusted deployment diagnostic and public owner contract. A default upgrade cannot replace an existing task's runtime or attempts.

@@ -45,6 +45,12 @@ Before retrieval, record the working brief in ordinary editable notes with:
 
 If source starting points and source-discovery scope are both absent, stop and ask for clarification.
 
+## Data admission before assessment and persistence
+
+Record source/license permissions, the declared research boundary, geography/time requirements and intended destination with the seed brief. Classify source material, candidate rows and supporting Process, Flow, Source and Model objects as local-only or eligible for the requested remote scope. Carry that disposition through assessment and the final handoff.
+
+When the applicable task policy limits restricted commercial derivatives or ELCD/RER background to local comparison, retain them in local evidence, conversion, validation and calculation comparison. Keep mass-only placeholders local while mandatory scientific evidence remains unresolved. Do not create remote drafts or prepare write authorization for a local-only scope, including support objects derived from it. A China-specific project rule requires evidence for the actual geography of the unit process. Apply the task's geographic admission criteria to the actual unit-process evidence. Resolve unclear permissions or task boundaries before the remote handoff and continue permitted local work.
+
 ## Runtime Evidence Skills
 
 For SCI paper or academic journal evidence, resolve the latest external skill:
@@ -81,6 +87,8 @@ Include the command, source repo, resolved `refs/heads/main` commit, skill name,
 8. Use caller notes to track evidence gaps and candidate files; exact search/get/list-references support reuse decisions.
 9. Route semantic blockers to child skills such as `flow-governance-review`, `process-automated-builder`, or Foundry authoring tasks.
 10. Hand off each reviewed candidate for explicit create/save, then separate review submission when authorized. Confirm exact readback; unknown writes use original-intent recovery.
+
+Use the installed `tiangong-lca` or the environment's configured `run-cli.mjs` entry. Resolve file parameters to absolute paths from the intended caller directory before an outer controlled host changes CWD. The shared launcher forwards arguments and preserves the caller's CWD. Local extraction, conversion and validation have no Skill-added remote auth or identity-receipt preflight.
 
 Before any remote account read or write in steps 8-10, run `tiangong-lca auth status --json`; before commit, require `tiangong-lca auth doctor-auth --json`. A `login-required` result is a human handoff to `auth login` in a trusted terminal. Never request a username, password, credential, authorization code, token, or legacy API key. Keep a separate private session per account/project/client; headless tokens may come only from an approved orchestrator and never enter argv or artifacts.
 

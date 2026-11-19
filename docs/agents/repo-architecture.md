@@ -37,8 +37,8 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-19
-lastReviewedCommit: 304d862f2f248bac424b78d7c90072330905916a
-lastReviewedNote: "Skills #160: reviewed pnpm/setup 3.1.2 and both exact validation/diagnostic invocations; fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, cache inputs and runtime/business boundaries remain unchanged."
+lastReviewedCommit: 8ebdd74b4dfc69faa1ad36b0686221c967095162
+lastReviewedNote: "Skills #159 reviewed CLI-managed Foundry dispatch, caller CWD, scoped source/license admission and protocol-detected input preparation. Skills #160 reviewed pnpm/setup 3.1.2 and both validation/diagnostic invocations. Fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, caches, original attempts and owner-controlled write authorization are preserved."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -153,3 +153,11 @@ The Study first-use entry lives in `lca-study/references/getting-started.md`. It
 `lca-study/references/advanced-analysis.md` holds conditional V5 OAT/uncertainty and view2/export3 recipes. It consumes only installed public CLI commands; canonical values, configuration hashes, scientific execution, role policy, journals and artifact verification remain with their existing owners. The copied launcher graph is unchanged.
 
 `lca-study/references/method-assessment.md` holds conditional V6 recorded-evidence, same-Study method assessment and method-report/view3/export4 guidance. The installed owner schemas supply exact configuration and source bindings. Twenty requirements, twenty-five categories and fifty-eight facts remain explicit, including unavailable N/W and false qualification flags. The Skill owns neither method arithmetic nor professional approval; runtime selection, CLI protocol/recovery and current source/review/disclosure authority remain unchanged.
+
+## CLI-managed Foundry adapter and task admission
+
+The copied Foundry entry can explicitly select `TIANGONG_FOUNDRY_RUNTIME_CLI`, reusing the deployment's absolute manifest, trusted digest, optional cache and declared entry. The adapter constructs one argv-only CLI runtime exec call with the caller CWD and unchanged application arguments. The public CLI owns manifest verification and managed host behavior. `runtime describe` remains owned by the public Foundry installed entry. CLI-only deployments supply verified release/protocol evidence and use managed doctor for the local runtime check. Conflicting entry selections and malformed deployment configuration fail before dispatch.
+
+Shared CLI and Foundry launchers preserve caller CWD. The outer host owns any different execution directory and its command-admission policy. Callers resolve file arguments to absolute paths while their original base is known. Local validation, conversion and extraction receive no Skill-added remote identity preflight. Existing task actions retain their executable, argv, CWD and original recovery bindings.
+
+The three import/source-development workflows classify selected material and supporting Process/Flow/Source/Model objects using applicable source permissions and the declared project scope before a remote handoff. A local-only decision carries through dependencies and prevents remote draft/authorization preparation for that scope. Specific geographic requirements come from the applicable project policy and source evidence.
