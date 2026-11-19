@@ -11,7 +11,7 @@ Use this as the ordinary Foundry entry for both packaged imports and source-evid
 
 Use the environment-configured managed Foundry entry. Read [runtime setup](references/runtime-setup.md) for first installation and capability discovery. Keep the writable user workspace separate from the installed runtime.
 
-Launch public Foundry arguments through `node scripts/run-foundry.mjs`. It uses `tiangong-foundry` on PATH or `TIANGONG_FOUNDRY_COMMAND`. The installation owner selects the verified runtime manifest and component cache. The skill forwards arguments and native results without choosing a release. Check `runtime describe --json` and the required protocol schemas before a new task. Missing configuration or capability needs explicit installation/upgrade guidance.
+Launch public Foundry arguments through `node scripts/run-foundry.mjs`. It uses `tiangong-foundry` on PATH or `TIANGONG_FOUNDRY_COMMAND`. A CLI-only managed deployment can explicitly configure `TIANGONG_FOUNDRY_RUNTIME_CLI` using the setup reference. The installation owner selects the verified runtime manifest and component cache. The skill forwards arguments and native results without choosing a release. Check `runtime describe --json` and the required protocol schemas before a new task through the public installed entry. For CLI-only managed execution, use the deployment owner's verified release/protocol evidence and managed `doctor --workspace <absolute-workspace> --json` as described in the setup reference. Missing configuration or capability needs explicit installation/upgrade guidance.
 
 Do not discover a sibling checkout, inspect private package internals, parse credentials or keep a duplicate task ledger.
 
@@ -21,6 +21,12 @@ Before a new data task, turn the user's request and supplied material into a sho
 
 - **Packaged import:** select the original supported archive or dataset directory. Let Foundry invoke its qualified native converter and retain conversion reports and dependency evidence.
 - **Source evidence:** obtain the relevant source text/tables and traceable citations, then supply candidate TIDAS seed rows alongside that evidence. Use available document or research skills where needed; record the resolved source and artifact provenance. The seed must be one of the selected sources. Retrieved text or candidate rows alone do not prove readiness to write.
+
+## Check the task's data admission scope
+
+Before conversion or semantic assessment leads toward persistence, record the applicable source/license permissions, declared research boundary, geography/time requirements and intended destination. Classify the selected material and its derivatives as local-only or eligible for the requested remote scope. Eligibility needs the applicable permission and evidence, then the normal native checks and explicit write authorization.
+
+A restricted commercial database derivative, an ELCD/RER background allowed only for local comparison, or a mass-only placeholder with unresolved mandatory evidence stays in local conversion, validation and calculation comparison when the task's policy requires that limit. Carry this disposition to dependent Process, Flow, Source and Model objects. Do not create remote drafts or prepare write authorization for that local-only scope. A project's China-specific admission rule needs actual geographic evidence for the selected unit process. Apply the task's geographic admission criteria to the actual unit-process evidence. If the relevant permission or project boundary is unclear, resolve it before the remote handoff and continue permitted local work.
 
 ## Continue from the current result
 

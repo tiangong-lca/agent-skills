@@ -23,6 +23,8 @@ Read the shared result envelope and actual `completeness`, validation layers and
 
 ## CLI selection
 
-Call `tiangong-lca` directly. Read the needed command’s `--help --json` before constructing inputs. Optional Node wrappers use the same PATH command; `--cli-command <executable>` selects a custom path. If unavailable, follow the official CLI installation guidance. Existing managed tasks continue through their owner-returned actions.
+Call `tiangong-lca` directly or the environment's configured `run-cli.mjs` entry. Read the needed command’s `--help --json` before constructing inputs. Optional Node wrappers use the same PATH command; `--cli-command <executable>` selects a custom path. If unavailable, follow the official CLI installation guidance. Existing managed tasks continue through their owner-returned actions.
 
 If `tiangong-lca` is unavailable, follow its official installation instructions. Source development and controlled runtime settings are optional environment choices; ordinary use requires no identity file or digest.
+
+Resolve input, output and descriptor paths from the intended caller directory before an outer controlled host changes CWD, then pass absolute paths as individual argv values. The shared launcher preserves the caller CWD and forwards arguments unchanged. Local validation and content processing have no Skill-added remote auth or identity-receipt preflight. Preserve the exact CWD supplied by an existing managed task action.

@@ -43,9 +43,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-17
-lastReviewedCommit: d5fd53450de085c2bef1d073a7fb6d42cae5b930
-lastReviewedNote: "Reviewed signed Model connection guidance and bounded port/amount/coefficient diagnostics; existing calculation, runtime selection and delivery contracts remain unchanged."
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: 3fc8d7f6f39eda34bd344db194c76503e56c83ea
+lastReviewedNote: "Skills #159 reviewed explicit CLI-managed Foundry dispatch, caller CWD and local-operation boundaries, and task-scoped source/license admission. Runtime qualification, original attempts and write authorization remain owner-controlled."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
@@ -162,8 +162,10 @@ The `pre-push` hook runs `scripts/docpact-gate.sh`, which delegates CLI lookup t
 
 `foundry-tidas-authoring` is an internal on-demand semantic package. It reads supplied current task/context evidence and returns decision/patch files; it owns no runtime, credential parsing, deterministic apply or database operation. Its explicit-only policy is part of the approved Foundry entry migration.
 
-`foundry-tidas-import` is the ordinary TianGong Foundry entry. Its instructions consume the public task protocol and current structured actions; the internal authoring role stays on demand. Ordinary invocation uses `scripts/run-foundry.mjs` and the environment-configured managed Foundry entry. The installation owner selects exact release assets and validates compatibility. Copied-entry tests cover environment replacement, unchanged argv/native results and missing-command guidance. The bundled historical bootstrap remains an explicitly selected standalone-install compatibility path with its existing cold/warm installation tests. Runtime upgrades within the supported public contract do not require Skill release-lock changes. The local copy of `scripts/lib/cli-command.mjs` must match the shared authority byte-for-byte.
+`foundry-tidas-import` is the ordinary TianGong Foundry entry. Its instructions consume the public task protocol and current structured actions; the internal authoring role stays on demand. Ordinary invocation uses `scripts/run-foundry.mjs` and the environment-configured managed Foundry entry. CLI-only deployments may explicitly select `TIANGONG_FOUNDRY_RUNTIME_CLI` with the existing manifest/digest/cache variables. The adapter forwards public arguments through CLI runtime exec with the current caller CWD; the public installed entry owns runtime describe. The deployment owner supplies verified protocol evidence for CLI-only mode. The installation owner selects exact release assets and validates compatibility. Copied-entry tests cover environment replacement, unchanged argv/native results and missing-command guidance. The bundled historical bootstrap remains an explicitly selected standalone-install compatibility path with its existing cold/warm installation tests. Runtime upgrades within the supported public contract do not require Skill release-lock changes. The local copy of `scripts/lib/cli-command.mjs` must match the shared authority byte-for-byte.
 
 The retained `external-dataset-curated-import` and `source-evidence-dataset-development` skills support independent CLI workflows. Within a registered public Foundry task they act as domain helpers over current work items and supplied actions; they return selected input files and cannot manually advance queues, checkpoints, registered artifacts or attempts. Their paired agent prompts preserve this boundary.
 
 The Study P4 reference uses explicit V5 installed commands for separately admitted OAT sensitivity and bounded uncertainty. Skills owns the workflow instructions only; it does not sample, calculate, choose scientific settings, rebuild signatures or expand role/source authority. Existing P2/P3 defaults and bundled launcher bytes remain unchanged.
+
+For import and source-evidence workflows, source/license permissions and project scope determine local-only versus remote-eligible content before assessment reaches persistence. Carry local-only status to supporting Process, Flow, Source and Model objects. Project policy owns specific geographic admission criteria. Shared launchers preserve the caller CWD and add no remote preflight for local operations; outer controlled hosts own any CWD changes and account checks. Resolve file paths from the intended base before crossing that host boundary.

@@ -1,6 +1,6 @@
 # Public task workflow
 
-The examples below show public Foundry arguments. Execute them through `node scripts/run-foundry.mjs`, using the environment-configured managed entry described in [runtime setup](runtime-setup.md). Inspect its selected identity and protocols with `runtime describe --json`. Keep returned executable/argv/cwd fields intact when continuing an action.
+The examples below show public Foundry arguments. Execute them through `node scripts/run-foundry.mjs`, using the environment-configured managed entry described in [runtime setup](runtime-setup.md). For the public installed entry, inspect selected identity and protocols with `runtime describe --json`. CLI-only deployments follow the setup reference's verified release/protocol evidence and managed doctor procedure. Keep returned executable/argv/cwd fields intact when continuing an action.
 
 ## Initialize or inspect
 

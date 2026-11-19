@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { chmodSync, cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { chmodSync, cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -50,6 +50,31 @@ test('explicit public entry works with empty PATH and CLI updates need no requal
     assert.deepEqual(JSON.parse(result.stdout),{marker,args:args.slice(2)});
   }
  } finally {rmSync(f.dir,{recursive:true,force:true});}
+});
+
+test('local validation preserves the caller directory without a remote identity preflight', () => {
+  const f = fixture();
+  try {
+    const caller = path.join(f.dir, 'caller 中文');
+    mkdirSync(path.join(caller, 'materials'), { recursive: true });
+    writeFileSync(path.join(caller, 'materials/payload.json'), '{"source":"caller"}');
+    writeFileSync(f.entry, `import fs from 'node:fs';
+const args=process.argv.slice(2);
+fs.appendFileSync(process.env.CALL_LOG,JSON.stringify(args)+'\\n');
+if(args[0]==='auth') throw new Error('Local operation attempted a remote auth preflight');
+process.stdout.write(JSON.stringify({cwd:process.cwd(),args,input:JSON.parse(fs.readFileSync(args[args.indexOf('--input')+1],'utf8'))}));
+`);
+    const argv = ['dataset', 'process', 'validate', '--input', 'materials/payload.json', '--json'];
+    const result = spawnSync(process.execPath,
+      [path.join(root, 'scripts/run-cli.mjs'), '--cli-command', f.entry, ...argv],
+      { cwd: caller, env: { ...f.env, PATH: '' }, encoding: 'utf8', shell: false });
+    assert.ifError(result.error);
+    assert.equal(result.status, 0, result.stderr);
+    assert.deepEqual(JSON.parse(result.stdout), { cwd: realpathSync(caller), args: argv, input: { source: 'caller' } });
+    assert.deepEqual(readFileSync(f.env.CALL_LOG, 'utf8').trim().split('\n').map(JSON.parse), [argv]);
+  } finally {
+    rmSync(f.dir, { recursive: true, force: true });
+  }
 });
 
 test('missing PATH CLI gives actionable installation guidance without a successful help claim', () => {
