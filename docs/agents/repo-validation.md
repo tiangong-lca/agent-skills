@@ -36,9 +36,9 @@ checkPaths:
   - scripts/docpact
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
-lastReviewedAt: 2026-11-17
-lastReviewedCommit: d5fd53450de085c2bef1d073a7fb6d42cae5b930
-lastReviewedNote: "Default ordinary Skills to public tiangong-lca on PATH; retain explicit controlled runtimes, source development and managed task semantics."
+lastReviewedAt: 2026-11-19
+lastReviewedCommit: 304d862f2f248bac424b78d7c90072330905916a
+lastReviewedNote: "Skills #160: reviewed pnpm/setup 3.1.2 and both exact validation/diagnostic invocations; fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, cache inputs and runtime/business boundaries remain unchanged."
 related:
   - AGENTS.md
   - .docpact/config.yaml
