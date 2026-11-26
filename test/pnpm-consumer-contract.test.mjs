@@ -186,7 +186,7 @@ test('validation CI installs the exact CLI checkout through frozen pnpm only', (
   assert.match(workflow, /ref: 955642482771a270fd49a199d1d7c86fcccc9ce2/u);
   assert.deepEqual(
     [...workflow.matchAll(/^\s*uses: (pnpm\/setup@.*)$/gmu)].map((match) => match[1]),
-    Array(2).fill('pnpm/setup@fa36a5ef7dcdefc3a7cb25655c122e00cf6e636e # v3.1.2'),
+    Array(2).fill('pnpm/setup@731dfb6463bbd11c11fd0ee11fe00ed0e36d48a1 # v3.2.0'),
   );
   assert.match(workflow, /runtime: node@24\.19\.0/u);
   assert.match(workflow, /version: 11\.24\.0/u);
