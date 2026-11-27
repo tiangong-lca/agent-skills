@@ -36,8 +36,8 @@ checkPaths:
   - scripts/sync-tidas-public-rules.mjs
   - package.json
   - pnpm-lock.yaml
-lastReviewedAt: 2026-11-26
-lastReviewedCommit: 92a640825d094bfeb6148be01414dadd6e10259a
+lastReviewedAt: 2026-11-27
+lastReviewedCommit: a2fd7eb27d19cc87e0aefcc2d79ce6bba655ad67
 lastReviewedNote: "Skills #159 reviewed CLI-managed Foundry dispatch, caller CWD, scoped source/license admission and protocol-detected input preparation. Skills #160 reviewed pnpm/setup 3.1.2 and both validation/diagnostic invocations. Fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, caches, original attempts and owner-controlled write authorization are preserved."
 related:
   - AGENTS.md
