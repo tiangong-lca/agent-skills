@@ -150,17 +150,7 @@ jobs:
       - name: Install Skills validation package
         run: pnpm install --frozen-lockfile
 
-      - name: Restore built pinned CLI cache
-        id: cli-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: |
-            .ci/tiangong-lca-cli/node_modules
-            .ci/tiangong-lca-cli/dist
-          key: skills-pinned-cli-v1-${{ runner.os }}-${{ runner.arch }}-node24.19.0-pnpm11.24.0-955642482771a270fd49a199d1d7c86fcccc9ce2
-
       - name: Install and build CLI
-        if: steps.cli-cache.outputs.cache-hit != 'true'
         working-directory: .ci/tiangong-lca-cli
         run: |
           pnpm install --frozen-lockfile
