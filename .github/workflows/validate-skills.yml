@@ -77,8 +77,8 @@ jobs:
           HAS_FULL_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'ci:full') }}
         run: |
           set -euo pipefail
-          full_matrix='[{"os":"ubuntu-latest","arch":"x64"},{"os":"windows-latest","arch":"x64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"windows-latest","arch":"x64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"windows-latest","arch":"x64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"windows-latest","arch":"x64","shard":"contracts","shard_label":"contracts"},{"os":"macos-latest","arch":"arm64"},{"os":"ubuntu-24.04-arm","arch":"arm64"}]'
-          fast_matrix='[{"os":"ubuntu-latest","arch":"x64"}]'
+          full_matrix='[{"os":"ubuntu-latest","arch":"x64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"ubuntu-latest","arch":"x64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"ubuntu-latest","arch":"x64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"ubuntu-latest","arch":"x64","shard":"contracts","shard_label":"contracts"},{"os":"windows-latest","arch":"x64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"windows-latest","arch":"x64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"windows-latest","arch":"x64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"windows-latest","arch":"x64","shard":"contracts","shard_label":"contracts"},{"os":"macos-latest","arch":"arm64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"macos-latest","arch":"arm64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"macos-latest","arch":"arm64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"macos-latest","arch":"arm64","shard":"contracts","shard_label":"contracts"},{"os":"ubuntu-24.04-arm","arch":"arm64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"ubuntu-24.04-arm","arch":"arm64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"ubuntu-24.04-arm","arch":"arm64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"ubuntu-24.04-arm","arch":"arm64","shard":"contracts","shard_label":"contracts"}]'
+          fast_matrix='[{"os":"ubuntu-latest","arch":"x64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"ubuntu-latest","arch":"x64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"ubuntu-latest","arch":"x64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"ubuntu-latest","arch":"x64","shard":"contracts","shard_label":"contracts"}]'
 
           emit() {
             echo "Skills CI lane: mode=$1 reason=$2"
@@ -150,17 +150,7 @@ jobs:
       - name: Install Skills validation package
         run: pnpm install --frozen-lockfile
 
-      - name: Restore built pinned CLI cache
-        id: cli-cache
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: |
-            .ci/tiangong-lca-cli/node_modules
-            .ci/tiangong-lca-cli/dist
-          key: skills-pinned-cli-v1-${{ runner.os }}-${{ runner.arch }}-node24.19.0-pnpm11.24.0-955642482771a270fd49a199d1d7c86fcccc9ce2
-
       - name: Install and build CLI
-        if: steps.cli-cache.outputs.cache-hit != 'true'
         working-directory: .ci/tiangong-lca-cli
         run: |
           pnpm install --frozen-lockfile
@@ -175,12 +165,12 @@ jobs:
           FOUNDRY_INSTALL_PROOF_DIR: ${{ runner.temp }}/foundry-skill-install
         run: pnpm test
 
-      - name: Test Skills repository contracts (Windows balanced shard)
+      - name: Test Skills repository contracts (balanced shard)
         if: ${{ matrix.shard }}
         env:
           FOUNDRY_INSTALL_PROOF_DIR: ${{ runner.temp }}/foundry-skill-install
         # Private PowerShell and copied native consumers keep their existing
-        # deadlines; Windows test files receive exclusive runner scheduling across balanced shards.
+        # deadlines; test files receive exclusive runner scheduling across balanced shards.
         run: node scripts/lib/ci-test-shard.mjs run ${{ matrix.shard }}
 
       - name: Preserve copied public Foundry install evidence
