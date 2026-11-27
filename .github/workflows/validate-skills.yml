@@ -77,8 +77,8 @@ jobs:
           HAS_FULL_LABEL: ${{ contains(github.event.pull_request.labels.*.name, 'ci:full') }}
         run: |
           set -euo pipefail
-          full_matrix='[{"os":"ubuntu-latest","arch":"x64"},{"os":"windows-latest","arch":"x64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"windows-latest","arch":"x64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"windows-latest","arch":"x64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"windows-latest","arch":"x64","shard":"contracts","shard_label":"contracts"},{"os":"macos-latest","arch":"arm64"},{"os":"ubuntu-24.04-arm","arch":"arm64"}]'
-          fast_matrix='[{"os":"ubuntu-latest","arch":"x64"}]'
+          full_matrix='[{"os":"ubuntu-latest","arch":"x64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"ubuntu-latest","arch":"x64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"ubuntu-latest","arch":"x64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"ubuntu-latest","arch":"x64","shard":"contracts","shard_label":"contracts"},{"os":"windows-latest","arch":"x64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"windows-latest","arch":"x64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"windows-latest","arch":"x64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"windows-latest","arch":"x64","shard":"contracts","shard_label":"contracts"},{"os":"macos-latest","arch":"arm64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"macos-latest","arch":"arm64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"macos-latest","arch":"arm64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"macos-latest","arch":"arm64","shard":"contracts","shard_label":"contracts"},{"os":"ubuntu-24.04-arm","arch":"arm64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"ubuntu-24.04-arm","arch":"arm64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"ubuntu-24.04-arm","arch":"arm64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"ubuntu-24.04-arm","arch":"arm64","shard":"contracts","shard_label":"contracts"}]'
+          fast_matrix='[{"os":"ubuntu-latest","arch":"x64","shard":"foundry-core","shard_label":"foundry-core"},{"os":"ubuntu-latest","arch":"x64","shard":"foundry-interaction","shard_label":"foundry-interaction"},{"os":"ubuntu-latest","arch":"x64","shard":"foundry-object-scope","shard_label":"foundry-object-scope"},{"os":"ubuntu-latest","arch":"x64","shard":"contracts","shard_label":"contracts"}]'
 
           emit() {
             echo "Skills CI lane: mode=$1 reason=$2"
@@ -175,12 +175,12 @@ jobs:
           FOUNDRY_INSTALL_PROOF_DIR: ${{ runner.temp }}/foundry-skill-install
         run: pnpm test
 
-      - name: Test Skills repository contracts (Windows balanced shard)
+      - name: Test Skills repository contracts (balanced shard)
         if: ${{ matrix.shard }}
         env:
           FOUNDRY_INSTALL_PROOF_DIR: ${{ runner.temp }}/foundry-skill-install
         # Private PowerShell and copied native consumers keep their existing
-        # deadlines; Windows test files receive exclusive runner scheduling across balanced shards.
+        # deadlines; test files receive exclusive runner scheduling across balanced shards.
         run: node scripts/lib/ci-test-shard.mjs run ${{ matrix.shard }}
 
       - name: Preserve copied public Foundry install evidence
