@@ -2,7 +2,7 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import path from "node:path";
 import process from "node:process";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import {
   normalizeCliRuntimeArgs,
@@ -441,24 +441,68 @@ CLI runtime:
   );
 }
 
-function run(command, args, options = {}) {
-  const result = spawnSync(command, args, {
-    ...options,
-    stdio: "pipe",
-    encoding: "utf8",
-    shell: false,
+function runAsync(command, args, options = {}) {
+  return new Promise((resolve, reject) => {
+    const child = spawn(command, args, {
+      ...options,
+      stdio: "pipe",
+      shell: false,
+    });
+    let stdout = "";
+    let stderr = "";
+    child.stdout?.setEncoding("utf8");
+    child.stderr?.setEncoding("utf8");
+    child.stdout?.on("data", (chunk) => {
+      stdout += chunk;
+    });
+    child.stderr?.on("data", (chunk) => {
+      stderr += chunk;
+    });
+    child.on("error", reject);
+    child.on("close", (status, signal) => {
+      if (signal) {
+        reject(new Error(`${command} ${args.join(" ")} terminated by signal ${signal}`));
+        return;
+      }
+      if (typeof status === "number" && status !== 0) {
+        const detail = stderr.trim() || stdout.trim() || `exit code ${status}`;
+        reject(new Error(`${command} ${args.join(" ")} failed: ${detail}`));
+        return;
+      }
+      resolve();
+    });
   });
+}
 
-  if (result.error) {
-    throw result.error;
-  }
-
-  if (typeof result.status === "number" && result.status !== 0) {
-    const stderr =
-      result.stderr?.trim() ||
-      result.stdout?.trim() ||
-      `exit code ${result.status}`;
-    fail(`${command} ${args.join(" ")} failed: ${stderr}`);
+async function runPool(tasks, concurrency) {
+  const errors = new Array(tasks.length);
+  let nextIndex = 0;
+  let failed = false;
+  const workerCount = Math.min(concurrency, tasks.length);
+  await Promise.all(
+    Array.from({ length: workerCount }, async () => {
+      while (true) {
+        if (failed) {
+          return;
+        }
+        const index = nextIndex;
+        nextIndex += 1;
+        if (index >= tasks.length) {
+          return;
+        }
+        try {
+          await tasks[index]();
+        } catch (error) {
+          errors[index] = error;
+          failed = true;
+          return;
+        }
+      }
+    }),
+  );
+  const firstError = errors.find(Boolean);
+  if (firstError) {
+    throw firstError;
   }
 }
 
@@ -536,28 +580,30 @@ function assertAgentMetadata(skillDir) {
   }
 }
 
-function runNodeChecks(scriptFiles) {
-  scriptFiles.forEach((scriptFile) => {
-    run(process.execPath, ["--check", scriptFile], {
+function buildNodeCheckTasks(scriptFiles) {
+  return scriptFiles.map((scriptFile) => () =>
+    runAsync(process.execPath, ["--check", scriptFile], {
       cwd: repoRoot,
-    });
-  });
+    }),
+  );
 }
 
-function runHelpSmoke(scriptFiles, runtime) {
-  scriptFiles.forEach((scriptFile) => {
-    run(process.execPath, [scriptFile, "--help"], {
+function buildHelpSmokeTasks(scriptFiles, runtime) {
+  const env = withCliRuntimeEnv(process.env, runtime.cliDir, runtime);
+  return scriptFiles.map((scriptFile) => () =>
+    runAsync(process.execPath, [scriptFile, "--help"], {
       cwd: repoRoot,
-      env: withCliRuntimeEnv(process.env, runtime.cliDir, runtime),
-    });
-  });
+      env,
+    }),
+  );
 }
 
-function runTargetedSmokeChecks(skillDirs, runtime) {
-  let count = 0;
+function buildTargetedSmokeTasks(skillDirs, runtime) {
+  const tasks = [];
   const selectedSkills = new Set(
     skillDirs.map((skillDir) => path.basename(skillDir)),
   );
+  const env = withCliRuntimeEnv(process.env, runtime.cliDir, runtime);
 
   targetedSmokeChecks.forEach((check) => {
     if (!selectedSkills.has(check.skill)) {
@@ -571,14 +617,15 @@ function runTargetedSmokeChecks(skillDirs, runtime) {
       );
     }
 
-    run(process.execPath, [scriptFile, ...check.args], {
-      cwd: repoRoot,
-      env: withCliRuntimeEnv(process.env, runtime.cliDir, runtime),
-    });
-    count += 1;
+    tasks.push(() =>
+      runAsync(process.execPath, [scriptFile, ...check.args], {
+        cwd: repoRoot,
+        env,
+      }),
+    );
   });
 
-  return count;
+  return tasks;
 }
 
 function runDocGuards() {
@@ -647,7 +694,7 @@ function runRepoWideDocGuards() {
   });
 }
 
-function main() {
+async function main() {
   const { runtime, targets } = parseArgs(process.argv.slice(2));
   runDocGuards();
   runRepoWideDocGuards();
@@ -662,24 +709,27 @@ function main() {
     scriptFiles: collectWrapperScripts(skillDir),
   }));
   let scriptCount = 0;
+  const subprocessTasks = [];
   skillPlans.forEach(({ skillDir, scriptFiles }) => {
     assertSkillFrontmatter(skillDir);
     assertAgentMetadata(skillDir);
     scriptCount += scriptFiles.length;
-    runNodeChecks(scriptFiles);
-    runHelpSmoke(scriptFiles, runtime);
+    subprocessTasks.push(...buildNodeCheckTasks(scriptFiles));
+    subprocessTasks.push(...buildHelpSmokeTasks(scriptFiles, runtime));
   });
-  const targetedSmokeCount = runTargetedSmokeChecks(skillDirs, runtime);
+  const targetedSmokeTasks = buildTargetedSmokeTasks(skillDirs, runtime);
+  subprocessTasks.push(...targetedSmokeTasks);
+
+  const concurrency = process.platform === "win32" ? 4 : 6;
+  await runPool(subprocessTasks, concurrency);
 
   console.log(
-    `Validated ${skillDirs.length} skill directories, ${scriptCount} wrapper scripts, ${targetedSmokeCount} targeted smokes, ${docGuards.length} negative doc guards, ${repoWideDocGuards.length} repo-wide doc guards, and ${requiredDocPatterns.length} required doc patterns.`,
+    `Validated ${skillDirs.length} skill directories, ${scriptCount} wrapper scripts, ${targetedSmokeTasks.length} targeted smokes, ${docGuards.length} negative doc guards, ${repoWideDocGuards.length} repo-wide doc guards, and ${requiredDocPatterns.length} required doc patterns.`,
   );
 }
 
-try {
-  main();
-} catch (error) {
+main().catch((error) => {
   const message = error instanceof Error ? error.message : String(error);
   console.error(`Validation failed: ${message}`);
   process.exit(1);
-}
+});
