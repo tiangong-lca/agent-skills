@@ -201,11 +201,13 @@ test('validation CI installs the exact CLI checkout through frozen pnpm only', (
     qualification.match(
       /uses: actions\/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1/gu,
     )?.length,
-    2,
+    3,
   );
   assert.equal(diagnostics.match(/uses: actions\/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1/gu)?.length, 1);
   assert.match(qualification, /if: \$\{\{ !inputs\.windows_diagnostics \}\}/u);
-  assert.match(qualification, /run: pnpm test \$\{\{ matrix\.os == 'windows-latest' && '--test-concurrency=1' \|\| '' \}\}/u);
+  assert.match(qualification, /run: pnpm test\b/u);
+  assert.match(qualification, /run: node scripts\/lib\/ci-test-shard\.mjs run \$\{\{ matrix\.shard \}\}/u);
+  assert.match(read('scripts/lib/ci-test-shard.mjs'), /'--test-concurrency=1'/u);
   assert.doesNotMatch(qualification, /--test-(?:skip-pattern|name-pattern|timeout|isolation)/u);
   assert.match(diagnostics, /github\.event_name == 'workflow_dispatch' && inputs\.windows_diagnostics/u);
   assert.match(diagnostics, /run: node scripts\/lib\/windows-foundry-diagnostics\.mjs/u);
@@ -214,6 +216,20 @@ test('validation CI installs the exact CLI checkout through frozen pnpm only', (
     workflow,
     /actions\/checkout@v|pnpm\/action-setup|actions\/setup-node|package-lock\.json|\bnpm (?:ci|exec|run)\b/u,
   );
+});
+
+test('balanced Windows CI shards partition all repository tests without gaps or overlap', async () => {
+  const { WINDOWS_SHARD_NAMES, discoverTestFiles, partitionWindowsTestShards } = await import(
+    '../scripts/lib/ci-test-shard.mjs'
+  );
+  const all = discoverTestFiles(repoRoot);
+  const shards = partitionWindowsTestShards(repoRoot);
+  assert.deepEqual(Object.keys(shards).sort(), [...WINDOWS_SHARD_NAMES].sort());
+  const assigned = Object.values(shards).flat().sort();
+  assert.deepEqual(assigned, all);
+  for (const name of WINDOWS_SHARD_NAMES) {
+    assert.ok(shards[name].length > 0, `shard ${name} must be non-empty`);
+  }
 });
 
 test('local push gate requires a selected runtime and validates local evidence before mutation', () => {
