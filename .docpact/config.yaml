@@ -344,3 +344,4 @@ rules:
       - path: docs/agents/dependency-maintenance.md
         mode: review_or_update
     reason: Monitoring scope and traffic must agree with focused guidance without changing runtime adoption authority.
+# lastReviewedIssue: #175
