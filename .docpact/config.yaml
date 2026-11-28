@@ -2,9 +2,9 @@ version: 1
 layout: repo
 # Current release proof, 2026-09-10: Skills #94 aligns wrappers and all three identical bundles to verified CLI 0.1.13 / cli-v0.1.13 / b5e209259d3bb06205b9af131b1c0edc3fba6da2, including its original permission-preserving POSIX bootstrap. The adjacent final Foundry 0.1.7 lock is byte-identical to the independently verified public release; the copied-entry native matrix proves the installed package.
 # Release proof, 2026-09-02: Skills #91 pins verified CLI 0.1.8 / b4701984b4a86fe4680fa5995d0a0b6753dbdfd6; all three bundled launchers must remain byte-identical to their root authority.
-lastReviewedAt: "2026-11-27"
-lastReviewedCommit: "a04734e11cb4698be49600a90d77430474b4a6e9"
-lastReviewedNote: "Skills #159 reviewed CLI-managed Foundry dispatch, caller CWD, scoped source/license admission and protocol-detected input preparation. Skills #160 reviewed pnpm/setup 3.1.2 and both validation/diagnostic invocations. Fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, caches, original attempts and owner-controlled write authorization are preserved."
+lastReviewedAt: "2026-11-28"
+lastReviewedCommit: "743a7a38ad14894eba1d9579e7ac346357998d33"
+lastReviewedNote: "Skills #165 reviewed inherited stdin/stdout/stderr, native child status, explicit capture and the four standalone copies."
 
 catalog:
   repos:

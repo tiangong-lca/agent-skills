@@ -37,8 +37,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: d8a6c616646d5b91e58fd68bc36d5a11b65afd5a
-lastReviewedNote: "Skills #159 reviewed CLI-managed Foundry dispatch, caller CWD, scoped source/license admission and protocol-detected input preparation. Skills #160 reviewed pnpm/setup 3.1.2 and both validation/diagnostic invocations. Fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, caches, original attempts and owner-controlled write authorization are preserved."
+lastReviewedCommit: 743a7a38ad14894eba1d9579e7ac346357998d33
+lastReviewedNote: "Skills #165 reviewed inherited stdin/stdout/stderr, native child status, explicit capture and the four standalone copies."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -177,6 +177,8 @@ For the V6 Study method extension, copied-wrapper checks preserve explicit evide
 ## Ordinary command regression
 
 Default consumers call `tiangong-lca` without runtime expectation variables. Test PATH discovery in copied packages, explicit executable override, nested propagation, paths/spaces/Unicode and shell metacharacters as unchanged argv, ordinary CLI replacement without requalification, missing commands and nonzero/UNKNOWN preservation with one dispatch. Windows CI must execute npm/pnpm-style Node shims and preserve arguments without cmd.exe interpolation. Retain opt-in installed identity and explicit source tests; they are separate contracts.
+
+Run `node --test test/cli-stdio.test.mjs` to verify exact stdout and stderr bytes beyond the default capture limit, stdin and native exit status through the shared entry and four standalone copies. The same regression checks explicit capture, caller-supplied input and writers, and the POSIX signal diagnostic.
 
 Study instruction evaluation uses [representative prompts](../../test/fixtures/study/behavior-cases.md) for conversation-language selection/switching, product-specific material requests with purpose/source, unavailable-record alternatives, batch feedback, evidence-led progression, direct CLI discovery and upgrade advice, foreground/background iteration, explicit ordinary proxy Processes, signed supply/treatment and same-sign rejection without altering evidence, sparse characterization, precise input-error recovery and report correction. Keep instruction review, actual Agent traces and numerical verification separate. The shipped `lca-study/assets/proxy-example/request.json` supplies an offline calculation projection with an independently derived inventory of 14 kg fossil CO₂ per kg product (42 at demand 3), including a differently normalized aggregate background and an ordinary conversion's direct burden. Verify it through public prepare/calculate/result commands with a qualified method cache; no synthetic result establishes a real substitution's applicability.
 

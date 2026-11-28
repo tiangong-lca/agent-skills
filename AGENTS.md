@@ -44,8 +44,8 @@ checkPaths:
   - scripts/docpact-gate.sh
   - scripts/install-git-hooks.sh
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: d8a6c616646d5b91e58fd68bc36d5a11b65afd5a
-lastReviewedNote: "Skills #159 reviewed CLI-managed Foundry dispatch, caller CWD, scoped source/license admission and protocol-detected input preparation. Skills #160 reviewed pnpm/setup 3.1.2 and both validation/diagnostic invocations. Fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, caches, original attempts and owner-controlled write authorization are preserved."
+lastReviewedCommit: 743a7a38ad14894eba1d9579e7ac346357998d33
+lastReviewedNote: "Skills #165 reviewed inherited stdin/stdout/stderr, native child status, explicit capture and the four standalone copies."
 related:
   - .docpact/config.yaml
   - docs/agents/repo-architecture.md
@@ -121,7 +121,7 @@ Route those tasks to:
 - A local checkout matching pinned CLI 0.1.24 retains the existing `--cli-dir` selection and package/engine/lock/source-manifest checks. Selecting another literal package version also requires both `--cli-candidate-file` and `--cli-candidate-sha256`, supplied from independently reviewed caller evidence. The paired environment variables are `TIANGONG_LCA_CLI_CANDIDATE_FILE` and `TIANGONG_LCA_CLI_CANDIDATE_SHA256`; pass them with the selected directory through the same wrapper invocation. Removing a selected source clears its candidate evidence; there is no published fallback.
 - Candidate inspection requires the approved canonical source commit/version, a clean checkout, the fixed toolchain, the actual 18 pinned TIDAS schema contents, and already prepared `dist`/`node_modules` trees. It does not install, build, grant execution/data permission, or automatically qualify its own output. Review the inventory against the assignment and verified frozen-install/build evidence before independently binding its exact file-byte SHA-256.
 - Candidate preflight rejects missing or changed source, package, lock, manifest, dependency or build evidence before preparation. It never repairs that failure. After successful preflight, the existing source-mtime preparation path remains: install with `pnpm install --frozen-lockfile` before `pnpm run build` when needed, then recheck every candidate identity before dispatch. There is no public no-install mode; internal `prepareLocalCli: false` does not bypass qualification. Recovery preserves a failed/UNKNOWN original task and qualifies a newly prepared isolated checkout, without version spoofing, editing an old qualification or silently falling back to published CLI.
-- CLI child processes use authoritative argv arrays with `shell: false` and preserve child exit/stdout/stderr.
+- CLI child processes use authoritative argv arrays with `shell: false`. Ordinary execution inherits stdin, stdout and stderr and returns the child exit status. Explicit capture returns the buffered UTF-8 streams and status.
 - The canonical local validation command is `pnpm validate` after `pnpm install --frozen-lockfile`.
 - You may pass one or more skill paths to validate only the touched skills
 - For documentation-governance changes, run `scripts/docpact validate-config --root . --strict` and `scripts/docpact lint --root . --base origin/main --head HEAD --mode enforce`
