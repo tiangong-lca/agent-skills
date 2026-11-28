@@ -37,8 +37,8 @@ checkPaths:
   - package.json
   - pnpm-lock.yaml
 lastReviewedAt: 2026-11-28
-lastReviewedCommit: d8a6c616646d5b91e58fd68bc36d5a11b65afd5a
-lastReviewedNote: "Skills #159 reviewed CLI-managed Foundry dispatch, caller CWD, scoped source/license admission and protocol-detected input preparation. Skills #160 reviewed pnpm/setup 3.1.2 and both validation/diagnostic invocations. Fixed Node24.19.0/pnpm11.24.0, pinned CLI qualification, public-install tests, four-platform gates, caches, original attempts and owner-controlled write authorization are preserved."
+lastReviewedCommit: 743a7a38ad14894eba1d9579e7ac346357998d33
+lastReviewedNote: "Skills #165 reviewed inherited stdin/stdout/stderr, native child status, explicit capture and the four standalone copies."
 related:
   - AGENTS.md
   - .docpact/config.yaml
@@ -84,7 +84,7 @@ If a Foundry/source-evidence workflow needs an external Tiangong KB research ski
 
 Current-account dataset review is owned here only as a skill package and wrapper contract. Its durable runtime behavior belongs in public `tiangong-lca` CLI commands such as typed dataset validation, explicit patch, distinct create/save, and Model graph export.
 
-The shared launcher defaults to `tiangong-lca` from PATH. Skills rely on public commands and help, with installation and compatibility handled by the CLI environment. `cli-command.mjs` provides shell-free command dispatch; on Windows it resolves the Node target of npm/pnpm command shims so user arguments are never shell text. No download, build, business retry or version/hash gate occurs on this path. Optional `--cli-command` or `TIANGONG_LCA_CLI_COMMAND` selects another executable or public JavaScript entry.
+The shared launcher defaults to `tiangong-lca` from PATH. Skills rely on public commands and help, with installation and compatibility handled by the CLI environment. `cli-command.mjs` provides shell-free command dispatch; on Windows it resolves the Node target of npm/pnpm command shims so user arguments are never shell text. No download, build, business retry or version/hash gate occurs on this path. Optional `--cli-command` or `TIANGONG_LCA_CLI_COMMAND` selects another executable or public JavaScript entry. Ordinary dispatch inherits the caller’s standard streams so child bytes reach their destinations directly. Explicit capture and caller-supplied output writers retain their buffered string contract.
 
 ### Explicit runtime selection
 
