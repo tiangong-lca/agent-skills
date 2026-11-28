@@ -6,6 +6,7 @@ import {
   executeTiangongCommand as executeDevelopmentCommand,
   withCliRuntimeEnv as developmentRuntimeEnv,
   missingCliMessage,
+  runWithForwardedStdio,
 } from './cli-development.mjs';
 import { installedInvocation } from './cli-installed.mjs';
 import { commandInvocation } from './cli-command.mjs';
@@ -108,11 +109,11 @@ export function buildTiangongInvocation(args, options = {}) {
   return commandInvocation(args, options);
 }
 
-export function executeTiangongCommand(args, options = {}) {
-  if (options.cliDir && !options.cliInstallation) return executeDevelopmentCommand(args, options);
+function invokeTiangongCommand(args, options, stdio) {
+  if (options.cliDir && !options.cliInstallation) return executeDevelopmentCommand(args, options, stdio);
   const invocation = buildTiangongInvocation(args, options);
   const result = (options.spawnImpl ?? spawnSync)(invocation.command, invocation.args, {
-    ...options.spawnOptions, stdio: 'pipe', encoding: 'utf8', shell: false,
+    ...options.spawnOptions, stdio, encoding: 'utf8', shell: false,
   });
   if (result.error) {
     if (result.error.code === 'ENOENT') throw new Error(`${missingCliMessage} Selected command: ${invocation.command}`);
@@ -122,13 +123,12 @@ export function executeTiangongCommand(args, options = {}) {
     stdout: result.stdout ?? '', stderr: result.stderr ?? '' };
 }
 
+export function executeTiangongCommand(args, options = {}) {
+  return invokeTiangongCommand(args, options, 'pipe');
+}
+
 export function runTiangongCommand(args, options = {}) {
-  const result = executeTiangongCommand(args, options);
-  if (result.stdout) (options.stdoutWrite ?? ((text) => process.stdout.write(text)))(result.stdout);
-  if (result.stderr) (options.stderrWrite ?? ((text) => process.stderr.write(text)))(result.stderr);
-  if (typeof result.status === 'number') return result.status;
-  if (result.signal) throw new Error(`TianGong CLI terminated with signal ${result.signal}.`);
-  return 1;
+  return runWithForwardedStdio(invokeTiangongCommand, args, options);
 }
 
 export function withCliRuntimeEnv(baseEnv, cliDir, options = {}) {

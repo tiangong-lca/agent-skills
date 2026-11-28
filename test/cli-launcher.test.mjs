@@ -439,6 +439,7 @@ test('runTiangongCommand preserves exact exit, stdout, and stderr and forbids sh
   assert.equal(stdout, 'exact stdout\n');
   assert.equal(stderr, 'exact stderr\n');
   assert.equal(observedOptions.shell, false);
+  assert.deepEqual(observedOptions.stdio, ['inherit', 'pipe', 'pipe']);
 });
 
 test('runTiangongCommand preserves a successful no-output result', () => {
